@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>診断アンケート</title>
+
+<style>
+body{
+    margin:0;
+    font-family:"Yu Gothic",sans-serif;
+    background:#f5f5f5;
+}
+
+header{
+    background:#4A90E2;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    padding:15px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+h2{margin-top:0;}
+
+label{
+    display:block;
+    margin:10px 0;
+}
+
+input[type="checkbox"]{
+    margin-right:10px;
+}
+
+.submit-btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#4A90E2;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.back-btn{
+    width:100%;
+    padding:15px;
+    margin-top:10px;
+    border:none;
+    border-radius:12px;
+    background:#999;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>今学期の診断アンケート</h1>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>取得済み講義</h2>
+
+<label><input type="checkbox" class="subject" value="情報処理論">情報処理論</label>
+<label><input type="checkbox" class="subject" value="システム統計論">システム統計論</label>
+<label><input type="checkbox" class="subject" value="プログラミング応用">プログラミング応用</label>
+<label><input type="checkbox" class="subject" value="プログラミング応用演習">プログラミング応用演習</label>
+<label><input type="checkbox" class="subject" value="アルゴリズム論">アルゴリズム論</label>
+<label><input type="checkbox" class="subject" value="データベース演習">データベース演習</label>
+<label><input type="checkbox" class="subject" value="データ処理入門">データ処理入門</label>
+<label><input type="checkbox" class="subject" value="情報化社会論">情報化社会論</label>
+<label><input type="checkbox" class="subject" value="インターネットと法">インターネットと法</label>
+<label><input type="checkbox" class="subject" value="ネットワーク技術Ⅰ">ネットワーク技術Ⅰ</label>
+<label><input type="checkbox" class="subject" value="ネットワーク技術Ⅱ">ネットワーク技術Ⅱ</label>
+<label><input type="checkbox" class="subject" value="ネットワークの構築と運用">ネットワークの構築と運用</label>
+<label><input type="checkbox" class="subject" value="システム開発技術（IoT）">システム開発技術（IoT）</label>
+<label><input type="checkbox" class="subject" value="ウェブデザイン">ウェブデザイン</label>
+<label><input type="checkbox" class="subject" value="ウェブコンテンツ実践">ウェブコンテンツ実践</label>
+<label><input type="checkbox" class="subject" value="情報と職業">情報と職業</label>
+<label><input type="checkbox" class="subject" value="経営情報論">経営情報論</label>
+<label><input type="checkbox" class="subject" value="産業情報論">産業情報論</label>
+<label><input type="checkbox" class="subject" value="情報セキュリティ">情報セキュリティ</label>
+<label><input type="checkbox" class="subject" value="健康情報統計Ⅱ">健康情報統計Ⅱ</label>
+<label><input type="checkbox" class="subject" value="健康情報統計Ⅲ">健康情報統計Ⅲ</label>
+<label><input type="checkbox" class="subject" value="健康情報数学Ⅱ">健康情報数学Ⅱ</label>
+<label><input type="checkbox" class="subject" value="健康情報数学Ⅲ">健康情報数学Ⅲ</label>
+<label><input type="checkbox" class="subject" value="社会調査法">社会調査法</label>
+<label><input type="checkbox" class="subject" value="AIデータサイエンスⅠ">AIデータサイエンスⅠ</label>
+<label><input type="checkbox" class="subject" value="AIデータサイエンスⅡ">AIデータサイエンスⅡ</label>
+<label><input type="checkbox" class="subject" value="医療・生命情報学Ⅰ">医療・生命情報学Ⅰ</label>
+<label><input type="checkbox" class="subject" value="医療・生命情報学Ⅱ">医療・生命情報学Ⅱ</label>
+<label><input type="checkbox" class="subject" value="パターン認識">パターン認識</label>
+<label><input type="checkbox" class="subject" value="画像認識">画像認識</label>
+<label><input type="checkbox" class="subject" value="自然言語処理">自然言語処理</label>
+<label><input type="checkbox" class="subject" value="人工知能">人工知能</label>
+<label><input type="checkbox" class="subject" value="臨床医学および医療用語">臨床医学および医療用語</label>
+<label><input type="checkbox" class="subject" value="臨床医学各論Ⅰ">臨床医学各論Ⅰ</label>
+<label><input type="checkbox" class="subject" value="臨床医学各論Ⅱ">臨床医学各論Ⅱ</label>
+<label><input type="checkbox" class="subject" value="臨床医学各論Ⅲ">臨床医学各論Ⅲ</label>
+<label><input type="checkbox" class="subject" value="臨床医学各論Ⅳ">臨床医学各論Ⅳ</label>
+<label><input type="checkbox" class="subject" value="診療情報管理論Ⅰ">診療情報管理論Ⅰ</label>
+<label><input type="checkbox" class="subject" value="診療情報管理論Ⅱ">診療情報管理論Ⅱ</label>
+<label><input type="checkbox" class="subject" value="医療管理各論">医療管理各論</label>
+<label><input type="checkbox" class="subject" value="国際統計分類I">国際統計分類I</label>
+<label><input type="checkbox" class="subject" value="国際統計分類Ⅱ">国際統計分類Ⅱ</label>
+<label><input type="checkbox" class="subject" value="健康ビッグデータ">健康ビッグデータ</label>
+<label><input type="checkbox" class="subject" value="デジタルヘルスコミュニケーション">デジタルヘルスコミュニケーション</label>
+<label><input type="checkbox" class="subject" value="デジタルヘルステクノロジー">デジタルヘルステクノロジー</label>
+<label><input type="checkbox" class="subject" value="デジタルヘルスイノベーション">デジタルヘルスイノベーション</label>
+<label><input type="checkbox" class="subject" value="医療統計学">医療統計学</label>
+<label><input type="checkbox" class="subject" value="社会心理学">社会心理学</label>
+<label><input type="checkbox" class="subject" value="観光行動論">観光行動論</label>
+<label><input type="checkbox" class="subject" value="マーケティング論">マーケティング論</label>
+<label><input type="checkbox" class="subject" value="地域マーケティング論">地域マーケティング論</label>
+<label><input type="checkbox" class="subject" value="市場調査論">市場調査論</label>
+<label><input type="checkbox" class="subject" value="簿記原理">簿記原理</label>
+<label><input type="checkbox" class="subject" value="会計学原理">会計学原理</label>
+<label><input type="checkbox" class="subject" value="経営分析論">経営分析論</label>
+<label><input type="checkbox" class="subject" value="経営戦略論">経営戦略論</label>
+<label><input type="checkbox" class="subject" value="経営統計学">経営統計学</label>
+</div>
+
+<div class="card">
+<h2>興味のある職種</h2>
+
+<label><input type="checkbox" class="job" value="診療情報管理士">診療情報管理士</label>
+<label><input type="checkbox" class="job" value="教職">教職員</label>
+<label><input type="checkbox" class="job" value="プログラマ">プログラマ</label>
+<label><input type="checkbox" class="job" value="システムエンジニア">システムエンジニア</label>
+<label><input type="checkbox" class="job" value="Webデザイン">Webデザイナ</label>
+<label><input type="checkbox" class="job" value="データサイエンティスト">データサイエンティスト</label>
+<label><input type="checkbox" class="job" value="AI開発者">AI開発者</label>
+<label><input type="checkbox" class="job" value="ネットワーク管理者">ネットワーク管理者</label>
+<label><input type="checkbox" class="job" value="セキュリティアナリスト">セキュリティアナリスト</label>
+<label><input type="checkbox" class="job" value="ITコンサルタント">ITコンサルタント</label>
+<label><input type="checkbox" class="job" value="ITサポート・ヘルプデスク">ITサポート・ヘルプデスク</label>
+
+<label>
+<input type="checkbox" id="undecided" onchange="toggleUndecided()">
+特に決まっていない
+</label>
+</div>
+
+<button class="submit-btn" onclick="startDiagnosis()">診断開始</button>
+<button class="back-btn" onclick="location.href='index.html'">ホームへ戻る</button>
+
+</div>
+
+<script>
+window.onload = function(){
+    restoreAnswers();
+};
+
+function toggleUndecided(){
+    const undecided = document.getElementById("undecided");
+    const jobs = document.querySelectorAll(".job");
+
+    jobs.forEach(job => {
+        job.disabled = undecided.checked;
+        if(undecided.checked) job.checked = false;
+    });
+}
+
+function restoreAnswers(){
+    const savedSubjects = JSON.parse(localStorage.getItem("selectedLectures")) || [];
+    const savedJobs = JSON.parse(localStorage.getItem("selectedJobs")) || [];
+
+    document.querySelectorAll(".subject").forEach(s => {
+        if(savedSubjects.includes(s.value)){
+            s.checked = true;
+        }
+    });
+
+    document.querySelectorAll(".job").forEach(j => {
+        if(savedJobs.includes(j.value)){
+            j.checked = true;
+        }
+    });
+
+    if(savedJobs.length === 0){
+        const undecided = localStorage.getItem("undecided") === "true";
+        document.getElementById("undecided").checked = undecided;
+        toggleUndecided();
+    }
+}
+
+function startDiagnosis(){
+    const selectedSubjects = [];
+    const selectedJobs = [];
+
+    document.querySelectorAll(".subject:checked").forEach(s => {
+        selectedSubjects.push(s.value);
+    });
+
+    document.querySelectorAll(".job:checked").forEach(j => {
+        selectedJobs.push(j.value);
+    });
+
+    const undecided = document.getElementById("undecided").checked;
+
+    localStorage.setItem("selectedLectures", JSON.stringify(selectedSubjects));
+    localStorage.setItem("selectedJobs", JSON.stringify(selectedJobs));
+    localStorage.setItem("undecided", undecided ? "true" : "false");
+
+    const history = JSON.parse(localStorage.getItem("history")) || [];
+
+    history.push({
+        date: new Date().toLocaleString(),
+        subjects: selectedSubjects,
+        selectedJobs: selectedJobs,
+        ranking: [],
+        undecided: undecided
+    });
+
+    localStorage.setItem("history", JSON.stringify(history));
+
+    alert("診断完了！");
+    location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

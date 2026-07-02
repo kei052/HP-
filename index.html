@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>講義選択支援アプリ</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:"Yu Gothic","Meiryo",sans-serif;
+    background:#f2f5fa;
+    color:#333;
+}
+
+header{
+    background:linear-gradient(135deg,#0077ff,#4A90E2);
+    color:white;
+    padding:25px 15px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+header h1{font-size:28px;}
+header p{margin-top:8px;font-size:15px;}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:15px;
+}
+
+.menu{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.menu button{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#4A90E2;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.tabs{
+    display:flex;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.tab{
+    flex:1;
+    padding:15px;
+    border:none;
+    background:#ececec;
+    font-size:17px;
+    cursor:pointer;
+}
+
+.tab.active{
+    background:#0077ff;
+    color:white;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.rank{
+    font-size:22px;
+    font-weight:bold;
+    color:#0077ff;
+}
+
+.name{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.percent{
+    margin-top:10px;
+    font-size:18px;
+    font-weight:bold;
+    color:#0077ff;
+}
+
+.bar{
+    width:100%;
+    height:16px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:8px;
+}
+
+.fill{
+    height:100%;
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+}
+
+.small{
+    margin-top:10px;
+    color:#666;
+    font-size:14px;
+    line-height:1.7;
+}
+
+.loading{
+    text-align:center;
+    font-size:18px;
+    padding:40px;
+}
+
+input{
+    width:70%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    padding:8px 12px;
+    background:#0077ff;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:disabled{
+    cursor:not-allowed;
+    opacity:.8;
+}
+
+.addedBtn{
+    background:#999;
+}
+
+.detailBtn{
+    margin-top:12px;
+    width:42px;
+    height:34px;
+    font-size:20px;
+}
+
+.detailBox{
+    display:none;
+    margin-top:12px;
+    background:#f6f9ff;
+    padding:12px;
+    border-radius:10px;
+}
+
+.candidateItem{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:8px 0;
+}
+
+.deleteBtn{
+    background:#e74c3c;
+    padding:4px 9px;
+    border-radius:50%;
+    font-size:14px;
+}
+
+ul{padding-left:0;list-style:none;}
+
+footer{
+    text-align:center;
+    padding:12px;
+    color:#777;
+}
+
+@media(max-width:700px){
+    header h1{font-size:24px;}
+    .menu{flex-direction:column;}
+    input{width:100%;margin-bottom:8px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>講義選択支援アプリ</h1>
+    <p>あなたの履修状況からおすすめ職種・資格を診断します</p>
+</header>
+
+<div class="container">
+
+    <div class="menu">
+        <button onclick="location.href='anke-to.html'">診断する</button>
+        <button onclick="location.href='history.html'">履歴</button>
+    </div>
+
+    <section class="card">
+        <h2>最新の診断結果</h2>
+        <div id="homeLatest" class="small">該当なし</div>
+    </section>
+
+    <div class="tabs">
+        <button id="jobTab" class="tab active" onclick="switchTab('job')">職種</button>
+        <button id="licenseTab" class="tab" onclick="switchTab('license')">資格</button>
+    </div>
+
+    <section class="card">
+        <h2>講義検索</h2>
+        <input type="text" id="searchBox" placeholder="講義名を入力">
+        <button onclick="searchLecture()">検索</button>
+        <div id="searchResult" class="small"></div>
+    </section>
+
+    <section class="card">
+        <h2 id="resultTitle">おすすめ職種</h2>
+        <div id="resultArea" class="loading">読み込み中...</div>
+    </section>
+
+    <section class="card">
+        <h2>履修候補</h2>
+        <ul id="candidateList"></ul>
+        <button onclick="clearCandidates()">リセット</button>
+    </section>
+
+</div>
+
+<footer>
+    <small>Lecture Support App © 2026</small>
+</footer>
+
+<script>
+let jobRows = [];
+let jobNames = [];
+let lectureNames = [];
+let licenseRows = [];
+
+let currentTab = "job";
+let candidates = [];
+
+const allQuestionLectures = [
+    "情報処理論","システム統計論","プログラミング応用","プログラミング応用演習",
+    "アルゴリズム論","データベース演習","データ処理入門","情報化社会論",
+    "インターネットと法","ネットワーク技術Ⅰ","ネットワーク技術Ⅱ",
+    "ネットワークの構築と運用","システム開発技術（IoT）","ウェブデザイン",
+    "ウェブコンテンツ実践","情報と職業","経営情報論","産業情報論",
+    "情報セキュリティ","健康情報統計Ⅱ","健康情報統計Ⅲ","健康情報数学Ⅱ",
+    "健康情報数学Ⅲ","社会調査法","AIデータサイエンスⅠ","AIデータサイエンスⅡ",
+    "医療・生命情報学Ⅰ","医療・生命情報学Ⅱ","パターン認識","画像認識",
+    "自然言語処理","人工知能","臨床医学および医療用語","臨床医学各論Ⅰ",
+    "臨床医学各論Ⅱ","臨床医学各論Ⅲ","臨床医学各論Ⅳ","診療情報管理論Ⅰ",
+    "診療情報管理論Ⅱ","医療管理各論","国際統計分類I","国際統計分類Ⅱ",
+    "健康ビッグデータ","デジタルヘルスコミュニケーション",
+    "デジタルヘルステクノロジー","デジタルヘルスイノベーション","医療統計学",
+    "社会心理学","観光行動論","マーケティング論","地域マーケティング論",
+    "市場調査論","簿記原理","会計学原理","経営分析論","経営戦略論","経営統計学"
+];
+
+window.onload = async function(){
+    loadSavedCandidates();
+
+    document.getElementById("searchBox").addEventListener("keydown", function(e){
+        if(e.key === "Enter"){
+            searchLecture();
+        }
+    });
+
+    try{
+        const jobText = await fetch("data.csv").then(res => res.text());
+        const licenseText = await fetch("data1.csv").then(res => res.text());
+
+        loadJobCSV(jobText);
+        loadLicenseCSV(licenseText);
+
+        updateCandidates();
+        switchTab("job");
+        renderHomeLatest();
+
+    }catch(e){
+        document.getElementById("resultArea").innerHTML =
+            "CSVファイルを読み込めませんでした。data.csv / data1.csv が index.html と同じ場所にあるか確認してください。";
+        console.error(e);
+    }
+};
+
+function parseCSV(text){
+    return text.trim().split(/\r?\n/).map(line =>
+        line.split(",").map(v => v.replace(/^"|"$/g,"").trim())
+    );
+}
+
+function loadJobCSV(text){
+    const rows = parseCSV(text);
+    jobNames = rows[0].slice(1).map(fixName).filter(name => name !== "未定");
+
+    jobRows = rows.slice(1).map(row => {
+        const obj = { lecture: fixLectureName(row[0]), scores:{} };
+
+        rows[0].slice(1).forEach((job, i) => {
+            const fixedJob = fixName(job);
+            if(fixedJob !== "未定"){
+                obj.scores[fixedJob] = Number(row[i + 1]) || 0;
+            }
+        });
+
+        return obj;
+    });
+
+    lectureNames = jobRows.map(r => r.lecture);
+}
+
+function loadLicenseCSV(text){
+    const rows = parseCSV(text);
+
+    licenseRows = rows.slice(1).map(row => ({
+        job: fixName(row[0] || ""),
+        license: (row[1] || "").trim(),
+        lecture: fixLectureName(row[2] || "")
+    }))
+    .filter(r => r.license !== "" && r.lecture !== "");
+}
+
+const normalize = {
+    "Webデザイナ":"Webデザイン",
+    "Webエンジニア":"Webデザイン",
+    "AIエンジニア":"AI開発者",
+    "ネットワークエンジニア":"ネットワーク管理者",
+    "教職員":"教職",
+    "ITサポート、ヘルプデスク":"ITサポート・ヘルプデスク"
+};
+
+function fixName(name){
+    return normalize[name] || name;
+}
+
+const lectureNormalize = {
+    "情報セキュリティー":"情報セキュリティ",
+    "国際統計分類I":"国際統計分類Ⅰ"
+};
+
+function fixLectureName(name){
+    return lectureNormalize[name] || name;
+}
+
+function normalizeSearchText(text){
+    return text
+        .toString()
+        .normalize("NFKC")
+        .toLowerCase()
+        .replace(/Ⅰ/g,"1")
+        .replace(/Ⅱ/g,"2")
+        .replace(/Ⅲ/g,"3")
+        .replace(/Ⅳ/g,"4")
+        .replace(/ー/g,"")
+        .replace(/\s/g,"");
+}
+
+function lectureSearchText(name){
+    const extra = {
+        "情報処理論":"じょうほうしょりろん ジョウホウショリロン",
+        "システム統計論":"しすてむとうけいろん システムトウケイロン",
+        "プログラミング応用":"ぷろぐらみんぐおうよう",
+        "プログラミング応用演習":"ぷろぐらみんぐおうようえんしゅう",
+        "アルゴリズム論":"あるごりずむろん",
+        "データベース演習":"でーたべーす でえたべえす",
+        "データ処理入門":"でーたしょり でえたしょり",
+        "情報セキュリティ":"じょうほうせきゅりてぃ",
+        "ウェブデザイン":"うぇぶでざいん webでざいん",
+        "ウェブコンテンツ実践":"うぇぶこんてんつ",
+        "人工知能":"じんこうちのう ai",
+        "AIデータサイエンスⅠ":"えーあい でーたさいえんす ai",
+        "AIデータサイエンスⅡ":"えーあい でーたさいえんす ai",
+        "医療統計学":"いりょうとうけい",
+        "簿記原理":"ぼき",
+        "会計学原理":"かいけい",
+        "マーケティング論":"まーけてぃんぐ",
+        "地域マーケティング論":"ちいきまーけてぃんぐ"
+    };
+
+    return normalizeSearchText(name + " " + (extra[name] || ""));
+}
+
+function getSelectedLectures(){
+    let result = [];
+
+    const data = localStorage.getItem("selectedLectures");
+
+    if(data){
+        try{
+            const arr = JSON.parse(data);
+            if(Array.isArray(arr)){
+                result = arr.map(fixLectureName);
+            }
+        }catch(e){}
+    }
+
+    const candidateNames = candidates.map(c => fixLectureName(c.name));
+
+    return [...new Set([...result, ...candidateNames])];
+}
+
+function getSelectedJobs(){
+    const data = localStorage.getItem("selectedJobs");
+
+    if(data){
+        try{
+            const arr = JSON.parse(data);
+            if(Array.isArray(arr)) return arr.map(fixName);
+        }catch(e){}
+    }
+
+    return [];
+}
+
+function switchTab(tab){
+    currentTab = tab;
+
+    document.getElementById("jobTab").classList.remove("active");
+    document.getElementById("licenseTab").classList.remove("active");
+    document.getElementById(tab + "Tab").classList.add("active");
+
+    if(tab === "job"){
+        document.getElementById("resultTitle").textContent = "おすすめ職種";
+        renderJobs();
+    }else{
+        document.getElementById("resultTitle").textContent = "おすすめ資格";
+        renderLicenses();
+    }
+}
+
+function calcJobRate(job){
+    const selected = getSelectedLectures();
+
+    const total = jobRows.reduce((sum,row)=>sum + row.scores[job],0);
+    if(total === 0) return 0;
+
+    if(selected.length === 0){
+        const maxTotal = Math.max(...jobNames.map(j =>
+            jobRows.reduce((sum,row)=>sum + row.scores[j],0)
+        ));
+        return Math.round((total / maxTotal) * 100);
+    }
+
+    const got = jobRows
+        .filter(row => selected.includes(row.lecture))
+        .reduce((sum,row)=>sum + row.scores[job],0);
+
+    return Math.round((got / total) * 100);
+}
+
+function getMissingLecturesForJob(job){
+    const selected = getSelectedLectures();
+
+    return jobRows
+        .filter(row => !selected.includes(row.lecture))
+        .sort((a,b) => b.scores[job] - a.scores[job])
+        .filter(row => row.scores[job] > 0)
+        .slice(0,5)
+        .map(row => row.lecture);
+}
+
+function getLicensesForJob(job){
+    const list = licenseRows
+        .filter(r => r.job === job)
+        .map(r => r.license);
+
+    return [...new Set(list)];
+}
+
+function renderJobs(){
+    const area = document.getElementById("resultArea");
+    area.classList.remove("loading");
+
+    const selectedJobs = getSelectedJobs();
+
+    let data = jobNames.map(job => ({
+        name: job,
+        rate: calcJobRate(job)
+    }));
+
+    if(selectedJobs.length > 0){
+        const selected = data.filter(d => selectedJobs.includes(d.name));
+        const others = data.filter(d => !selectedJobs.includes(d.name));
+
+        data = [
+            ...selected.sort((a,b)=>b.rate-a.rate),
+            ...others.sort((a,b)=>b.rate-a.rate)
+        ].slice(0,5);
+    }else{
+        data = data.sort((a,b)=>b.rate-a.rate).slice(0,5);
+    }
+
+    localStorage.setItem("latestRanking", JSON.stringify(data));
+    updateLatestHistoryRanking(data);
+    renderHomeLatest();
+
+    area.innerHTML = data.map((job,i) => `
+        <div class="card">
+            <div class="rank">${i + 1}位</div>
+            <div class="name">${job.name}</div>
+            <div class="percent">適合率 ${job.rate}%</div>
+
+            <div class="bar">
+                <div class="fill" style="width:${job.rate}%"></div>
+            </div>
+
+            <button id="jobBtn${i}" class="detailBtn" onclick="toggleJobDetail(${i}, '${job.name}')">＋</button>
+            <div id="jobDetail${i}" class="detailBox"></div>
+        </div>
+    `).join("");
+}
+
+function toggleJobDetail(i, jobName){
+    const box = document.getElementById("jobDetail" + i);
+    const btn = document.getElementById("jobBtn" + i);
+
+    if(box.style.display === "block"){
+        box.style.display = "none";
+        btn.textContent = "＋";
+        return;
+    }
+
+    const missing = getMissingLecturesForJob(jobName);
+    const licenses = getLicensesForJob(jobName);
+
+    box.style.display = "block";
+    btn.textContent = "－";
+
+    box.innerHTML = `
+        <div><b>不足しているおすすめ講義</b></div>
+        <div>${missing.length ? missing.join("、") : "特になし"}</div>
+        <br>
+        <div><b>取ったほうがいい資格</b></div>
+        <div>${licenses.length ? licenses.join("、") : "該当資格なし"}</div>
+    `;
+}
+
+function calcLicenseRate(license){
+    const selected = getSelectedLectures();
+
+    const lectures = licenseRows
+        .filter(r => r.license === license)
+        .map(r => r.lecture);
+
+    const uniqueLectures = [...new Set(lectures)];
+
+    if(uniqueLectures.length === 0) return 0;
+
+    if(selected.length === 0){
+        const allLicenses = [...new Set(
+            licenseRows
+                .map(r => (r.license || "").trim())
+                .filter(name => name !== "")
+        )];
+
+        const maxCount = Math.max(...allLicenses.map(lic =>
+            [...new Set(
+                licenseRows
+                    .filter(r => r.license === lic)
+                    .map(r => r.lecture)
+            )].length
+        ));
+
+        return Math.round((uniqueLectures.length / maxCount) * 100);
+    }
+
+    const match = uniqueLectures.filter(l => selected.includes(l)).length;
+    return Math.round((match / uniqueLectures.length) * 100);
+}
+
+function getMissingLecturesForLicense(license){
+    const selected = getSelectedLectures();
+
+    const lectures = licenseRows
+        .filter(r => r.license === license)
+        .map(r => r.lecture);
+
+    return [...new Set(lectures)].filter(l => !selected.includes(l));
+}
+
+function getJobsForLicense(license){
+    const jobs = licenseRows
+        .filter(r => r.license === license)
+        .map(r => r.job);
+
+    return [...new Set(jobs)];
+}
+
+function renderLicenses(){
+    const area = document.getElementById("resultArea");
+    area.classList.remove("loading");
+
+    const licenseNames = [...new Set(
+        licenseRows
+            .map(r => (r.license || "").trim())
+            .filter(name => name !== "")
+    )];
+
+    let data = licenseNames.map(license => ({
+        name: license,
+        rate: calcLicenseRate(license)
+    }))
+    .sort((a,b)=>b.rate-a.rate)
+    .slice(0,5);
+
+    if(data.length === 0){
+        area.innerHTML = `<div class="small">表示できる資格がありません</div>`;
+        return;
+    }
+
+    area.innerHTML = data.map((lic,i) => `
+        <div class="card">
+            <div class="rank">${i + 1}位</div>
+            <div class="name">${lic.name}</div>
+            <div class="percent">適合率 ${lic.rate}%</div>
+
+            <div class="bar">
+                <div class="fill" style="width:${lic.rate}%"></div>
+            </div>
+
+            <button id="licenseBtn${i}" class="detailBtn" onclick="toggleLicenseDetail(${i}, '${lic.name}')">＋</button>
+            <div id="licenseDetail${i}" class="detailBox"></div>
+        </div>
+    `).join("");
+}
+
+function toggleLicenseDetail(i, licenseName){
+    const box = document.getElementById("licenseDetail" + i);
+    const btn = document.getElementById("licenseBtn" + i);
+
+    if(box.style.display === "block"){
+        box.style.display = "none";
+        btn.textContent = "＋";
+        return;
+    }
+
+    const missing = getMissingLecturesForLicense(licenseName);
+    const jobs = getJobsForLicense(licenseName);
+
+    box.style.display = "block";
+    btn.textContent = "－";
+
+    box.innerHTML = `
+        <div><b>取ったほうがいい講義</b></div>
+        <div>${missing.length ? missing.join("、") : "特になし"}</div>
+        <br>
+        <div><b>おすすめ職種</b></div>
+        <div>${jobs.length ? jobs.join("、") : "該当職種なし"}</div>
+    `;
+}
+
+function searchLecture(){
+    const rawKeyword = document.getElementById("searchBox").value.trim();
+    const keyword = normalizeSearchText(rawKeyword);
+    const area = document.getElementById("searchResult");
+
+    if(rawKeyword === ""){
+        area.innerHTML = "講義名を入力してください";
+        return;
+    }
+
+    const fixedLectures = allQuestionLectures.map(fixLectureName);
+
+    const result = fixedLectures.filter(name =>
+        lectureSearchText(name).includes(keyword)
+    );
+
+    if(result.length === 0){
+        area.innerHTML = "該当する講義がありません";
+        return;
+    }
+
+    area.innerHTML = result.map(name => {
+        const fixedName = fixLectureName(name);
+        const added = candidates.some(c => fixLectureName(c.name) === fixedName);
+
+        return `
+            <div style="margin-top:8px;">
+                ${fixedName}
+                <button
+                    class="${added ? 'addedBtn' : ''}"
+                    ${added ? 'disabled' : ''}
+                    onclick="addCandidate('${fixedName}')">
+                    ${added ? '追加済み' : '追加'}
+                </button>
+            </div>
+        `;
+    }).join("");
+}
+
+function addCandidate(name){
+    const fixedName = fixLectureName(name);
+
+    if(!candidates.some(c => fixLectureName(c.name) === fixedName)){
+        candidates.push({name:fixedName});
+        saveCandidates();
+        updateCandidates();
+        switchTab(currentTab);
+        searchLecture();
+    }
+}
+
+function removeCandidate(name){
+    const fixedName = fixLectureName(name);
+
+    candidates = candidates.filter(c => fixLectureName(c.name) !== fixedName);
+
+    saveCandidates();
+    updateCandidates();
+    switchTab(currentTab);
+    searchLecture();
+}
+
+function updateCandidates(){
+    const list = document.getElementById("candidateList");
+    list.innerHTML = "";
+
+    if(candidates.length === 0){
+        list.innerHTML = `<li class="small">まだ履修候補はありません</li>`;
+        return;
+    }
+
+    candidates.forEach(c => {
+        const li = document.createElement("li");
+        li.className = "candidateItem";
+        li.innerHTML = `
+            <span>${c.name}</span>
+            <button class="deleteBtn" onclick="removeCandidate('${c.name}')">×</button>
+        `;
+        list.appendChild(li);
+    });
+}
+
+function clearCandidates(){
+    candidates = [];
+    saveCandidates();
+    updateCandidates();
+    switchTab(currentTab);
+    searchLecture();
+}
+
+function saveCandidates(){
+    localStorage.setItem("lectureCandidates", JSON.stringify(candidates));
+}
+
+function loadSavedCandidates(){
+    const saved = localStorage.getItem("lectureCandidates");
+    if(saved){
+        try{
+            candidates = JSON.parse(saved);
+        }catch(e){
+            candidates = [];
+        }
+    }
+}
+
+function renderHomeLatest(){
+    const area = document.getElementById("homeLatest");
+    const latest = JSON.parse(localStorage.getItem("latestRanking")) || [];
+
+    if(latest.length === 0){
+        area.innerHTML = "該当なし";
+        return;
+    }
+
+    area.innerHTML = latest.slice(0,5).map((item,i)=>`
+        <div>${i + 1}位：${item.name}（適合率 ${item.rate}%）</div>
+    `).join("");
+}
+
+function updateLatestHistoryRanking(ranking){
+    const history = JSON.parse(localStorage.getItem("history")) || [];
+
+    if(history.length === 0) return;
+
+    const latestIndex = history.length - 1;
+
+    history[latestIndex].ranking = ranking.map(item => ({
+        name: item.name,
+        rate: item.rate
+    }));
+
+    localStorage.setItem("history", JSON.stringify(history));
+}
+</script>
+
+</body>
+</html>
