@@ -255,7 +255,7 @@ canvas{
     </div>
 
     <section class="card">
-        <h2>最新ランキング</h2>
+        <h2>最新ランキング <span id="latestPeriodLabel" class="small"></span></h2>
         <div id="resultArea">読み込み中...</div>
     </section>
 
@@ -295,6 +295,7 @@ let currentTab = "job";
 let candidates = [];
 let currentRankingData = [];
 let radarChart = null;
+let activeHistoryIndex = -1;
 
 const periodList = [
     "1年前期","1年後期",
@@ -302,6 +303,17 @@ const periodList = [
     "3年前期","3年後期",
     "4年前期","4年後期"
 ];
+
+const periodOrder = {
+    "1年前期":1,
+    "1年後期":2,
+    "2年前期":3,
+    "2年後期":4,
+    "3年前期":5,
+    "3年後期":6,
+    "4年前期":7,
+    "4年後期":8
+};
 
 const allQuestionLectures = [
     "情報処理論","システム統計論","プログラミング応用","プログラミング応用演習",
@@ -334,6 +346,9 @@ window.onload = async function(){
 
         loadJobCSV(jobText);
         loadLicenseCSV(licenseText);
+
+        /* 診断した順番ではなく、学年・学期が最も新しい履歴をホーム表示に使う */
+        applyNewestAcademicHistory();
 
         renderPeriodCompare();
         updateCandidates();
@@ -449,6 +464,48 @@ function getSelectedPeriods(){
     return [];
 }
 
+function getNewestAcademicHistoryIndex(){
+    const history = JSON.parse(localStorage.getItem("history")) || [];
+
+    if(history.length === 0) return -1;
+
+    let newestIndex = -1;
+    let newestOrder = -1;
+
+    history.forEach((item, index) => {
+        const period = (item.periods || [])[0] || "";
+        const order = periodOrder[period] || 0;
+
+        /* 同じ学期が複数ある場合は、後から保存された診断を採用 */
+        if(order > newestOrder || order === newestOrder){
+            newestOrder = order;
+            newestIndex = index;
+        }
+    });
+
+    return newestIndex;
+}
+
+function applyNewestAcademicHistory(){
+    const history = JSON.parse(localStorage.getItem("history")) || [];
+    activeHistoryIndex = getNewestAcademicHistoryIndex();
+
+    if(activeHistoryIndex < 0 || !history[activeHistoryIndex]){
+        localStorage.removeItem("latestRanking");
+        return;
+    }
+
+    const newest = history[activeHistoryIndex];
+
+    localStorage.setItem("selectedLectures", JSON.stringify(newest.subjects || []));
+    localStorage.setItem("selectedJobs", JSON.stringify(newest.selectedJobs || []));
+    localStorage.setItem("selectedPeriods", JSON.stringify(newest.periods || []));
+    localStorage.setItem("undecided", newest.undecided ? "true" : "false");
+
+    const savedRanking = newest.rankingByTab?.job || newest.ranking || [];
+    localStorage.setItem("latestRanking", JSON.stringify(savedRanking));
+}
+
 function updateSideInfo(){
     const selectedLectures = getSelectedLectures();
     const selectedJobs = getSelectedJobs();
@@ -456,7 +513,13 @@ function updateSideInfo(){
 
     document.getElementById("lectureCount").textContent = selectedLectures.length;
     document.getElementById("jobCount").textContent = selectedJobs.length;
-    document.getElementById("periodText").textContent = selectedPeriods.length ? selectedPeriods.join("、") : "該当なし";
+    const periodText = selectedPeriods.length ? selectedPeriods.join("、") : "該当なし";
+    document.getElementById("periodText").textContent = periodText;
+
+    const latestLabel = document.getElementById("latestPeriodLabel");
+    if(latestLabel){
+        latestLabel.textContent = selectedPeriods.length ? `（${periodText}）` : "";
+    }
 }
 
 function renderPeriodCompare(){
@@ -972,22 +1035,27 @@ function updateLatestHistoryRanking(ranking, tab){
     const history = JSON.parse(localStorage.getItem("history")) || [];
     if(history.length === 0) return;
 
-    const latestIndex = history.length - 1;
+    activeHistoryIndex = getNewestAcademicHistoryIndex();
 
-    if(!history[latestIndex].rankingByTab){
-        history[latestIndex].rankingByTab = {};
+    if(activeHistoryIndex < 0 || !history[activeHistoryIndex]) return;
+
+    if(!history[activeHistoryIndex].rankingByTab){
+        history[activeHistoryIndex].rankingByTab = {};
     }
 
-    history[latestIndex].rankingByTab[tab] = ranking.map(item => ({
+    history[activeHistoryIndex].rankingByTab[tab] = ranking.map(item => ({
         name:item.name,
         rate:item.rate
     }));
 
     if(tab === "job"){
-        history[latestIndex].ranking = ranking.map(item => ({
+        history[activeHistoryIndex].ranking = ranking.map(item => ({
             name:item.name,
             rate:item.rate
         }));
+
+        /* ホームの最新ランキングも学年・学期が最も新しい診断に固定 */
+        localStorage.setItem("latestRanking", JSON.stringify(ranking));
     }
 
     localStorage.setItem("history", JSON.stringify(history));
