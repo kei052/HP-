@@ -70,6 +70,11 @@ canvas{margin-top:15px;margin-bottom:8px;}
 
 @media(max-width:800px){.dashboard{grid-template-columns:1fr;}header h1{font-size:24px;}input{width:100%;margin-bottom:8px;}}
 </style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0077ff">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
 </head>
 
 <body>
@@ -203,5 +208,17 @@ function clearCandidates(){candidates=[];saveCandidates();updateCandidates();swi
 
 function updateLatestHistoryRanking(ranking,tab){const history=JSON.parse(localStorage.getItem("history"))||[];if(history.length===0)return;activeHistoryIndex=getNewestAcademicHistoryIndex();if(activeHistoryIndex<0||!history[activeHistoryIndex])return;if(!history[activeHistoryIndex].rankingByTab)history[activeHistoryIndex].rankingByTab={};history[activeHistoryIndex].rankingByTab[tab]=ranking.map(item=>({name:item.name,rate:item.rate}));if(tab==="job"){history[activeHistoryIndex].ranking=ranking.map(item=>({name:item.name,rate:item.rate}));localStorage.setItem("latestRanking",JSON.stringify(ranking));}localStorage.setItem("history",JSON.stringify(history));}
 </script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./service-worker.js")
+            .catch(function (error) {
+                console.error("Service Worker registration failed:", error);
+            });
+    });
+}
+</script>
+
 </body>
 </html>

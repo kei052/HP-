@@ -65,6 +65,11 @@ input[type="checkbox"]{
     cursor:pointer;
 }
 </style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0077ff">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
 </head>
 
 <body>
@@ -230,6 +235,18 @@ function startDiagnosis(){
 
     alert("診断完了！");
     location.href = "index.html";
+}
+</script>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./service-worker.js")
+            .catch(function (error) {
+                console.error("Service Worker registration failed:", error);
+            });
+    });
 }
 </script>
 

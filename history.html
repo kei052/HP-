@@ -93,6 +93,11 @@ header{
 .green{ background:#2ecc71; color:white; }
 .orange{ background:#f39c12; color:white; }
 </style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0077ff">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
 </head>
 
 <body>
@@ -262,6 +267,18 @@ function clearHistory(){
 
 renderLatest();
 renderHistory();
+</script>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./service-worker.js")
+            .catch(function (error) {
+                console.error("Service Worker registration failed:", error);
+            });
+    });
+}
 </script>
 
 </body>
