@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>講義選択支援アプリ</title>
+<title>講義支援アプリ</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -17,35 +18,58 @@ body{
 header{
     background:linear-gradient(135deg,#0077ff,#4A90E2);
     color:white;
-    padding:25px 15px;
+    padding:28px 15px;
     text-align:center;
     box-shadow:0 3px 10px rgba(0,0,0,.15);
 }
 
-header h1{font-size:28px;}
+header h1{font-size:30px;}
 header p{margin-top:8px;font-size:15px;}
 
 .container{
-    max-width:900px;
+    max-width:1100px;
     margin:auto;
     padding:15px;
 }
 
-.menu{
-    display:flex;
-    gap:10px;
+.card{
+    background:white;
+    border-radius:15px;
+    padding:18px;
     margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
 }
 
-.menu button{
-    flex:1;
-    padding:14px;
+.dashboard{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:15px;
+}
+
+.sidePanel button{
+    width:100%;
+    padding:15px;
+    margin-bottom:10px;
     border:none;
     border-radius:12px;
     background:#4A90E2;
     color:white;
     font-size:16px;
     cursor:pointer;
+}
+
+.infoBox,.compareBox{
+    background:#f6f9ff;
+    border-radius:12px;
+    padding:12px;
+    margin-top:10px;
+    line-height:1.8;
+}
+
+.compareBox label{
+    display:block;
+    margin:6px 0;
+    font-size:14px;
 }
 
 .tabs{
@@ -71,39 +95,44 @@ header p{margin-top:8px;font-size:15px;}
     color:white;
 }
 
-.card{
-    background:white;
-    border-radius:15px;
-    padding:18px;
-    margin-bottom:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
+.rankingItem{
+    padding:13px 0;
+    border-bottom:1px solid #eee;
 }
 
-.rank{
-    font-size:22px;
-    font-weight:bold;
+.rankLine{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.rankName{
+    background:none;
     color:#0077ff;
-}
-
-.name{
-    font-size:21px;
-    font-weight:bold;
-}
-
-.percent{
-    margin-top:10px;
+    border:none;
     font-size:18px;
     font-weight:bold;
+    cursor:pointer;
+    padding:0;
+    text-align:left;
+}
+
+.rankName:hover{text-decoration:underline;}
+
+.percent{
+    font-weight:bold;
     color:#0077ff;
+    white-space:nowrap;
 }
 
 .bar{
     width:100%;
-    height:16px;
+    height:14px;
     background:#ddd;
     border-radius:20px;
     overflow:hidden;
-    margin-top:8px;
 }
 
 .fill{
@@ -111,17 +140,19 @@ header p{margin-top:8px;font-size:15px;}
     background:linear-gradient(90deg,#00c6ff,#0072ff);
 }
 
+.detailBox{
+    display:none;
+    background:#f6f9ff;
+    border-radius:15px;
+    padding:15px;
+    line-height:1.8;
+}
+
 .small{
     margin-top:10px;
     color:#666;
     font-size:14px;
     line-height:1.7;
-}
-
-.loading{
-    text-align:center;
-    font-size:18px;
-    padding:40px;
 }
 
 input{
@@ -145,24 +176,7 @@ button:disabled{
     opacity:.8;
 }
 
-.addedBtn{
-    background:#999;
-}
-
-.detailBtn{
-    margin-top:12px;
-    width:42px;
-    height:34px;
-    font-size:20px;
-}
-
-.detailBox{
-    display:none;
-    margin-top:12px;
-    background:#f6f9ff;
-    padding:12px;
-    border-radius:10px;
-}
+.addedBtn{background:#999;}
 
 .candidateItem{
     display:flex;
@@ -186,9 +200,14 @@ footer{
     color:#777;
 }
 
-@media(max-width:700px){
+canvas{
+    margin-top:15px;
+    margin-bottom:8px;
+}
+
+@media(max-width:800px){
+    .dashboard{grid-template-columns:1fr;}
     header h1{font-size:24px;}
-    .menu{flex-direction:column;}
     input{width:100%;margin-bottom:8px;}
 }
 </style>
@@ -197,37 +216,61 @@ footer{
 <body>
 
 <header>
-    <h1>講義選択支援アプリ</h1>
+    <h1>講義支援アプリ</h1>
     <p>あなたの履修状況からおすすめ職種・資格を診断します</p>
 </header>
 
 <div class="container">
 
-    <div class="menu">
-        <button onclick="location.href='anke-to.html'">診断する</button>
-        <button onclick="location.href='history.html'">履歴</button>
+    <div class="dashboard">
+
+        <section class="card">
+            <h2 id="resultTitle">おすすめ職種</h2>
+
+            <div class="tabs">
+                <button id="jobTab" class="tab active" onclick="switchTab('job')">職種</button>
+                <button id="licenseTab" class="tab" onclick="switchTab('license')">資格</button>
+            </div>
+
+            <canvas id="radarChart"></canvas>
+        </section>
+
+        <section class="card sidePanel">
+            <button onclick="location.href='anke-to.html'">診断する</button>
+            <button onclick="location.href='history.html'">履歴</button>
+
+            <div class="infoBox">
+                <div><b>取得講義数</b>：<span id="lectureCount">0</span>講義</div>
+                <div><b>興味職種数</b>：<span id="jobCount">0</span>件</div>
+                <div><b>表示時期</b>：<span id="periodText">該当なし</span></div>
+            </div>
+
+            <div class="compareBox">
+                <b>表示する時期</b>
+                <div id="periodCompareArea"></div>
+                <div class="small">チェックした時期の診断結果をレーダーチャートに重ねて表示します</div>
+            </div>
+        </section>
+
     </div>
 
     <section class="card">
-        <h2>最新の診断結果</h2>
-        <div id="homeLatest" class="small">該当なし</div>
+        <h2>最新ランキング</h2>
+        <div id="resultArea">読み込み中...</div>
     </section>
 
-    <div class="tabs">
-        <button id="jobTab" class="tab active" onclick="switchTab('job')">職種</button>
-        <button id="licenseTab" class="tab" onclick="switchTab('license')">資格</button>
-    </div>
+    <section class="card">
+        <h2>詳細表示</h2>
+        <div id="selectedDetail" class="detailBox">
+            ランキング名を押すと詳細が表示されます。
+        </div>
+    </section>
 
     <section class="card">
         <h2>講義検索</h2>
         <input type="text" id="searchBox" placeholder="講義名を入力">
         <button onclick="searchLecture()">検索</button>
         <div id="searchResult" class="small"></div>
-    </section>
-
-    <section class="card">
-        <h2 id="resultTitle">おすすめ職種</h2>
-        <div id="resultArea" class="loading">読み込み中...</div>
     </section>
 
     <section class="card">
@@ -250,6 +293,15 @@ let licenseRows = [];
 
 let currentTab = "job";
 let candidates = [];
+let currentRankingData = [];
+let radarChart = null;
+
+const periodList = [
+    "1年前期","1年後期",
+    "2年前期","2年後期",
+    "3年前期","3年後期",
+    "4年前期","4年後期"
+];
 
 const allQuestionLectures = [
     "情報処理論","システム統計論","プログラミング応用","プログラミング応用演習",
@@ -273,9 +325,7 @@ window.onload = async function(){
     loadSavedCandidates();
 
     document.getElementById("searchBox").addEventListener("keydown", function(e){
-        if(e.key === "Enter"){
-            searchLecture();
-        }
+        if(e.key === "Enter") searchLecture();
     });
 
     try{
@@ -285,9 +335,10 @@ window.onload = async function(){
         loadJobCSV(jobText);
         loadLicenseCSV(licenseText);
 
+        renderPeriodCompare();
         updateCandidates();
+        updateSideInfo();
         switchTab("job");
-        renderHomeLatest();
 
     }catch(e){
         document.getElementById("resultArea").innerHTML =
@@ -355,44 +406,6 @@ function fixLectureName(name){
     return lectureNormalize[name] || name;
 }
 
-function normalizeSearchText(text){
-    return text
-        .toString()
-        .normalize("NFKC")
-        .toLowerCase()
-        .replace(/Ⅰ/g,"1")
-        .replace(/Ⅱ/g,"2")
-        .replace(/Ⅲ/g,"3")
-        .replace(/Ⅳ/g,"4")
-        .replace(/ー/g,"")
-        .replace(/\s/g,"");
-}
-
-function lectureSearchText(name){
-    const extra = {
-        "情報処理論":"じょうほうしょりろん ジョウホウショリロン",
-        "システム統計論":"しすてむとうけいろん システムトウケイロン",
-        "プログラミング応用":"ぷろぐらみんぐおうよう",
-        "プログラミング応用演習":"ぷろぐらみんぐおうようえんしゅう",
-        "アルゴリズム論":"あるごりずむろん",
-        "データベース演習":"でーたべーす でえたべえす",
-        "データ処理入門":"でーたしょり でえたしょり",
-        "情報セキュリティ":"じょうほうせきゅりてぃ",
-        "ウェブデザイン":"うぇぶでざいん webでざいん",
-        "ウェブコンテンツ実践":"うぇぶこんてんつ",
-        "人工知能":"じんこうちのう ai",
-        "AIデータサイエンスⅠ":"えーあい でーたさいえんす ai",
-        "AIデータサイエンスⅡ":"えーあい でーたさいえんす ai",
-        "医療統計学":"いりょうとうけい",
-        "簿記原理":"ぼき",
-        "会計学原理":"かいけい",
-        "マーケティング論":"まーけてぃんぐ",
-        "地域マーケティング論":"ちいきまーけてぃんぐ"
-    };
-
-    return normalizeSearchText(name + " " + (extra[name] || ""));
-}
-
 function getSelectedLectures(){
     let result = [];
 
@@ -401,9 +414,7 @@ function getSelectedLectures(){
     if(data){
         try{
             const arr = JSON.parse(data);
-            if(Array.isArray(arr)){
-                result = arr.map(fixLectureName);
-            }
+            if(Array.isArray(arr)) result = arr.map(fixLectureName);
         }catch(e){}
     }
 
@@ -425,12 +436,55 @@ function getSelectedJobs(){
     return [];
 }
 
+function getSelectedPeriods(){
+    const data = localStorage.getItem("selectedPeriods");
+
+    if(data){
+        try{
+            const arr = JSON.parse(data);
+            if(Array.isArray(arr)) return arr;
+        }catch(e){}
+    }
+
+    return [];
+}
+
+function updateSideInfo(){
+    const selectedLectures = getSelectedLectures();
+    const selectedJobs = getSelectedJobs();
+    const selectedPeriods = getSelectedPeriods();
+
+    document.getElementById("lectureCount").textContent = selectedLectures.length;
+    document.getElementById("jobCount").textContent = selectedJobs.length;
+    document.getElementById("periodText").textContent = selectedPeriods.length ? selectedPeriods.join("、") : "該当なし";
+}
+
+function renderPeriodCompare(){
+    const area = document.getElementById("periodCompareArea");
+
+    area.innerHTML = periodList.map(period => `
+        <label>
+            <input type="checkbox" class="periodCompare" value="${period}" onchange="drawRadarChart(currentRankingData)">
+            ${period}
+        </label>
+    `).join("");
+}
+
+function getCheckedPeriods(){
+    return Array.from(document.querySelectorAll(".periodCompare:checked"))
+        .map(cb => cb.value);
+}
+
 function switchTab(tab){
     currentTab = tab;
 
     document.getElementById("jobTab").classList.remove("active");
     document.getElementById("licenseTab").classList.remove("active");
     document.getElementById(tab + "Tab").classList.add("active");
+
+    const box = document.getElementById("selectedDetail");
+    box.style.display = "block";
+    box.innerHTML = "ランキング名を押すと詳細が表示されます。";
 
     if(tab === "job"){
         document.getElementById("resultTitle").textContent = "おすすめ職種";
@@ -461,28 +515,8 @@ function calcJobRate(job){
     return Math.round((got / total) * 100);
 }
 
-function getMissingLecturesForJob(job){
-    const selected = getSelectedLectures();
-
-    return jobRows
-        .filter(row => !selected.includes(row.lecture))
-        .sort((a,b) => b.scores[job] - a.scores[job])
-        .filter(row => row.scores[job] > 0)
-        .slice(0,5)
-        .map(row => row.lecture);
-}
-
-function getLicensesForJob(job){
-    const list = licenseRows
-        .filter(r => r.job === job)
-        .map(r => r.license);
-
-    return [...new Set(list)];
-}
-
 function renderJobs(){
     const area = document.getElementById("resultArea");
-    area.classList.remove("loading");
 
     const selectedJobs = getSelectedJobs();
 
@@ -503,43 +537,56 @@ function renderJobs(){
         data = data.sort((a,b)=>b.rate-a.rate).slice(0,5);
     }
 
+    currentRankingData = data;
     localStorage.setItem("latestRanking", JSON.stringify(data));
-    updateLatestHistoryRanking(data);
-    renderHomeLatest();
+    updateLatestHistoryRanking(data, "job");
+    updateSideInfo();
+    drawRadarChart(data);
 
     area.innerHTML = data.map((job,i) => `
-        <div class="card">
-            <div class="rank">${i + 1}位</div>
-            <div class="name">${job.name}</div>
-            <div class="percent">適合率 ${job.rate}%</div>
+        <div class="rankingItem">
+            <div class="rankLine">
+                <button class="rankName" onclick="showJobDetail('${job.name}')">
+                    ${i + 1}位　${job.name}
+                </button>
+                <div class="percent">${job.rate}%</div>
+            </div>
 
             <div class="bar">
                 <div class="fill" style="width:${job.rate}%"></div>
             </div>
-
-            <button id="jobBtn${i}" class="detailBtn" onclick="toggleJobDetail(${i}, '${job.name}')">＋</button>
-            <div id="jobDetail${i}" class="detailBox"></div>
         </div>
     `).join("");
 }
 
-function toggleJobDetail(i, jobName){
-    const box = document.getElementById("jobDetail" + i);
-    const btn = document.getElementById("jobBtn" + i);
+function getMissingLecturesForJob(job){
+    const selected = getSelectedLectures();
 
-    if(box.style.display === "block"){
-        box.style.display = "none";
-        btn.textContent = "＋";
-        return;
-    }
+    return jobRows
+        .filter(row => !selected.includes(row.lecture))
+        .sort((a,b) => b.scores[job] - a.scores[job])
+        .filter(row => row.scores[job] > 0)
+        .slice(0,5)
+        .map(row => row.lecture);
+}
 
+function getLicensesForJob(job){
+    return [...new Set(
+        licenseRows
+            .filter(r => r.job === job)
+            .map(r => r.license)
+    )];
+}
+
+function showJobDetail(jobName){
+    const box = document.getElementById("selectedDetail");
     const missing = getMissingLecturesForJob(jobName);
     const licenses = getLicensesForJob(jobName);
 
     box.style.display = "block";
-    btn.textContent = "－";
-
     box.innerHTML = `
+        <h3>${jobName} の詳細</h3>
+        <br>
         <div><b>不足しているおすすめ講義</b></div>
         <div>${missing.length ? missing.join("、") : "特になし"}</div>
         <br>
@@ -556,21 +603,16 @@ function calcLicenseRate(license){
         .map(r => r.lecture);
 
     const uniqueLectures = [...new Set(lectures)];
-
     if(uniqueLectures.length === 0) return 0;
 
     if(selected.length === 0){
         const allLicenses = [...new Set(
-            licenseRows
-                .map(r => (r.license || "").trim())
-                .filter(name => name !== "")
+            licenseRows.map(r => r.license).filter(name => name !== "")
         )];
 
         const maxCount = Math.max(...allLicenses.map(lic =>
             [...new Set(
-                licenseRows
-                    .filter(r => r.license === lic)
-                    .map(r => r.lecture)
+                licenseRows.filter(r => r.license === lic).map(r => r.lecture)
             )].length
         ));
 
@@ -581,32 +623,11 @@ function calcLicenseRate(license){
     return Math.round((match / uniqueLectures.length) * 100);
 }
 
-function getMissingLecturesForLicense(license){
-    const selected = getSelectedLectures();
-
-    const lectures = licenseRows
-        .filter(r => r.license === license)
-        .map(r => r.lecture);
-
-    return [...new Set(lectures)].filter(l => !selected.includes(l));
-}
-
-function getJobsForLicense(license){
-    const jobs = licenseRows
-        .filter(r => r.license === license)
-        .map(r => r.job);
-
-    return [...new Set(jobs)];
-}
-
 function renderLicenses(){
     const area = document.getElementById("resultArea");
-    area.classList.remove("loading");
 
     const licenseNames = [...new Set(
-        licenseRows
-            .map(r => (r.license || "").trim())
-            .filter(name => name !== "")
+        licenseRows.map(r => r.license).filter(name => name !== "")
     )];
 
     let data = licenseNames.map(license => ({
@@ -616,50 +637,238 @@ function renderLicenses(){
     .sort((a,b)=>b.rate-a.rate)
     .slice(0,5);
 
+    currentRankingData = data;
+    updateLatestHistoryRanking(data, "license");
+    drawRadarChart(data);
+
     if(data.length === 0){
         area.innerHTML = `<div class="small">表示できる資格がありません</div>`;
         return;
     }
 
     area.innerHTML = data.map((lic,i) => `
-        <div class="card">
-            <div class="rank">${i + 1}位</div>
-            <div class="name">${lic.name}</div>
-            <div class="percent">適合率 ${lic.rate}%</div>
+        <div class="rankingItem">
+            <div class="rankLine">
+                <button class="rankName" onclick="showLicenseDetail('${lic.name}')">
+                    ${i + 1}位　${lic.name}
+                </button>
+                <div class="percent">${lic.rate}%</div>
+            </div>
 
             <div class="bar">
                 <div class="fill" style="width:${lic.rate}%"></div>
             </div>
-
-            <button id="licenseBtn${i}" class="detailBtn" onclick="toggleLicenseDetail(${i}, '${lic.name}')">＋</button>
-            <div id="licenseDetail${i}" class="detailBox"></div>
         </div>
     `).join("");
 }
 
-function toggleLicenseDetail(i, licenseName){
-    const box = document.getElementById("licenseDetail" + i);
-    const btn = document.getElementById("licenseBtn" + i);
+function getMissingLecturesForLicense(license){
+    const selected = getSelectedLectures();
 
-    if(box.style.display === "block"){
-        box.style.display = "none";
-        btn.textContent = "＋";
-        return;
-    }
+    return [...new Set(
+        licenseRows
+            .filter(r => r.license === license)
+            .map(r => r.lecture)
+    )].filter(l => !selected.includes(l));
+}
 
+function getJobsForLicense(license){
+    return [...new Set(
+        licenseRows
+            .filter(r => r.license === license)
+            .map(r => r.job)
+    )];
+}
+
+function showLicenseDetail(licenseName){
+    const box = document.getElementById("selectedDetail");
     const missing = getMissingLecturesForLicense(licenseName);
     const jobs = getJobsForLicense(licenseName);
 
     box.style.display = "block";
-    btn.textContent = "－";
-
     box.innerHTML = `
+        <h3>${licenseName} の詳細</h3>
+        <br>
         <div><b>取ったほうがいい講義</b></div>
         <div>${missing.length ? missing.join("、") : "特になし"}</div>
         <br>
         <div><b>おすすめ職種</b></div>
         <div>${jobs.length ? jobs.join("、") : "該当職種なし"}</div>
     `;
+}
+
+function getHistoryRankingByTab(item, tab){
+    if(item.rankingByTab && item.rankingByTab[tab]){
+        return item.rankingByTab[tab];
+    }
+
+    if(tab === "job" && item.ranking){
+        return item.ranking;
+    }
+
+    return [];
+}
+
+function getHistoriesByPeriod(period){
+    const history = JSON.parse(localStorage.getItem("history")) || [];
+
+    return history.filter(item =>
+        (item.periods || []).includes(period)
+    );
+}
+
+function drawRadarChart(data){
+    const ctx = document.getElementById("radarChart");
+
+    if(radarChart){
+        radarChart.destroy();
+    }
+
+    const checkedPeriods = getCheckedPeriods();
+
+    let labels = [];
+    let datasets = [];
+
+    const colors = [
+        "rgba(0,119,255,1)",
+        "rgba(231,76,60,1)",
+        "rgba(46,204,113,1)",
+        "rgba(243,156,18,1)",
+        "rgba(155,89,182,1)",
+        "rgba(26,188,156,1)",
+        "rgba(52,73,94,1)",
+        "rgba(255,99,132,1)"
+    ];
+
+    if(checkedPeriods.length > 0){
+
+        checkedPeriods.forEach((period, index) => {
+            const histories = getHistoriesByPeriod(period);
+
+            if(histories.length === 0) return;
+
+            histories.forEach((historyItem, historyIndex) => {
+                const ranking = getHistoryRankingByTab(historyItem, currentTab);
+
+                if(!ranking || ranking.length === 0) return;
+
+                ranking.slice(0,5).forEach(r => {
+                    if(!labels.includes(r.name)){
+                        labels.push(r.name);
+                    }
+                });
+
+                const labelName = histories.length > 1
+                    ? `${period}(${historyIndex + 1})`
+                    : period;
+
+                datasets.push({
+                    label: labelName,
+                    data: [],
+                    fill: false,
+                    borderColor: colors[(index + historyIndex) % colors.length],
+                    backgroundColor: colors[(index + historyIndex) % colors.length].replace("1)", "0.15)"),
+                    pointRadius: 4,
+                    pointHoverRadius: 7
+                });
+            });
+        });
+
+        datasets.forEach(dataset => {
+            const periodName = dataset.label.replace(/\(.+\)/, "");
+            const histories = getHistoriesByPeriod(periodName);
+            const targetIndexMatch = dataset.label.match(/\((\d+)\)/);
+            const targetIndex = targetIndexMatch ? Number(targetIndexMatch[1]) - 1 : 0;
+            const historyItem = histories[targetIndex];
+
+            if(!historyItem) return;
+
+            const ranking = getHistoryRankingByTab(historyItem, currentTab);
+
+            dataset.data = labels.map(label => {
+                const found = ranking.find(r => r.name === label);
+                return found ? found.rate : 0;
+            });
+        });
+
+        if(datasets.length === 0){
+            labels = data.map(item => item.name);
+            datasets = [{
+                label: "最新",
+                data: data.map(item => item.rate),
+                fill: true,
+                borderColor: "rgba(0,119,255,1)",
+                backgroundColor: "rgba(0,119,255,0.15)",
+                pointRadius: 5,
+                pointHoverRadius: 8
+            }];
+        }
+
+    }else{
+        labels = data.map(item => item.name);
+
+        datasets = [{
+            label: "最新",
+            data: data.map(item => item.rate),
+            fill: true,
+            borderColor: "rgba(0,119,255,1)",
+            backgroundColor: "rgba(0,119,255,0.15)",
+            pointRadius: 5,
+            pointHoverRadius: 8
+        }];
+    }
+
+    radarChart = new Chart(ctx, {
+        type: "radar",
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive:true,
+            plugins:{
+                legend:{
+                    display:true
+                }
+            },
+            scales:{
+                r:{
+                    min:0,
+                    max:100,
+                    ticks:{stepSize:20}
+                }
+            }
+        }
+    });
+}
+
+function normalizeSearchText(text){
+    return text.toString().normalize("NFKC").toLowerCase()
+        .replace(/Ⅰ/g,"1")
+        .replace(/Ⅱ/g,"2")
+        .replace(/Ⅲ/g,"3")
+        .replace(/Ⅳ/g,"4")
+        .replace(/ー/g,"")
+        .replace(/\s/g,"");
+}
+
+function lectureSearchText(name){
+    const extra = {
+        "情報処理論":"じょうほうしょりろん",
+        "システム統計論":"しすてむとうけいろん",
+        "プログラミング応用":"ぷろぐらみんぐおうよう",
+        "データベース演習":"でーたべーす",
+        "データ処理入門":"でーたしょり",
+        "情報セキュリティ":"じょうほうせきゅりてぃ",
+        "ウェブデザイン":"うぇぶでざいん web",
+        "人工知能":"じんこうちのう ai",
+        "AIデータサイエンスⅠ":"ai えーあい でーたさいえんす",
+        "AIデータサイエンスⅡ":"ai えーあい でーたさいえんす",
+        "簿記原理":"ぼき",
+        "会計学原理":"かいけい"
+    };
+
+    return normalizeSearchText(name + " " + (extra[name] || ""));
 }
 
 function searchLecture(){
@@ -672,11 +881,9 @@ function searchLecture(){
         return;
     }
 
-    const fixedLectures = allQuestionLectures.map(fixLectureName);
-
-    const result = fixedLectures.filter(name =>
-        lectureSearchText(name).includes(keyword)
-    );
+    const result = allQuestionLectures
+        .map(fixLectureName)
+        .filter(name => lectureSearchText(name).includes(keyword));
 
     if(result.length === 0){
         area.innerHTML = "該当する講義がありません";
@@ -684,16 +891,15 @@ function searchLecture(){
     }
 
     area.innerHTML = result.map(name => {
-        const fixedName = fixLectureName(name);
-        const added = candidates.some(c => fixLectureName(c.name) === fixedName);
+        const added = candidates.some(c => fixLectureName(c.name) === name);
 
         return `
             <div style="margin-top:8px;">
-                ${fixedName}
+                ${name}
                 <button
                     class="${added ? 'addedBtn' : ''}"
                     ${added ? 'disabled' : ''}
-                    onclick="addCandidate('${fixedName}')">
+                    onclick="addCandidate('${name}')">
                     ${added ? '追加済み' : '追加'}
                 </button>
             </div>
@@ -702,10 +908,8 @@ function searchLecture(){
 }
 
 function addCandidate(name){
-    const fixedName = fixLectureName(name);
-
-    if(!candidates.some(c => fixLectureName(c.name) === fixedName)){
-        candidates.push({name:fixedName});
+    if(!candidates.some(c => c.name === name)){
+        candidates.push({name});
         saveCandidates();
         updateCandidates();
         switchTab(currentTab);
@@ -714,10 +918,7 @@ function addCandidate(name){
 }
 
 function removeCandidate(name){
-    const fixedName = fixLectureName(name);
-
-    candidates = candidates.filter(c => fixLectureName(c.name) !== fixedName);
-
+    candidates = candidates.filter(c => c.name !== name);
     saveCandidates();
     updateCandidates();
     switchTab(currentTab);
@@ -767,31 +968,27 @@ function loadSavedCandidates(){
     }
 }
 
-function renderHomeLatest(){
-    const area = document.getElementById("homeLatest");
-    const latest = JSON.parse(localStorage.getItem("latestRanking")) || [];
-
-    if(latest.length === 0){
-        area.innerHTML = "該当なし";
-        return;
-    }
-
-    area.innerHTML = latest.slice(0,5).map((item,i)=>`
-        <div>${i + 1}位：${item.name}（適合率 ${item.rate}%）</div>
-    `).join("");
-}
-
-function updateLatestHistoryRanking(ranking){
+function updateLatestHistoryRanking(ranking, tab){
     const history = JSON.parse(localStorage.getItem("history")) || [];
-
     if(history.length === 0) return;
 
     const latestIndex = history.length - 1;
 
-    history[latestIndex].ranking = ranking.map(item => ({
-        name: item.name,
-        rate: item.rate
+    if(!history[latestIndex].rankingByTab){
+        history[latestIndex].rankingByTab = {};
+    }
+
+    history[latestIndex].rankingByTab[tab] = ranking.map(item => ({
+        name:item.name,
+        rate:item.rate
     }));
+
+    if(tab === "job"){
+        history[latestIndex].ranking = ranking.map(item => ({
+            name:item.name,
+            rate:item.rate
+        }));
+    }
 
     localStorage.setItem("history", JSON.stringify(history));
 }
