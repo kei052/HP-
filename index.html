@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>講義支援アプリ</title>
+<!-- 学年・学期優先版 2026-07-16 v2 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -464,6 +465,24 @@ function getSelectedPeriods(){
     return [];
 }
 
+function getHistoryPeriod(item){
+    if(!item) return "";
+
+    if(Array.isArray(item.periods) && item.periods.length > 0){
+        return item.periods[0];
+    }
+
+    if(typeof item.period === "string"){
+        return item.period;
+    }
+
+    if(Array.isArray(item.selectedPeriods) && item.selectedPeriods.length > 0){
+        return item.selectedPeriods[0];
+    }
+
+    return "";
+}
+
 function getNewestAcademicHistoryIndex(){
     const history = JSON.parse(localStorage.getItem("history")) || [];
 
@@ -473,11 +492,14 @@ function getNewestAcademicHistoryIndex(){
     let newestOrder = -1;
 
     history.forEach((item, index) => {
-        const period = (item.periods || [])[0] || "";
-        const order = periodOrder[period] || 0;
+        const period = getHistoryPeriod(item);
+        const order = periodOrder[period];
 
-        /* 同じ学期が複数ある場合は、後から保存された診断を採用 */
-        if(order > newestOrder || order === newestOrder){
+        /* 時期が保存されていない古い履歴は最新判定に使わない */
+        if(typeof order !== "number") return;
+
+        /* 同じ時期が複数ある場合だけ、後から保存した方を使う */
+        if(order > newestOrder || (order === newestOrder && index > newestIndex)){
             newestOrder = order;
             newestIndex = index;
         }
@@ -492,14 +514,19 @@ function applyNewestAcademicHistory(){
 
     if(activeHistoryIndex < 0 || !history[activeHistoryIndex]){
         localStorage.removeItem("latestRanking");
+        localStorage.removeItem("selectedLectures");
+        localStorage.removeItem("selectedJobs");
+        localStorage.removeItem("selectedPeriods");
+        localStorage.removeItem("undecided");
         return;
     }
 
     const newest = history[activeHistoryIndex];
+    const newestPeriod = getHistoryPeriod(newest);
 
     localStorage.setItem("selectedLectures", JSON.stringify(newest.subjects || []));
     localStorage.setItem("selectedJobs", JSON.stringify(newest.selectedJobs || []));
-    localStorage.setItem("selectedPeriods", JSON.stringify(newest.periods || []));
+    localStorage.setItem("selectedPeriods", JSON.stringify(newestPeriod ? [newestPeriod] : []));
     localStorage.setItem("undecided", newest.undecided ? "true" : "false");
 
     const savedRanking = newest.rankingByTab?.job || newest.ranking || [];
