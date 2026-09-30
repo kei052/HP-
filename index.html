@@ -1,223 +1,4075 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>講義支援アプリ</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
 
-body{font-family:"Yu Gothic","Meiryo",sans-serif;background:#f2f5fa;color:#333;}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-header{background:linear-gradient(135deg,#0077ff,#4A90E2);color:white;padding:28px 15px;text-align:center;box-shadow:0 3px 10px rgba(0,0,0,.15);}
+body{
+    font-family:"Yu Gothic","Meiryo",sans-serif;
+    background:#f2f5fa;
+    color:#333;
+}
 
-header h1{font-size:30px;} header p{margin-top:8px;font-size:15px;}
+header{
+    background:linear-gradient(135deg,#0077ff,#4A90E2);
+    color:white;
+    padding:28px 15px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
 
-.container{max-width:1100px;margin:auto;padding:15px;}
+header h1{
+    font-size:30px;
+}
 
-.card{background:white;border-radius:15px;padding:18px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+header p{
+    margin-top:8px;
+    font-size:15px;
+}
 
-.dashboard{display:grid;grid-template-columns:2fr 1fr;gap:15px;}
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:15px;
+}
 
-.sidePanel button{width:100%;padding:15px;margin-bottom:10px;border:none;border-radius:12px;background:#4A90E2;color:white;font-size:16px;cursor:pointer;}
+.card{
+    background:white;
+    border-radius:15px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
 
-.infoBox,.compareBox{background:#f6f9ff;border-radius:12px;padding:12px;margin-top:10px;line-height:1.8;}
+.dashboard{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:15px;
+}
 
-.compareBox label{display:block;margin:6px 0;font-size:14px;}
+.sidePanel button{
+    width:100%;
+    padding:15px;
+    margin-bottom:10px;
+    border:none;
+    border-radius:12px;
+    background:#4A90E2;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
 
-.tabs{display:flex;background:white;border-radius:15px;overflow:hidden;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.infoBox,
+.compareBox{
+    background:#f6f9ff;
+    border-radius:12px;
+    padding:12px;
+    margin-top:10px;
+    line-height:1.8;
+}
 
-.tab{flex:1;padding:15px;border:none;background:#ececec;font-size:17px;cursor:pointer;}
+.compareBox label{
+    display:block;
+    margin:6px 0;
+    font-size:14px;
+}
 
-.tab.active{background:#0077ff;color:white;}
+.tabs{
+    display:flex;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
 
-.rankingItem{padding:13px 0;border-bottom:1px solid #eee;}
+.tab{
+    flex:1;
+    padding:15px;
+    border:none;
+    background:#ececec;
+    color:#333;
+    font-size:17px;
+    cursor:pointer;
+    border-radius:0;
+}
 
-.rankLine{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;}
+.tab.active{
+    background:#0077ff;
+    color:white;
+}
 
-.rankName{background:none;color:#0077ff;border:none;font-size:18px;font-weight:bold;cursor:pointer;padding:0;text-align:left;}
+.rankingItem{
+    padding:13px 0;
+    border-bottom:1px solid #eee;
+}
 
-.rankName:hover{text-decoration:underline;}
+.rankLine{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+}
 
-.percent{font-weight:bold;color:#0077ff;white-space:nowrap;}
+.rankName{
+    background:none;
+    color:#0077ff;
+    border:none;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    padding:0;
+    text-align:left;
+}
 
-.bar{width:100%;height:14px;background:#ddd;border-radius:20px;overflow:hidden;}
+.rankName:hover{
+    text-decoration:underline;
+}
 
-.fill{height:100%;background:linear-gradient(90deg,#00c6ff,#0072ff);}
+.percent{
+    font-weight:bold;
+    color:#0077ff;
+    white-space:nowrap;
+}
 
-.detailBox{display:none;background:#f6f9ff;border-radius:15px;padding:15px;line-height:1.8;}
+/* =========================================
+   適合率バー
 
-.small{margin-top:10px;color:#666;font-size:14px;line-height:1.7;}
+   青   = 正式な診断時点の適合率
+   黄緑 = 履修候補による増加分
+========================================= */
 
-input{width:70%;padding:10px;border:1px solid #ccc;border-radius:8px;}
+.bar{
+    width:100%;
+    height:14px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    display:flex;
+}
 
-button{padding:8px 12px;background:#0077ff;color:white;border:none;border-radius:8px;cursor:pointer;}
+.baseFill{
+    height:100%;
+    flex-shrink:0;
+    background:linear-gradient(
+        90deg,
+        #00c6ff,
+        #0072ff
+    );
+}
 
-button:disabled{cursor:not-allowed;opacity:.8;}
+.increaseFill{
+    height:100%;
+    flex-shrink:0;
+    background:#7ED957;
+}
 
-.addedBtn{background:#999;}
+.increaseText{
+    color:#65b741;
+    font-size:14px;
+    margin-left:5px;
+}
 
-.candidateItem{display:flex;justify-content:space-between;align-items:center;margin:8px 0;}
+.simulationNote{
+    color:#65a83e;
+    font-size:13px;
+    margin-top:5px;
+}
 
-.deleteBtn{background:#e74c3c;padding:4px 9px;border-radius:50%;font-size:14px;}
+.detailBox{
+    display:none;
+    background:#f6f9ff;
+    border-radius:15px;
+    padding:15px;
+    line-height:1.8;
+}
 
-ul{padding-left:0;list-style:none;}
+.small{
+    margin-top:10px;
+    color:#666;
+    font-size:14px;
+    line-height:1.7;
+}
 
-footer{text-align:center;padding:12px;color:#777;}
+.emptyResult{
+    color:#666;
+    padding:15px 0;
+    line-height:1.8;
+}
 
-canvas{margin-top:15px;margin-bottom:8px;}
+input{
+    width:70%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
 
-@media(max-width:800px){.dashboard{grid-template-columns:1fr;}header h1{font-size:24px;}input{width:100%;margin-bottom:8px;}}
+button{
+    padding:8px 12px;
+    background:#0077ff;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:disabled{
+    cursor:not-allowed;
+    opacity:.8;
+}
+
+.addedBtn{
+    background:#999;
+}
+
+.candidateItem{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:8px 0;
+}
+
+.deleteBtn{
+    background:#e74c3c;
+    padding:4px 9px;
+    border-radius:50%;
+    font-size:14px;
+}
+
+ul{
+    padding-left:0;
+    list-style:none;
+}
+
+footer{
+    text-align:center;
+    padding:12px;
+    color:#777;
+}
+
+canvas{
+    margin-top:15px;
+    margin-bottom:8px;
+}
+
+#noChartMessage{
+    text-align:center;
+    color:#777;
+    padding:35px 10px;
+    display:none;
+}
+
+@media(max-width:800px){
+
+    .dashboard{
+        grid-template-columns:1fr;
+    }
+
+    header h1{
+        font-size:24px;
+    }
+
+    input{
+        width:100%;
+        margin-bottom:8px;
+    }
+
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
+
 <meta name="theme-color" content="#0077ff">
-<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+<link
+    rel="apple-touch-icon"
+    href="./icons/icon-192.png"
+>
 
 </head>
 
 <body>
-<header><h1>講義支援アプリ</h1><p>あなたの履修状況からおすすめ職種・資格を診断します</p></header>
+
+<header>
+
+<h1>講義支援アプリ</h1>
+
+<p>
+あなたの履修状況からおすすめ職種・資格を診断します
+</p>
+
+</header>
+
 
 <div class="container">
 
-    <div class="dashboard">
+<div class="dashboard">
 
-        <section class="card">
+<section class="card">
 
-            <h2 id="resultTitle">おすすめ職種</h2>
+<h2 id="resultTitle">
+おすすめ職種
+</h2>
 
-            <div class="tabs"><button id="jobTab" class="tab active" onclick="switchTab('job')">職種</button><button id="licenseTab" class="tab" onclick="switchTab('license')">資格</button></div>
 
-            <canvas id="radarChart"></canvas>
+<div class="tabs">
 
-        </section>
+<button
+    id="jobTab"
+    class="tab active"
+    onclick="switchTab('job')"
+>
+職種
+</button>
 
-        <section class="card sidePanel">
 
-            <button onclick="goToPage('anke-to.html')">診断する</button>
-
-            <button onclick="goToPage('history.html')">履歴</button>
-
-            <div class="infoBox"><div><b>取得講義数</b>：<span id="lectureCount">0</span>講義</div><div><b>興味職種数</b>：<span id="jobCount">0</span>件</div><div><b>表示時期</b>：<span id="periodText">該当なし</span></div></div>
-
-            <div class="compareBox"><b>表示する時期</b><div id="periodCompareArea"></div><div class="small">チェックした時期の診断結果をレーダーチャートに重ねて表示します</div></div>
-
-        </section>
-
-    </div>
-
-    <section class="card"><h2>最新ランキング <span id="latestPeriodLabel" class="small"></span></h2><div id="resultArea">読み込み中...</div></section>
-
-    <section class="card"><h2>詳細表示</h2><div id="selectedDetail" class="detailBox">ランキング名を押すと詳細が表示されます。</div></section>
-
-    <section class="card"><h2>講義検索</h2><input type="text" id="searchBox" placeholder="講義名を入力"><button onclick="searchLecture()">検索</button><div id="searchResult" class="small"></div></section>
-
-    <section class="card"><h2>履修候補</h2><ul id="candidateList"></ul><button onclick="clearCandidates()">リセット</button></section>
+<button
+    id="licenseTab"
+    class="tab"
+    onclick="switchTab('license')"
+>
+資格
+</button>
 
 </div>
 
-<footer><small>Lecture Support App © 2026</small></footer>
+
+<canvas id="radarChart"></canvas>
+
+<div id="noChartMessage">
+診断結果がありません。<br>
+「診断する」から診断を行ってください。
+</div>
+
+</section>
+
+
+<section class="card sidePanel">
+
+<button onclick="goToPage('anke-to.html')">
+診断する
+</button>
+
+<button onclick="goToPage('history.html')">
+履歴
+</button>
+
+
+<div class="infoBox">
+
+<div>
+
+<b>取得講義数</b>：
+
+<span id="lectureCount">
+0
+</span>
+
+講義
+
+</div>
+
+
+<div>
+
+<b>興味職種数</b>：
+
+<span id="jobCount">
+0
+</span>
+
+件
+
+</div>
+
+
+<div>
+
+<b>表示時期</b>：
+
+<span id="periodText">
+該当なし
+</span>
+
+</div>
+
+</div>
+
+
+<div class="compareBox">
+
+<b>表示する時期</b>
+
+<div id="periodCompareArea"></div>
+
+<div class="small">
+
+チェックした時期の診断結果を
+レーダーチャートに重ねて表示します
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<section class="card">
+
+<h2>
+
+最新ランキング
+
+<span
+    id="latestPeriodLabel"
+    class="small"
+></span>
+
+</h2>
+
+<div id="resultArea">
+読み込み中...
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>
+詳細表示
+</h2>
+
+<div
+    id="selectedDetail"
+    class="detailBox"
+>
+
+ランキング名を押すと詳細が表示されます。
+
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>
+講義検索
+</h2>
+
+<input
+    type="text"
+    id="searchBox"
+    placeholder="講義名を入力"
+>
+
+<button onclick="searchLecture()">
+検索
+</button>
+
+<div
+    id="searchResult"
+    class="small"
+></div>
+
+</section>
+
+
+<section class="card">
+
+<h2>
+履修候補
+</h2>
+
+<ul id="candidateList"></ul>
+
+<button onclick="clearCandidates()">
+リセット
+</button>
+
+<div class="small">
+
+履修候補を追加すると、
+ランキングの黄緑部分に
+適合率の増加分が表示されます。
+
+</div>
+
+</section>
+
+</div>
+
+
+<footer>
+
+<small>
+Lecture Support App © 2026
+</small>
+
+</footer>
+
 
 <script>
 
-let jobRows=[];let jobNames=[];let lectureNames=[];let licenseRows=[];let currentTab="job";let candidates=[];let currentRankingData=[];let radarChart=null;let activeHistoryIndex=-1;
+/* =========================================
+   基本変数
+========================================= */
 
-const HOME_STATE_KEY="homeDisplayState";
+let jobRows = [];
 
-const periodList=["1年前期","1年後期","2年前期","2年後期","3年前期","3年後期","4年前期","4年後期"];
+let jobNames = [];
 
-const periodOrder={"1年前期":1,"1年後期":2,"2年前期":3,"2年後期":4,"3年前期":5,"3年後期":6,"4年前期":7,"4年後期":8};
+let lectureNames = [];
 
-const allQuestionLectures=["情報処理論","システム統計論","プログラミング応用","プログラミング応用演習","アルゴリズム論","データベース演習","データ処理入門","情報化社会論","インターネットと法","ネットワーク技術Ⅰ","ネットワーク技術Ⅱ","ネットワークの構築と運用","システム開発技術（IoT）","ウェブデザイン","ウェブコンテンツ実践","情報と職業","経営情報論","産業情報論","情報セキュリティ","健康情報統計Ⅱ","健康情報統計Ⅲ","健康情報数学Ⅱ","健康情報数学Ⅲ","社会調査法","AIデータサイエンスⅠ","AIデータサイエンスⅡ","医療・生命情報学Ⅰ","医療・生命情報学Ⅱ","パターン認識","画像認識","自然言語処理","人工知能","臨床医学および医療用語","臨床医学各論Ⅰ","臨床医学各論Ⅱ","臨床医学各論Ⅲ","臨床医学各論Ⅳ","診療情報管理論Ⅰ","診療情報管理論Ⅱ","医療管理各論","国際統計分類I","国際統計分類Ⅱ","健康ビッグデータ","デジタルヘルスコミュニケーション","デジタルヘルステクノロジー","デジタルヘルスイノベーション","医療統計学","社会心理学","観光行動論","マーケティング論","地域マーケティング論","市場調査論","簿記原理","会計学原理","経営分析論","経営戦略論","経営統計学"];
+let licenseRows = [];
 
-window.onload=async function(){loadSavedCandidates();document.getElementById("searchBox").addEventListener("keydown",function(e){if(e.key==="Enter")searchLecture();});try{const jobText=await fetch("data.csv").then(res=>res.text());const licenseText=await fetch("data1.csv").then(res=>res.text());loadJobCSV(jobText);loadLicenseCSV(licenseText);applyNewestAcademicHistory();const savedHomeState=getHomeDisplayState();renderPeriodCompare(savedHomeState.checkedPeriods);updateCandidates();updateSideInfo();switchTab(savedHomeState.currentTab,false);}catch(e){document.getElementById("resultArea").innerHTML="CSVファイルを読み込めませんでした。data.csv / data1.csv が index.html と同じ場所にあるか確認してください。";console.error(e);}};
+let currentTab = "job";
 
-window.addEventListener("pagehide",saveHomeDisplayState);window.addEventListener("beforeunload",saveHomeDisplayState);
+let candidates = [];
 
-function parseCSV(text){return text.trim().split(/\r?\n/).map(line=>line.split(",").map(v=>v.replace(/^"|"$/g,"").trim()));}
+let currentRankingData = [];
 
-function loadJobCSV(text){const rows=parseCSV(text);jobNames=rows[0].slice(1).map(fixName).filter(name=>name!=="未定");jobRows=rows.slice(1).map(row=>{const obj={lecture:fixLectureName(row[0]),scores:{}};rows[0].slice(1).forEach((job,i)=>{const fixedJob=fixName(job);if(fixedJob!=="未定")obj.scores[fixedJob]=Number(row[i+1])||0;});return obj;});lectureNames=jobRows.map(r=>r.lecture);}
+let radarChart = null;
 
-function loadLicenseCSV(text){const rows=parseCSV(text);licenseRows=rows.slice(1).map(row=>({job:fixName(row[0]||""),license:(row[1]||"").trim(),lecture:fixLectureName(row[2]||"")})).filter(r=>r.license!==""&&r.lecture!=="");}
+let activeHistoryIndex = -1;
 
-const normalize={"Webデザイナ":"Webデザイン","Webエンジニア":"Webデザイン","AIエンジニア":"AI開発者","ネットワークエンジニア":"ネットワーク管理者","教職員":"教職","ITサポート、ヘルプデスク":"ITサポート・ヘルプデスク"};
+let hasDiagnosis = false;
 
-function fixName(name){return normalize[name]||name;} const lectureNormalize={"情報セキュリティー":"情報セキュリティ","国際統計分類I":"国際統計分類Ⅰ"};function fixLectureName(name){return lectureNormalize[name]||name;}
 
-function getSelectedLectures(){let result=[];const data=localStorage.getItem("selectedLectures");if(data){try{const arr=JSON.parse(data);if(Array.isArray(arr))result=arr.map(fixLectureName);}catch(e){}}const candidateNames=candidates.map(c=>fixLectureName(c.name));return [...new Set([...result,...candidateNames])];}
+const HOME_STATE_KEY =
+    "homeDisplayState";
 
-function getSelectedJobs(){const data=localStorage.getItem("selectedJobs");if(data){try{const arr=JSON.parse(data);if(Array.isArray(arr))return arr.map(fixName);}catch(e){}}return[];}
 
-function getSelectedPeriods(){const data=localStorage.getItem("selectedPeriods");if(data){try{const arr=JSON.parse(data);if(Array.isArray(arr))return arr;}catch(e){}}return[];}
+const periodList = [
+    "1年前期",
+    "1年後期",
+    "2年前期",
+    "2年後期",
+    "3年前期",
+    "3年後期",
+    "4年前期",
+    "4年後期"
+];
 
-function getHomeDisplayState(){const fallback={checkedPeriods:[],currentTab:"job"};try{const saved=JSON.parse(localStorage.getItem(HOME_STATE_KEY));if(!saved||typeof saved!=="object")return fallback;return{checkedPeriods:Array.isArray(saved.checkedPeriods)?saved.checkedPeriods.filter(period=>periodList.includes(period)):[],currentTab:saved.currentTab==="license"?"license":"job"};}catch(e){return fallback;}}
 
-function saveHomeDisplayState(){const state={checkedPeriods:getCheckedPeriods(),currentTab:currentTab==="license"?"license":"job"};localStorage.setItem(HOME_STATE_KEY,JSON.stringify(state));}
+const periodOrder = {
 
-function goToPage(page){saveHomeDisplayState();location.href=page;}
+    "1年前期":1,
+    "1年後期":2,
 
-function getHistoryPeriod(item){if(!item)return"";if(Array.isArray(item.periods)&&item.periods.length>0)return item.periods[0];if(typeof item.period==="string")return item.period;if(Array.isArray(item.selectedPeriods)&&item.selectedPeriods.length>0)return item.selectedPeriods[0];return"";}
+    "2年前期":3,
+    "2年後期":4,
 
-function getNewestAcademicHistoryIndex(){const history=JSON.parse(localStorage.getItem("history"))||[];if(history.length===0)return-1;let newestIndex=-1,newestOrder=-1;history.forEach((item,index)=>{const period=getHistoryPeriod(item),order=periodOrder[period];if(typeof order!=="number")return;if(order>newestOrder||(order===newestOrder&&index>newestIndex)){newestOrder=order;newestIndex=index;}});return newestIndex;}
+    "3年前期":5,
+    "3年後期":6,
 
-function applyNewestAcademicHistory(){const history=JSON.parse(localStorage.getItem("history"))||[];activeHistoryIndex=getNewestAcademicHistoryIndex();if(activeHistoryIndex<0||!history[activeHistoryIndex]){localStorage.removeItem("latestRanking");localStorage.removeItem("selectedLectures");localStorage.removeItem("selectedJobs");localStorage.removeItem("selectedPeriods");localStorage.removeItem("undecided");return;}const newest=history[activeHistoryIndex],newestPeriod=getHistoryPeriod(newest);localStorage.setItem("selectedLectures",JSON.stringify(newest.subjects||[]));localStorage.setItem("selectedJobs",JSON.stringify(newest.selectedJobs||[]));localStorage.setItem("selectedPeriods",JSON.stringify(newestPeriod?[newestPeriod]:[]));localStorage.setItem("undecided",newest.undecided?"true":"false");const savedRanking=newest.rankingByTab?.job||newest.ranking||[];localStorage.setItem("latestRanking",JSON.stringify(savedRanking));}
+    "4年前期":7,
+    "4年後期":8
 
-function updateSideInfo(){const selectedLectures=getSelectedLectures(),selectedJobs=getSelectedJobs(),selectedPeriods=getSelectedPeriods();document.getElementById("lectureCount").textContent=selectedLectures.length;document.getElementById("jobCount").textContent=selectedJobs.length;const periodText=selectedPeriods.length?selectedPeriods.join("、"):"該当なし";document.getElementById("periodText").textContent=periodText;const latestLabel=document.getElementById("latestPeriodLabel");if(latestLabel)latestLabel.textContent=selectedPeriods.length?`（${periodText}）`:"";}
+};
 
-function renderPeriodCompare(checkedPeriods=[]){const area=document.getElementById("periodCompareArea");area.innerHTML=periodList.map(period=>`<label><input type="checkbox" class="periodCompare" value="${period}" ${checkedPeriods.includes(period)?"checked":""} onchange="handlePeriodCompareChange()"> ${period}</label>`).join("");}
 
-function handlePeriodCompareChange(){saveHomeDisplayState();drawRadarChart(currentRankingData);} function getCheckedPeriods(){return Array.from(document.querySelectorAll(".periodCompare:checked")).map(cb=>cb.value);}
+const allQuestionLectures = [
 
-function switchTab(tab,saveState=true){currentTab=tab==="license"?"license":"job";document.getElementById("jobTab").classList.remove("active");document.getElementById("licenseTab").classList.remove("active");document.getElementById(currentTab+"Tab").classList.add("active");const box=document.getElementById("selectedDetail");box.style.display="block";box.innerHTML="ランキング名を押すと詳細が表示されます。";if(currentTab==="job"){document.getElementById("resultTitle").textContent="おすすめ職種";renderJobs();}else{document.getElementById("resultTitle").textContent="おすすめ資格";renderLicenses();}if(saveState)saveHomeDisplayState();}
+"情報処理論",
+"システム統計論",
+"プログラミング応用",
+"プログラミング応用演習",
 
-function calcJobRate(job){const selected=getSelectedLectures();const total=jobRows.reduce((sum,row)=>sum+row.scores[job],0);if(total===0)return 0;if(selected.length===0){const maxTotal=Math.max(...jobNames.map(j=>jobRows.reduce((sum,row)=>sum+row.scores[j],0)));return Math.round((total/maxTotal)*100);}const got=jobRows.filter(row=>selected.includes(row.lecture)).reduce((sum,row)=>sum+row.scores[job],0);return Math.round((got/total)*100);}
+"アルゴリズム論",
+"データベース演習",
+"データ処理入門",
+"情報化社会論",
 
-function renderJobs(){const area=document.getElementById("resultArea"),selectedJobs=getSelectedJobs();let data=jobNames.map(job=>({name:job,rate:calcJobRate(job)}));if(selectedJobs.length>0){const selected=data.filter(d=>selectedJobs.includes(d.name)),others=data.filter(d=>!selectedJobs.includes(d.name));data=[...selected.sort((a,b)=>b.rate-a.rate),...others.sort((a,b)=>b.rate-a.rate)].slice(0,5);}else data=data.sort((a,b)=>b.rate-a.rate).slice(0,5);currentRankingData=data;localStorage.setItem("latestRanking",JSON.stringify(data));updateLatestHistoryRanking(data,"job");updateSideInfo();drawRadarChart(data);area.innerHTML=data.map((job,i)=>`<div class="rankingItem"><div class="rankLine"><button class="rankName" onclick="showJobDetail('${job.name}')">${i+1}位　${job.name}</button><div class="percent">${job.rate}%</div></div><div class="bar"><div class="fill" style="width:${job.rate}%"></div></div></div>`).join("");}
+"インターネットと法",
+"ネットワーク技術Ⅰ",
+"ネットワーク技術Ⅱ",
+"ネットワークの構築と運用",
 
-function getMissingLecturesForJob(job){const selected=getSelectedLectures();return jobRows.filter(row=>!selected.includes(row.lecture)).sort((a,b)=>b.scores[job]-a.scores[job]).filter(row=>row.scores[job]>0).slice(0,5).map(row=>row.lecture);} function getLicensesForJob(job){return[...new Set(licenseRows.filter(r=>r.job===job).map(r=>r.license))];}
+"システム開発技術（IoT）",
+"ウェブデザイン",
+"ウェブコンテンツ実践",
+"情報と職業",
 
-function showJobDetail(jobName){const box=document.getElementById("selectedDetail"),missing=getMissingLecturesForJob(jobName),licenses=getLicensesForJob(jobName);box.style.display="block";box.innerHTML=`<h3>${jobName} の詳細</h3><br><div><b>不足しているおすすめ講義</b></div><div>${missing.length?missing.join("、"):"特になし"}</div><br><div><b>取ったほうがいい資格</b></div><div>${licenses.length?licenses.join("、"):"該当資格なし"}</div>`;}
+"経営情報論",
+"産業情報論",
+"情報セキュリティ",
 
-function calcLicenseRate(license){const selected=getSelectedLectures();const uniqueLectures=[...new Set(licenseRows.filter(r=>r.license===license).map(r=>r.lecture))];if(uniqueLectures.length===0)return 0;if(selected.length===0){const allLicenses=[...new Set(licenseRows.map(r=>r.license).filter(name=>name!==""))];const maxCount=Math.max(...allLicenses.map(lic=>[...new Set(licenseRows.filter(r=>r.license===lic).map(r=>r.lecture))].length));return Math.round((uniqueLectures.length/maxCount)*100);}const match=uniqueLectures.filter(l=>selected.includes(l)).length;return Math.round((match/uniqueLectures.length)*100);}
+"健康情報統計Ⅱ",
+"健康情報統計Ⅲ",
 
-function renderLicenses(){const area=document.getElementById("resultArea");const licenseNames=[...new Set(licenseRows.map(r=>r.license).filter(name=>name!==""))];let data=licenseNames.map(license=>({name:license,rate:calcLicenseRate(license)})).sort((a,b)=>b.rate-a.rate).slice(0,5);currentRankingData=data;updateLatestHistoryRanking(data,"license");drawRadarChart(data);if(data.length===0){area.innerHTML=`<div class="small">表示できる資格がありません</div>`;return;}area.innerHTML=data.map((lic,i)=>`<div class="rankingItem"><div class="rankLine"><button class="rankName" onclick="showLicenseDetail('${lic.name}')">${i+1}位　${lic.name}</button><div class="percent">${lic.rate}%</div></div><div class="bar"><div class="fill" style="width:${lic.rate}%"></div></div></div>`).join("");}
+"健康情報数学Ⅱ",
+"健康情報数学Ⅲ",
 
-function getMissingLecturesForLicense(license){const selected=getSelectedLectures();return[...new Set(licenseRows.filter(r=>r.license===license).map(r=>r.lecture))].filter(l=>!selected.includes(l));} function getJobsForLicense(license){return[...new Set(licenseRows.filter(r=>r.license===license).map(r=>r.job))];}
+"社会調査法",
 
-function showLicenseDetail(licenseName){const box=document.getElementById("selectedDetail"),missing=getMissingLecturesForLicense(licenseName),jobs=getJobsForLicense(licenseName);box.style.display="block";box.innerHTML=`<h3>${licenseName} の詳細</h3><br><div><b>取ったほうがいい講義</b></div><div>${missing.length?missing.join("、"):"特になし"}</div><br><div><b>おすすめ職種</b></div><div>${jobs.length?jobs.join("、"):"該当職種なし"}</div>`;}
+"AIデータサイエンスⅠ",
+"AIデータサイエンスⅡ",
 
-function getHistoryRankingByTab(item,tab){if(item.rankingByTab&&item.rankingByTab[tab])return item.rankingByTab[tab];if(tab==="job"&&item.ranking)return item.ranking;return[];} function getHistoriesByPeriod(period){const history=JSON.parse(localStorage.getItem("history"))||[];return history.filter(item=>getHistoryPeriod(item)===period);}
+"医療・生命情報学Ⅰ",
+"医療・生命情報学Ⅱ",
 
-function drawRadarChart(data){const ctx=document.getElementById("radarChart");if(radarChart)radarChart.destroy();const checkedPeriods=getCheckedPeriods();let labels=[],datasets=[];const colors=["rgba(0,119,255,1)","rgba(231,76,60,1)","rgba(46,204,113,1)","rgba(243,156,18,1)","rgba(155,89,182,1)","rgba(26,188,156,1)","rgba(52,73,94,1)","rgba(255,99,132,1)"];if(checkedPeriods.length>0){checkedPeriods.forEach((period,index)=>{const histories=getHistoriesByPeriod(period);if(histories.length===0)return;histories.forEach((historyItem,historyIndex)=>{const ranking=getHistoryRankingByTab(historyItem,currentTab);if(!ranking||ranking.length===0)return;ranking.slice(0,5).forEach(r=>{if(!labels.includes(r.name))labels.push(r.name);});const labelName=histories.length>1?`${period}(${historyIndex+1})`:period;datasets.push({label:labelName,data:[],fill:false,borderColor:colors[(index+historyIndex)%colors.length],backgroundColor:colors[(index+historyIndex)%colors.length].replace("1)","0.15)"),pointRadius:4,pointHoverRadius:7});});});datasets.forEach(dataset=>{const periodName=dataset.label.replace(/\(.+\)/,""),histories=getHistoriesByPeriod(periodName),m=dataset.label.match(/\((\d+)\)/),targetIndex=m?Number(m[1])-1:0,historyItem=histories[targetIndex];if(!historyItem)return;const ranking=getHistoryRankingByTab(historyItem,currentTab);dataset.data=labels.map(label=>{const found=ranking.find(r=>r.name===label);return found?found.rate:0;});});if(datasets.length===0){labels=data.map(item=>item.name);datasets=[{label:"最新",data:data.map(item=>item.rate),fill:true,borderColor:"rgba(0,119,255,1)",backgroundColor:"rgba(0,119,255,0.15)",pointRadius:5,pointHoverRadius:8}];}}else{labels=data.map(item=>item.name);datasets=[{label:"最新",data:data.map(item=>item.rate),fill:true,borderColor:"rgba(0,119,255,1)",backgroundColor:"rgba(0,119,255,0.15)",pointRadius:5,pointHoverRadius:8}];}radarChart=new Chart(ctx,{type:"radar",data:{labels,datasets},options:{responsive:true,plugins:{legend:{display:true}},scales:{r:{min:0,max:100,ticks:{stepSize:20}}}}});}
+"パターン認識",
+"画像認識",
+"自然言語処理",
+"人工知能",
 
-function normalizeSearchText(text){return text.toString().normalize("NFKC").toLowerCase().replace(/Ⅰ/g,"1").replace(/Ⅱ/g,"2").replace(/Ⅲ/g,"3").replace(/Ⅳ/g,"4").replace(/ー/g,"").replace(/\s/g,"");}
+"臨床医学および医療用語",
 
-function lectureSearchText(name){const extra={"情報処理論":"じょうほうしょりろん","システム統計論":"しすてむとうけいろん","プログラミング応用":"ぷろぐらみんぐおうよう","データベース演習":"でーたべーす","データ処理入門":"でーたしょり","情報セキュリティ":"じょうほうせきゅりてぃ","ウェブデザイン":"うぇぶでざいん web","人工知能":"じんこうちのう ai","AIデータサイエンスⅠ":"ai えーあい でーたさいえんす","AIデータサイエンスⅡ":"ai えーあい でーたさいえんす","簿記原理":"ぼき","会計学原理":"かいけい"};return normalizeSearchText(name+" "+(extra[name]||""));}
+"臨床医学各論Ⅰ",
+"臨床医学各論Ⅱ",
+"臨床医学各論Ⅲ",
+"臨床医学各論Ⅳ",
 
-function searchLecture(){const rawKeyword=document.getElementById("searchBox").value.trim(),keyword=normalizeSearchText(rawKeyword),area=document.getElementById("searchResult");if(rawKeyword===""){area.innerHTML="講義名を入力してください";return;}const result=allQuestionLectures.map(fixLectureName).filter(name=>lectureSearchText(name).includes(keyword));if(result.length===0){area.innerHTML="該当する講義がありません";return;}area.innerHTML=result.map(name=>{const added=candidates.some(c=>fixLectureName(c.name)===name);return `<div style="margin-top:8px;">${name} <button class="${added?'addedBtn':''}" ${added?'disabled':''} onclick="addCandidate('${name}')">${added?'追加済み':'追加'}</button></div>`;}).join("");}
+"診療情報管理論Ⅰ",
+"診療情報管理論Ⅱ",
 
-function addCandidate(name){if(!candidates.some(c=>c.name===name)){candidates.push({name});saveCandidates();updateCandidates();switchTab(currentTab);searchLecture();}}
+"医療管理各論",
 
-function removeCandidate(name){candidates=candidates.filter(c=>c.name!==name);saveCandidates();updateCandidates();switchTab(currentTab);searchLecture();}
+"国際統計分類I",
+"国際統計分類Ⅱ",
 
-function updateCandidates(){const list=document.getElementById("candidateList");list.innerHTML="";if(candidates.length===0){list.innerHTML=`<li class="small">まだ履修候補はありません</li>`;return;}candidates.forEach(c=>{const li=document.createElement("li");li.className="candidateItem";li.innerHTML=`<span>${c.name}</span><button class="deleteBtn" onclick="removeCandidate('${c.name}')">×</button>`;list.appendChild(li);});}
+"健康ビッグデータ",
 
-function clearCandidates(){candidates=[];saveCandidates();updateCandidates();switchTab(currentTab);searchLecture();} function saveCandidates(){localStorage.setItem("lectureCandidates",JSON.stringify(candidates));} function loadSavedCandidates(){const saved=localStorage.getItem("lectureCandidates");if(saved){try{candidates=JSON.parse(saved);}catch(e){candidates=[];}}}
+"デジタルヘルスコミュニケーション",
+"デジタルヘルステクノロジー",
+"デジタルヘルスイノベーション",
 
-function updateLatestHistoryRanking(ranking,tab){const history=JSON.parse(localStorage.getItem("history"))||[];if(history.length===0)return;activeHistoryIndex=getNewestAcademicHistoryIndex();if(activeHistoryIndex<0||!history[activeHistoryIndex])return;if(!history[activeHistoryIndex].rankingByTab)history[activeHistoryIndex].rankingByTab={};history[activeHistoryIndex].rankingByTab[tab]=ranking.map(item=>({name:item.name,rate:item.rate}));if(tab==="job"){history[activeHistoryIndex].ranking=ranking.map(item=>({name:item.name,rate:item.rate}));localStorage.setItem("latestRanking",JSON.stringify(ranking));}localStorage.setItem("history",JSON.stringify(history));}
+"医療統計学",
+
+"社会心理学",
+"観光行動論",
+
+"マーケティング論",
+"地域マーケティング論",
+"市場調査論",
+
+"簿記原理",
+"会計学原理",
+
+"経営分析論",
+"経営戦略論",
+"経営統計学"
+
+];
+
+
+/* =========================================
+   起動
+========================================= */
+
+window.onload =
+async function(){
+
+    loadSavedCandidates();
+
+
+    document
+    .getElementById("searchBox")
+    .addEventListener(
+        "keydown",
+        function(e){
+
+            if(e.key === "Enter"){
+                searchLecture();
+            }
+
+        }
+    );
+
+
+    try{
+
+        const jobText =
+            await fetch("data.csv")
+            .then(
+                res => res.text()
+            );
+
+
+        const licenseText =
+            await fetch("data1.csv")
+            .then(
+                res => res.text()
+            );
+
+
+        loadJobCSV(jobText);
+
+        loadLicenseCSV(licenseText);
+
+
+        /*
+        まず履歴があるか確認
+        */
+        const history =
+            getHistory();
+
+
+        hasDiagnosis =
+            history.length > 0;
+
+
+        /*
+        履歴がない場合
+        */
+        if(!hasDiagnosis){
+
+            clearStaleDiagnosisData();
+
+            candidates = [];
+
+            renderPeriodCompare([]);
+
+            updateCandidates();
+
+            clearHomeDiagnosisDisplay();
+
+            return;
+
+        }
+
+
+        /*
+        最新学期の診断内容を
+        正式データとして反映
+        */
+        applyNewestAcademicHistory();
+
+
+        const savedHomeState =
+            getHomeDisplayState();
+
+
+        renderPeriodCompare(
+            savedHomeState.checkedPeriods
+        );
+
+
+        updateCandidates();
+
+        updateSideInfo();
+
+
+        switchTab(
+            savedHomeState.currentTab,
+            false
+        );
+
+
+    }catch(e){
+
+        document
+        .getElementById("resultArea")
+        .innerHTML =
+
+        "CSVファイルを読み込めませんでした。" +
+        "data.csv / data1.csv が " +
+        "index.html と同じ場所にあるか確認してください。";
+
+
+        console.error(e);
+
+    }
+
+};
+
+
+window.addEventListener(
+    "pagehide",
+    function(){
+
+        if(hasDiagnosis){
+            saveHomeDisplayState();
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        if(hasDiagnosis){
+            saveHomeDisplayState();
+        }
+
+    }
+);
+
+
+/* =========================================
+   CSV
+========================================= */
+
+function parseCSV(text){
+
+    return text
+    .trim()
+    .split(/\r?\n/)
+    .map(
+        line =>
+            line
+            .split(",")
+            .map(
+                v =>
+                    v
+                    .replace(
+                        /^"|"$/g,
+                        ""
+                    )
+                    .trim()
+            )
+    );
+
+}
+
+
+function loadJobCSV(text){
+
+    const rows =
+        parseCSV(text);
+
+
+    jobNames =
+        rows[0]
+        .slice(1)
+        .map(fixName)
+        .filter(
+            name =>
+                name !== "未定"
+        );
+
+
+    jobRows =
+        rows
+        .slice(1)
+        .map(
+            row => {
+
+                const obj = {
+
+                    lecture:
+                        fixLectureName(
+                            row[0]
+                        ),
+
+                    scores:{}
+
+                };
+
+
+                rows[0]
+                .slice(1)
+                .forEach(
+                    (job,i) => {
+
+                        const fixedJob =
+                            fixName(job);
+
+
+                        if(
+                            fixedJob !==
+                            "未定"
+                        ){
+
+                            obj.scores[
+                                fixedJob
+                            ] =
+                                Number(
+                                    row[i+1]
+                                ) || 0;
+
+                        }
+
+                    }
+                );
+
+
+                return obj;
+
+            }
+        );
+
+
+    lectureNames =
+        jobRows.map(
+            r => r.lecture
+        );
+
+}
+
+
+function loadLicenseCSV(text){
+
+    const rows =
+        parseCSV(text);
+
+
+    licenseRows =
+        rows
+        .slice(1)
+        .map(
+            row => ({
+
+                job:
+                    fixName(
+                        row[0] || ""
+                    ),
+
+                license:
+                    (
+                        row[1] || ""
+                    ).trim(),
+
+                lecture:
+                    fixLectureName(
+                        row[2] || ""
+                    )
+
+            })
+        )
+        .filter(
+            r =>
+                r.license !== "" &&
+                r.lecture !== ""
+        );
+
+}
+
+
+/* =========================================
+   名称統一
+========================================= */
+
+const normalize = {
+
+    "Webデザイナ":
+        "Webデザイン",
+
+    "Webエンジニア":
+        "Webデザイン",
+
+    "AIエンジニア":
+        "AI開発者",
+
+    "ネットワークエンジニア":
+        "ネットワーク管理者",
+
+    "教職員":
+        "教職",
+
+    "ITサポート、ヘルプデスク":
+        "ITサポート・ヘルプデスク"
+
+};
+
+
+function fixName(name){
+
+    return normalize[name] || name;
+
+}
+
+
+const lectureNormalize = {
+
+    "情報セキュリティー":
+        "情報セキュリティ",
+
+    "国際統計分類I":
+        "国際統計分類Ⅰ"
+
+};
+
+
+function fixLectureName(name){
+
+    return (
+        lectureNormalize[name] ||
+        name
+    );
+
+}
+
+
+/* =========================================
+   履歴取得
+========================================= */
+
+function getHistory(){
+
+    try{
+
+        const data =
+            JSON.parse(
+                localStorage.getItem(
+                    "history"
+                )
+            );
+
+
+        return Array.isArray(data)
+            ? data
+            : [];
+
+    }catch(e){
+
+        return [];
+
+    }
+
+}
+
+
+/* =========================================
+   正式な履修済み講義
+========================================= */
+
+function getBaseSelectedLectures(){
+
+    const history =
+        getHistory();
+
+
+    if(history.length === 0){
+        return [];
+    }
+
+
+    const index =
+        getNewestAcademicHistoryIndex();
+
+
+    if(
+        index < 0 ||
+        !history[index]
+    ){
+        return [];
+    }
+
+
+    return [
+        ...new Set(
+            (
+                history[index].subjects ||
+                []
+            )
+            .map(fixLectureName)
+        )
+    ];
+
+}
+
+
+/* =========================================
+   履修候補込み講義
+========================================= */
+
+function getSimulationLectures(){
+
+    const base =
+        getBaseSelectedLectures();
+
+
+    const candidateNames =
+        candidates.map(
+            c =>
+                fixLectureName(
+                    c.name
+                )
+        );
+
+
+    return [
+        ...new Set([
+            ...base,
+            ...candidateNames
+        ])
+    ];
+
+}
+
+
+/* =========================================
+   正式な選択職種
+========================================= */
+
+function getSelectedJobs(){
+
+    const history =
+        getHistory();
+
+
+    if(history.length === 0){
+        return [];
+    }
+
+
+    const index =
+        getNewestAcademicHistoryIndex();
+
+
+    if(
+        index < 0 ||
+        !history[index]
+    ){
+        return [];
+    }
+
+
+    return (
+        history[index]
+        .selectedJobs ||
+        []
+    )
+    .map(fixName);
+
+}
+
+
+/* =========================================
+   正式な学期
+========================================= */
+
+function getSelectedPeriods(){
+
+    const history =
+        getHistory();
+
+
+    if(history.length === 0){
+        return [];
+    }
+
+
+    const index =
+        getNewestAcademicHistoryIndex();
+
+
+    if(
+        index < 0 ||
+        !history[index]
+    ){
+        return [];
+    }
+
+
+    const item =
+        history[index];
+
+
+    if(
+        Array.isArray(item.periods)
+    ){
+        return item.periods;
+    }
+
+
+    if(item.period){
+        return [item.period];
+    }
+
+
+    return [];
+
+}
+
+
+/* =========================================
+   ホーム状態
+========================================= */
+
+function getHomeDisplayState(){
+
+    const fallback = {
+
+        checkedPeriods:[],
+
+        currentTab:"job"
+
+    };
+
+
+    try{
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    HOME_STATE_KEY
+                )
+            );
+
+
+        if(
+            !saved ||
+            typeof saved !== "object"
+        ){
+
+            return fallback;
+
+        }
+
+
+        return {
+
+            checkedPeriods:
+                Array.isArray(
+                    saved.checkedPeriods
+                )
+
+                ?
+
+                saved
+                .checkedPeriods
+                .filter(
+                    period =>
+                        periodList.includes(
+                            period
+                        )
+                )
+
+                :
+
+                [],
+
+
+            currentTab:
+                saved.currentTab ===
+                "license"
+
+                ?
+
+                "license"
+
+                :
+
+                "job"
+
+        };
+
+
+    }catch(e){
+
+        return fallback;
+
+    }
+
+}
+
+
+function saveHomeDisplayState(){
+
+    if(!hasDiagnosis){
+        return;
+    }
+
+
+    const state = {
+
+        checkedPeriods:
+            getCheckedPeriods(),
+
+        currentTab:
+            currentTab ===
+            "license"
+
+            ?
+
+            "license"
+
+            :
+
+            "job"
+
+    };
+
+
+    localStorage.setItem(
+        HOME_STATE_KEY,
+        JSON.stringify(state)
+    );
+
+}
+
+
+function goToPage(page){
+
+    if(hasDiagnosis){
+        saveHomeDisplayState();
+    }
+
+
+    location.href = page;
+
+}
+
+
+/* =========================================
+   履歴の学期取得
+========================================= */
+
+function getHistoryPeriod(item){
+
+    if(!item){
+        return "";
+    }
+
+
+    if(
+        Array.isArray(
+            item.periods
+        ) &&
+        item.periods.length > 0
+    ){
+
+        return item.periods[0];
+
+    }
+
+
+    if(
+        typeof item.period ===
+        "string"
+    ){
+
+        return item.period;
+
+    }
+
+
+    if(
+        Array.isArray(
+            item.selectedPeriods
+        ) &&
+        item.selectedPeriods.length > 0
+    ){
+
+        return item
+        .selectedPeriods[0];
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================================
+   最新学期の履歴
+========================================= */
+
+function getNewestAcademicHistoryIndex(){
+
+    const history =
+        getHistory();
+
+
+    if(history.length === 0){
+        return -1;
+    }
+
+
+    let newestIndex = -1;
+
+    let newestOrder = -1;
+
+
+    history.forEach(
+        (item,index) => {
+
+            const period =
+                getHistoryPeriod(item);
+
+
+            const order =
+                periodOrder[period];
+
+
+            if(
+                typeof order !==
+                "number"
+            ){
+                return;
+            }
+
+
+            if(
+                order > newestOrder ||
+                (
+                    order === newestOrder &&
+                    index > newestIndex
+                )
+            ){
+
+                newestOrder =
+                    order;
+
+                newestIndex =
+                    index;
+
+            }
+
+        }
+    );
+
+
+    /*
+    学期情報がない古い履歴にも対応
+    */
+    if(newestIndex === -1){
+
+        return (
+            history.length - 1
+        );
+
+    }
+
+
+    return newestIndex;
+
+}
+
+
+/* =========================================
+   最新正式診断を反映
+========================================= */
+
+function applyNewestAcademicHistory(){
+
+    const history =
+        getHistory();
+
+
+    const index =
+        getNewestAcademicHistoryIndex();
+
+
+    if(
+        index < 0 ||
+        !history[index]
+    ){
+
+        hasDiagnosis = false;
+
+        clearStaleDiagnosisData();
+
+        return;
+
+    }
+
+
+    activeHistoryIndex =
+        index;
+
+
+    const newest =
+        history[index];
+
+
+    const newestPeriod =
+        getHistoryPeriod(newest);
+
+
+    localStorage.setItem(
+        "selectedLectures",
+        JSON.stringify(
+            newest.subjects || []
+        )
+    );
+
+
+    localStorage.setItem(
+        "selectedJobs",
+        JSON.stringify(
+            newest.selectedJobs || []
+        )
+    );
+
+
+    localStorage.setItem(
+        "selectedPeriods",
+        JSON.stringify(
+            newestPeriod
+            ? [newestPeriod]
+            : []
+        )
+    );
+
+
+    localStorage.setItem(
+        "undecided",
+        newest.undecided
+        ? "true"
+        : "false"
+    );
+
+
+    /*
+    最新ランキングは
+    正式履歴に保存されている
+    ランキングのみ使用
+    */
+    const savedRanking =
+
+        newest
+        .rankingByTab
+        ?.job
+
+        ||
+
+        newest.ranking
+
+        ||
+
+        [];
+
+
+    localStorage.setItem(
+        "latestRanking",
+        JSON.stringify(
+            savedRanking
+        )
+    );
+
+}
+
+
+/* =========================================
+   古い診断データ削除
+========================================= */
+
+function clearStaleDiagnosisData(){
+
+    localStorage.removeItem(
+        "latestRanking"
+    );
+
+    localStorage.removeItem(
+        "selectedLectures"
+    );
+
+    localStorage.removeItem(
+        "selectedJobs"
+    );
+
+    localStorage.removeItem(
+        "selectedPeriods"
+    );
+
+    localStorage.removeItem(
+        "undecided"
+    );
+
+    localStorage.removeItem(
+        "lectureCandidates"
+    );
+
+    localStorage.removeItem(
+        "editHistoryIndex"
+    );
+
+    localStorage.removeItem(
+        HOME_STATE_KEY
+    );
+
+}
+
+
+/* =========================================
+   診断なし画面
+========================================= */
+
+function clearHomeDiagnosisDisplay(){
+
+    hasDiagnosis = false;
+
+    currentRankingData = [];
+
+
+    if(radarChart){
+
+        radarChart.destroy();
+
+        radarChart = null;
+
+    }
+
+
+    const canvas =
+        document.getElementById(
+            "radarChart"
+        );
+
+
+    canvas.style.display =
+        "none";
+
+
+    document
+    .getElementById(
+        "noChartMessage"
+    )
+    .style.display =
+        "block";
+
+
+    document
+    .getElementById(
+        "resultArea"
+    )
+    .innerHTML = `
+
+        <div class="emptyResult">
+
+            診断結果がありません。<br>
+
+            「診断する」から
+            診断を行ってください。
+
+        </div>
+
+    `;
+
+
+    const detail =
+        document.getElementById(
+            "selectedDetail"
+        );
+
+
+    detail.style.display =
+        "block";
+
+
+    detail.innerHTML =
+        "診断結果がありません。";
+
+
+    document
+    .getElementById(
+        "lectureCount"
+    )
+    .textContent =
+        "0";
+
+
+    document
+    .getElementById(
+        "jobCount"
+    )
+    .textContent =
+        "0";
+
+
+    document
+    .getElementById(
+        "periodText"
+    )
+    .textContent =
+        "該当なし";
+
+
+    document
+    .getElementById(
+        "latestPeriodLabel"
+    )
+    .textContent =
+        "";
+
+
+    /*
+    学期チェックを全解除
+    */
+    document
+    .querySelectorAll(
+        ".periodCompare"
+    )
+    .forEach(
+        checkbox => {
+
+            checkbox.checked =
+                false;
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   サイド情報
+========================================= */
+
+function updateSideInfo(){
+
+    if(!hasDiagnosis){
+
+        clearHomeDiagnosisDisplay();
+
+        return;
+
+    }
+
+
+    const selectedLectures =
+        getBaseSelectedLectures();
+
+
+    const selectedJobs =
+        getSelectedJobs();
+
+
+    const selectedPeriods =
+        getSelectedPeriods();
+
+
+    document
+    .getElementById(
+        "lectureCount"
+    )
+    .textContent =
+        selectedLectures.length;
+
+
+    document
+    .getElementById(
+        "jobCount"
+    )
+    .textContent =
+        selectedJobs.length;
+
+
+    const periodText =
+
+        selectedPeriods.length
+
+        ?
+
+        selectedPeriods.join("、")
+
+        :
+
+        "該当なし";
+
+
+    document
+    .getElementById(
+        "periodText"
+    )
+    .textContent =
+        periodText;
+
+
+    const latestLabel =
+        document.getElementById(
+            "latestPeriodLabel"
+        );
+
+
+    latestLabel.textContent =
+
+        selectedPeriods.length
+
+        ?
+
+        `（${periodText}）`
+
+        :
+
+        "";
+
+}
+
+
+/* =========================================
+   学期比較
+========================================= */
+
+function renderPeriodCompare(
+    checkedPeriods = []
+){
+
+    const area =
+        document.getElementById(
+            "periodCompareArea"
+        );
+
+
+    area.innerHTML =
+        periodList
+        .map(
+            period => `
+
+            <label>
+
+                <input
+
+                    type="checkbox"
+
+                    class="periodCompare"
+
+                    value="${period}"
+
+                    ${
+                        checkedPeriods
+                        .includes(period)
+
+                        ?
+
+                        "checked"
+
+                        :
+
+                        ""
+                    }
+
+                    onchange="
+                        handlePeriodCompareChange()
+                    "
+
+                >
+
+                ${period}
+
+            </label>
+
+            `
+        )
+        .join("");
+
+}
+
+
+function handlePeriodCompareChange(){
+
+    if(!hasDiagnosis){
+        return;
+    }
+
+
+    saveHomeDisplayState();
+
+
+    /*
+    ここでは正式診断ランキングを使って
+    チャートだけ再描画する。
+    履修候補は一切使わない。
+    */
+    drawRadarChart(
+        getOfficialRankingData(
+            currentTab
+        )
+    );
+
+}
+
+
+function getCheckedPeriods(){
+
+    return Array.from(
+        document
+        .querySelectorAll(
+            ".periodCompare:checked"
+        )
+    )
+    .map(
+        cb => cb.value
+    );
+
+}
+
+
+/* =========================================
+   タブ切替
+========================================= */
+
+function switchTab(
+    tab,
+    saveState = true
+){
+
+    currentTab =
+
+        tab === "license"
+
+        ?
+
+        "license"
+
+        :
+
+        "job";
+
+
+    document
+    .getElementById(
+        "jobTab"
+    )
+    .classList
+    .remove("active");
+
+
+    document
+    .getElementById(
+        "licenseTab"
+    )
+    .classList
+    .remove("active");
+
+
+    document
+    .getElementById(
+        currentTab + "Tab"
+    )
+    .classList
+    .add("active");
+
+
+    const box =
+        document.getElementById(
+            "selectedDetail"
+        );
+
+
+    box.style.display =
+        "block";
+
+
+    if(!hasDiagnosis){
+
+        box.innerHTML =
+            "診断結果がありません。";
+
+        clearHomeDiagnosisDisplay();
+
+        return;
+
+    }
+
+
+    box.innerHTML =
+        "ランキング名を押すと詳細が表示されます。";
+
+
+    if(currentTab === "job"){
+
+        document
+        .getElementById(
+            "resultTitle"
+        )
+        .textContent =
+            "おすすめ職種";
+
+
+        renderJobs();
+
+    }else{
+
+        document
+        .getElementById(
+            "resultTitle"
+        )
+        .textContent =
+            "おすすめ資格";
+
+
+        renderLicenses();
+
+    }
+
+
+    /*
+    タブを切り替えた時だけ
+    正式診断データでチャート更新
+    */
+    drawRadarChart(
+        getOfficialRankingData(
+            currentTab
+        )
+    );
+
+
+    if(saveState){
+        saveHomeDisplayState();
+    }
+
+}
+
+
+/* =========================================
+   職種適合率
+========================================= */
+
+function calcJobRateWithLectures(
+    job,
+    selected
+){
+
+    const total =
+        jobRows.reduce(
+            (sum,row) =>
+                sum +
+                row.scores[job],
+            0
+        );
+
+
+    if(total === 0){
+        return 0;
+    }
+
+
+    /*
+    講義が0件なら0%
+    シミュレーション表示なので
+    不自然な初期値を出さない
+    */
+    if(selected.length === 0){
+        return 0;
+    }
+
+
+    const got =
+        jobRows
+        .filter(
+            row =>
+                selected.includes(
+                    row.lecture
+                )
+        )
+        .reduce(
+            (sum,row) =>
+                sum +
+                row.scores[job],
+            0
+        );
+
+
+    return Math.round(
+        (
+            got /
+            total
+        ) * 100
+    );
+
+}
+
+
+/* =========================================
+   正式な職種ランキング
+========================================= */
+
+function getOfficialJobRanking(){
+
+    const selectedJobs =
+        getSelectedJobs();
+
+
+    const baseLectures =
+        getBaseSelectedLectures();
+
+
+    let data =
+        jobNames.map(
+            job => ({
+
+                name:job,
+
+                rate:
+                    calcJobRateWithLectures(
+                        job,
+                        baseLectures
+                    )
+
+            })
+        );
+
+
+    if(selectedJobs.length > 0){
+
+        const selected =
+            data.filter(
+                d =>
+                    selectedJobs.includes(
+                        d.name
+                    )
+            );
+
+
+        const others =
+            data.filter(
+                d =>
+                    !selectedJobs.includes(
+                        d.name
+                    )
+            );
+
+
+        data = [
+
+            ...selected.sort(
+                (a,b) =>
+                    b.rate - a.rate
+            ),
+
+            ...others.sort(
+                (a,b) =>
+                    b.rate - a.rate
+            )
+
+        ].slice(0,5);
+
+    }else{
+
+        data =
+            data
+            .sort(
+                (a,b) =>
+                    b.rate - a.rate
+            )
+            .slice(0,5);
+
+    }
+
+
+    return data;
+
+}
+
+
+/* =========================================
+   職種ランキング表示
+
+   ★候補追加で変わるのは
+   この横棒だけ
+========================================= */
+
+function renderJobs(){
+
+    if(!hasDiagnosis){
+
+        clearHomeDiagnosisDisplay();
+
+        return;
+
+    }
+
+
+    const area =
+        document.getElementById(
+            "resultArea"
+        );
+
+
+    const officialData =
+        getOfficialJobRanking();
+
+
+    const simulationLectures =
+        getSimulationLectures();
+
+
+    /*
+    正式ランキングの順位は固定。
+
+    履修候補を追加しても
+    順位そのものは変えない。
+
+    各職種の黄緑部分だけ
+    シミュレーションする。
+    */
+    const data =
+        officialData.map(
+            item => {
+
+                const simulationRate =
+                    calcJobRateWithLectures(
+                        item.name,
+                        simulationLectures
+                    );
+
+
+                const increase =
+                    Math.max(
+                        0,
+                        simulationRate -
+                        item.rate
+                    );
+
+
+                return {
+
+                    name:
+                        item.name,
+
+                    baseRate:
+                        item.rate,
+
+                    rate:
+                        simulationRate,
+
+                    increase:
+                        increase
+
+                };
+
+            }
+        );
+
+
+    /*
+    これは画面表示用だけ。
+    localStorageやhistoryには
+    保存しない。
+    */
+    currentRankingData =
+        officialData;
+
+
+    area.innerHTML =
+        data
+        .map(
+            (job,i) => `
+
+            <div class="rankingItem">
+
+                <div class="rankLine">
+
+                    <button
+
+                        class="rankName"
+
+                        onclick="
+                            showJobDetail(
+                                '${job.name}'
+                            )
+                        "
+                    >
+
+                        ${i + 1}位　
+                        ${job.name}
+
+                    </button>
+
+
+                    <div class="percent">
+
+                        ${job.rate}%
+
+                        ${
+                            job.increase > 0
+
+                            ?
+
+                            `
+                            <span class="increaseText">
+
+                                ＋${job.increase}%
+
+                            </span>
+                            `
+
+                            :
+
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <div class="bar">
+
+                    <div
+
+                        class="baseFill"
+
+                        style="
+                            width:
+                            ${job.baseRate}%
+                        "
+
+                    ></div>
+
+
+                    <div
+
+                        class="increaseFill"
+
+                        style="
+                            width:
+                            ${job.increase}%
+                        "
+
+                    ></div>
+
+                </div>
+
+
+                ${
+                    job.increase > 0
+
+                    ?
+
+                    `
+                    <div class="simulationNote">
+
+                        現在 ${job.baseRate}%
+                        →
+                        履修候補追加後 ${job.rate}%
+
+                    </div>
+                    `
+
+                    :
+
+                    ""
+                }
+
+            </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+/* =========================================
+   職種詳細
+========================================= */
+
+function getMissingLecturesForJob(job){
+
+    const selected =
+        getSimulationLectures();
+
+
+    return jobRows
+    .filter(
+        row =>
+            !selected.includes(
+                row.lecture
+            )
+    )
+    .sort(
+        (a,b) =>
+            b.scores[job] -
+            a.scores[job]
+    )
+    .filter(
+        row =>
+            row.scores[job] > 0
+    )
+    .slice(0,5)
+    .map(
+        row => row.lecture
+    );
+
+}
+
+
+function getLicensesForJob(job){
+
+    return [
+        ...new Set(
+            licenseRows
+            .filter(
+                r =>
+                    r.job === job
+            )
+            .map(
+                r => r.license
+            )
+        )
+    ];
+
+}
+
+
+function showJobDetail(jobName){
+
+    const box =
+        document.getElementById(
+            "selectedDetail"
+        );
+
+
+    const missing =
+        getMissingLecturesForJob(
+            jobName
+        );
+
+
+    const licenses =
+        getLicensesForJob(
+            jobName
+        );
+
+
+    box.style.display =
+        "block";
+
+
+    box.innerHTML = `
+
+        <h3>
+            ${jobName} の詳細
+        </h3>
+
+        <br>
+
+        <div>
+            <b>
+                不足しているおすすめ講義
+            </b>
+        </div>
+
+        <div>
+
+            ${
+                missing.length
+
+                ?
+
+                missing.join("、")
+
+                :
+
+                "特になし"
+            }
+
+        </div>
+
+        <br>
+
+        <div>
+            <b>
+                取ったほうがいい資格
+            </b>
+        </div>
+
+        <div>
+
+            ${
+                licenses.length
+
+                ?
+
+                licenses.join("、")
+
+                :
+
+                "該当資格なし"
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================
+   資格適合率
+========================================= */
+
+function calcLicenseRateWithLectures(
+    license,
+    selected
+){
+
+    const uniqueLectures = [
+
+        ...new Set(
+
+            licenseRows
+            .filter(
+                r =>
+                    r.license ===
+                    license
+            )
+            .map(
+                r => r.lecture
+            )
+
+        )
+
+    ];
+
+
+    if(uniqueLectures.length === 0){
+        return 0;
+    }
+
+
+    if(selected.length === 0){
+        return 0;
+    }
+
+
+    const match =
+        uniqueLectures
+        .filter(
+            lecture =>
+                selected.includes(
+                    lecture
+                )
+        )
+        .length;
+
+
+    return Math.round(
+        (
+            match /
+            uniqueLectures.length
+        ) * 100
+    );
+
+}
+
+
+/* =========================================
+   正式な資格ランキング
+========================================= */
+
+function getOfficialLicenseRanking(){
+
+    const licenseNames = [
+
+        ...new Set(
+
+            licenseRows
+            .map(
+                r => r.license
+            )
+            .filter(
+                name =>
+                    name !== ""
+            )
+
+        )
+
+    ];
+
+
+    const baseLectures =
+        getBaseSelectedLectures();
+
+
+    return licenseNames
+    .map(
+        license => ({
+
+            name:
+                license,
+
+            rate:
+                calcLicenseRateWithLectures(
+                    license,
+                    baseLectures
+                )
+
+        })
+    )
+    .sort(
+        (a,b) =>
+            b.rate - a.rate
+    )
+    .slice(0,5);
+
+}
+
+
+/* =========================================
+   資格ランキング表示
+========================================= */
+
+function renderLicenses(){
+
+    if(!hasDiagnosis){
+
+        clearHomeDiagnosisDisplay();
+
+        return;
+
+    }
+
+
+    const area =
+        document.getElementById(
+            "resultArea"
+        );
+
+
+    const officialData =
+        getOfficialLicenseRanking();
+
+
+    const simulationLectures =
+        getSimulationLectures();
+
+
+    const data =
+        officialData.map(
+            item => {
+
+                const simulationRate =
+                    calcLicenseRateWithLectures(
+                        item.name,
+                        simulationLectures
+                    );
+
+
+                const increase =
+                    Math.max(
+                        0,
+                        simulationRate -
+                        item.rate
+                    );
+
+
+                return {
+
+                    name:
+                        item.name,
+
+                    baseRate:
+                        item.rate,
+
+                    rate:
+                        simulationRate,
+
+                    increase:
+                        increase
+
+                };
+
+            }
+        );
+
+
+    currentRankingData =
+        officialData;
+
+
+    if(data.length === 0){
+
+        area.innerHTML = `
+
+            <div class="small">
+                表示できる資格がありません
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    area.innerHTML =
+        data
+        .map(
+            (lic,i) => `
+
+            <div class="rankingItem">
+
+                <div class="rankLine">
+
+                    <button
+
+                        class="rankName"
+
+                        onclick="
+                            showLicenseDetail(
+                                '${lic.name}'
+                            )
+                        "
+                    >
+
+                        ${i + 1}位　
+                        ${lic.name}
+
+                    </button>
+
+
+                    <div class="percent">
+
+                        ${lic.rate}%
+
+                        ${
+                            lic.increase > 0
+
+                            ?
+
+                            `
+                            <span class="increaseText">
+
+                                ＋${lic.increase}%
+
+                            </span>
+                            `
+
+                            :
+
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <div class="bar">
+
+                    <div
+
+                        class="baseFill"
+
+                        style="
+                            width:
+                            ${lic.baseRate}%
+                        "
+
+                    ></div>
+
+
+                    <div
+
+                        class="increaseFill"
+
+                        style="
+                            width:
+                            ${lic.increase}%
+                        "
+
+                    ></div>
+
+                </div>
+
+
+                ${
+                    lic.increase > 0
+
+                    ?
+
+                    `
+                    <div class="simulationNote">
+
+                        現在 ${lic.baseRate}%
+                        →
+                        履修候補追加後 ${lic.rate}%
+
+                    </div>
+                    `
+
+                    :
+
+                    ""
+                }
+
+            </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+/* =========================================
+   資格詳細
+========================================= */
+
+function getMissingLecturesForLicense(
+    license
+){
+
+    const selected =
+        getSimulationLectures();
+
+
+    return [
+
+        ...new Set(
+
+            licenseRows
+            .filter(
+                r =>
+                    r.license ===
+                    license
+            )
+            .map(
+                r => r.lecture
+            )
+
+        )
+
+    ]
+    .filter(
+        lecture =>
+            !selected.includes(
+                lecture
+            )
+    );
+
+}
+
+
+function getJobsForLicense(
+    license
+){
+
+    return [
+
+        ...new Set(
+
+            licenseRows
+            .filter(
+                r =>
+                    r.license ===
+                    license
+            )
+            .map(
+                r => r.job
+            )
+
+        )
+
+    ];
+
+}
+
+
+function showLicenseDetail(
+    licenseName
+){
+
+    const box =
+        document.getElementById(
+            "selectedDetail"
+        );
+
+
+    const missing =
+        getMissingLecturesForLicense(
+            licenseName
+        );
+
+
+    const jobs =
+        getJobsForLicense(
+            licenseName
+        );
+
+
+    box.style.display =
+        "block";
+
+
+    box.innerHTML = `
+
+        <h3>
+            ${licenseName} の詳細
+        </h3>
+
+        <br>
+
+        <div>
+            <b>
+                取ったほうがいい講義
+            </b>
+        </div>
+
+        <div>
+
+            ${
+                missing.length
+
+                ?
+
+                missing.join("、")
+
+                :
+
+                "特になし"
+            }
+
+        </div>
+
+        <br>
+
+        <div>
+            <b>
+                おすすめ職種
+            </b>
+        </div>
+
+        <div>
+
+            ${
+                jobs.length
+
+                ?
+
+                jobs.join("、")
+
+                :
+
+                "該当職種なし"
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================
+   正式ランキング取得
+========================================= */
+
+function getOfficialRankingData(tab){
+
+    if(tab === "license"){
+
+        return getOfficialLicenseRanking();
+
+    }
+
+
+    return getOfficialJobRanking();
+
+}
+
+
+/* =========================================
+   履歴ランキング
+========================================= */
+
+function getHistoryRankingByTab(
+    item,
+    tab
+){
+
+    if(
+        item.rankingByTab &&
+        Array.isArray(
+            item.rankingByTab[tab]
+        )
+    ){
+
+        return item
+        .rankingByTab[tab];
+
+    }
+
+
+    if(
+        tab === "job" &&
+        Array.isArray(item.ranking)
+    ){
+
+        return item.ranking;
+
+    }
+
+
+    /*
+    古い履歴にランキングが
+    保存されていない場合は
+    履歴の講義からその場で計算
+    */
+    const lectures =
+        (
+            item.subjects ||
+            []
+        )
+        .map(fixLectureName);
+
+
+    if(tab === "job"){
+
+        const selectedJobs =
+            (
+                item.selectedJobs ||
+                []
+            )
+            .map(fixName);
+
+
+        let data =
+            jobNames.map(
+                job => ({
+
+                    name:job,
+
+                    rate:
+                        calcJobRateWithLectures(
+                            job,
+                            lectures
+                        )
+
+                })
+            );
+
+
+        if(selectedJobs.length > 0){
+
+            const selected =
+                data.filter(
+                    d =>
+                        selectedJobs.includes(
+                            d.name
+                        )
+                );
+
+
+            const others =
+                data.filter(
+                    d =>
+                        !selectedJobs.includes(
+                            d.name
+                        )
+                );
+
+
+            data = [
+
+                ...selected.sort(
+                    (a,b) =>
+                        b.rate - a.rate
+                ),
+
+                ...others.sort(
+                    (a,b) =>
+                        b.rate - a.rate
+                )
+
+            ];
+
+        }else{
+
+            data.sort(
+                (a,b) =>
+                    b.rate - a.rate
+            );
+
+        }
+
+
+        return data.slice(0,5);
+
+    }
+
+
+    const licenseNames = [
+
+        ...new Set(
+            licenseRows
+            .map(
+                r => r.license
+            )
+            .filter(Boolean)
+        )
+
+    ];
+
+
+    return licenseNames
+    .map(
+        license => ({
+
+            name:
+                license,
+
+            rate:
+                calcLicenseRateWithLectures(
+                    license,
+                    lectures
+                )
+
+        })
+    )
+    .sort(
+        (a,b) =>
+            b.rate - a.rate
+    )
+    .slice(0,5);
+
+}
+
+
+/* =========================================
+   学期ごとの履歴
+========================================= */
+
+function getHistoriesByPeriod(
+    period
+){
+
+    return getHistory()
+    .filter(
+        item =>
+            getHistoryPeriod(item)
+            === period
+    );
+
+}
+
+
+/* =========================================
+   レーダーチャート
+
+   ★履修候補は一切参照しない
+========================================= */
+
+function drawRadarChart(data){
+
+    if(!hasDiagnosis){
+
+        clearHomeDiagnosisDisplay();
+
+        return;
+
+    }
+
+
+    const ctx =
+        document.getElementById(
+            "radarChart"
+        );
+
+
+    ctx.style.display =
+        "block";
+
+
+    document
+    .getElementById(
+        "noChartMessage"
+    )
+    .style.display =
+        "none";
+
+
+    if(radarChart){
+
+        radarChart.destroy();
+
+        radarChart = null;
+
+    }
+
+
+    const checkedPeriods =
+        getCheckedPeriods();
+
+
+    let labels = [];
+
+    let datasets = [];
+
+
+    const colors = [
+
+        "rgba(0,119,255,1)",
+        "rgba(231,76,60,1)",
+        "rgba(46,204,113,1)",
+        "rgba(243,156,18,1)",
+        "rgba(155,89,182,1)",
+        "rgba(26,188,156,1)",
+        "rgba(52,73,94,1)",
+        "rgba(255,99,132,1)"
+
+    ];
+
+
+    /*
+    比較する学期が
+    チェックされている場合
+    */
+    if(checkedPeriods.length > 0){
+
+        const historyDatasets = [];
+
+
+        checkedPeriods.forEach(
+            (period,index) => {
+
+                const histories =
+                    getHistoriesByPeriod(
+                        period
+                    );
+
+
+                histories.forEach(
+                    (
+                        historyItem,
+                        historyIndex
+                    ) => {
+
+                        const ranking =
+                            getHistoryRankingByTab(
+                                historyItem,
+                                currentTab
+                            );
+
+
+                        if(
+                            !ranking ||
+                            ranking.length === 0
+                        ){
+                            return;
+                        }
+
+
+                        ranking
+                        .slice(0,5)
+                        .forEach(
+                            r => {
+
+                                if(
+                                    !labels.includes(
+                                        r.name
+                                    )
+                                ){
+
+                                    labels.push(
+                                        r.name
+                                    );
+
+                                }
+
+                            }
+                        );
+
+
+                        historyDatasets.push({
+
+                            period:
+                                period,
+
+                            ranking:
+                                ranking,
+
+                            label:
+
+                                histories.length > 1
+
+                                ?
+
+                                `${period}(${historyIndex+1})`
+
+                                :
+
+                                period,
+
+                            color:
+
+                                colors[
+                                    (
+                                        index +
+                                        historyIndex
+                                    )
+                                    %
+                                    colors.length
+                                ]
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+        historyDatasets.forEach(
+            item => {
+
+                datasets.push({
+
+                    label:
+                        item.label,
+
+                    data:
+                        labels.map(
+                            label => {
+
+                                const found =
+                                    item.ranking.find(
+                                        r =>
+                                            r.name ===
+                                            label
+                                    );
+
+
+                                return found
+                                    ? found.rate
+                                    : 0;
+
+                            }
+                        ),
+
+                    fill:false,
+
+                    borderColor:
+                        item.color,
+
+                    backgroundColor:
+                        item.color.replace(
+                            "1)",
+                            "0.15)"
+                        ),
+
+                    pointRadius:4,
+
+                    pointHoverRadius:7
+
+                });
+
+            }
+        );
+
+    }
+
+
+    /*
+    チェックした履歴がない場合は
+    最新の正式診断を表示
+    */
+    if(datasets.length === 0){
+
+        labels =
+            data.map(
+                item =>
+                    item.name
+            );
+
+
+        datasets = [{
+
+            label:"最新",
+
+            data:
+                data.map(
+                    item =>
+                        item.rate
+                ),
+
+            fill:true,
+
+            borderColor:
+                "rgba(0,119,255,1)",
+
+            backgroundColor:
+                "rgba(0,119,255,0.15)",
+
+            pointRadius:5,
+
+            pointHoverRadius:8
+
+        }];
+
+    }
+
+
+    radarChart =
+        new Chart(
+            ctx,
+            {
+
+                type:"radar",
+
+                data:{
+
+                    labels:
+                        labels,
+
+                    datasets:
+                        datasets
+
+                },
+
+                options:{
+
+                    responsive:true,
+
+                    plugins:{
+
+                        legend:{
+                            display:true
+                        }
+
+                    },
+
+                    scales:{
+
+                        r:{
+
+                            min:0,
+
+                            max:100,
+
+                            ticks:{
+
+                                stepSize:20
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   講義検索
+========================================= */
+
+function normalizeSearchText(text){
+
+    return text
+    .toString()
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/Ⅰ/g,"1")
+    .replace(/Ⅱ/g,"2")
+    .replace(/Ⅲ/g,"3")
+    .replace(/Ⅳ/g,"4")
+    .replace(/ー/g,"")
+    .replace(/\s/g,"");
+
+}
+
+
+function lectureSearchText(name){
+
+    const extra = {
+
+        "情報処理論":
+            "じょうほうしょりろん",
+
+        "システム統計論":
+            "しすてむとうけいろん",
+
+        "プログラミング応用":
+            "ぷろぐらみんぐおうよう",
+
+        "データベース演習":
+            "でーたべーす",
+
+        "データ処理入門":
+            "でーたしょり",
+
+        "情報セキュリティ":
+            "じょうほうせきゅりてぃ",
+
+        "ウェブデザイン":
+            "うぇぶでざいん web",
+
+        "人工知能":
+            "じんこうちのう ai",
+
+        "AIデータサイエンスⅠ":
+            "ai えーあい でーたさいえんす",
+
+        "AIデータサイエンスⅡ":
+            "ai えーあい でーたさいえんす",
+
+        "簿記原理":
+            "ぼき",
+
+        "会計学原理":
+            "かいけい"
+
+    };
+
+
+    return normalizeSearchText(
+
+        name +
+        " " +
+        (
+            extra[name] ||
+            ""
+        )
+
+    );
+
+}
+
+
+function searchLecture(){
+
+    const rawKeyword =
+        document
+        .getElementById(
+            "searchBox"
+        )
+        .value
+        .trim();
+
+
+    const keyword =
+        normalizeSearchText(
+            rawKeyword
+        );
+
+
+    const area =
+        document.getElementById(
+            "searchResult"
+        );
+
+
+    if(rawKeyword === ""){
+
+        area.innerHTML =
+            "講義名を入力してください";
+
+        return;
+
+    }
+
+
+    const result =
+        allQuestionLectures
+        .map(fixLectureName)
+        .filter(
+            name =>
+                lectureSearchText(name)
+                .includes(keyword)
+        );
+
+
+    if(result.length === 0){
+
+        area.innerHTML =
+            "該当する講義がありません";
+
+        return;
+
+    }
+
+
+    area.innerHTML =
+        result
+        .map(
+            name => {
+
+                const added =
+                    candidates.some(
+                        c =>
+                            fixLectureName(
+                                c.name
+                            )
+                            === name
+                    );
+
+
+                const alreadyTaken =
+                    getBaseSelectedLectures()
+                    .includes(name);
+
+
+                if(alreadyTaken){
+
+                    return `
+
+                        <div
+                            style="
+                                margin-top:8px;
+                            "
+                        >
+
+                            ${name}
+
+                            <button
+                                class="addedBtn"
+                                disabled
+                            >
+
+                                取得済み
+
+                            </button>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                return `
+
+                    <div
+                        style="
+                            margin-top:8px;
+                        "
+                    >
+
+                        ${name}
+
+                        <button
+
+                            class="${
+                                added
+                                ?
+                                "addedBtn"
+                                :
+                                ""
+                            }"
+
+                            ${
+                                added
+                                ?
+                                "disabled"
+                                :
+                                ""
+                            }
+
+                            onclick="
+                                addCandidate(
+                                    '${name}'
+                                )
+                            "
+                        >
+
+                            ${
+                                added
+                                ?
+                                "追加済み"
+                                :
+                                "追加"
+                            }
+
+                        </button>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+}
+
+
+/* =========================================
+   履修候補追加
+
+   ★チャートには触らない
+   ★履歴には触らない
+   ★学期チェックにも触らない
+========================================= */
+
+function addCandidate(name){
+
+    if(!hasDiagnosis){
+
+        alert(
+            "先に診断を行ってください。"
+        );
+
+        return;
+
+    }
+
+
+    const fixedName =
+        fixLectureName(name);
+
+
+    if(
+        getBaseSelectedLectures()
+        .includes(fixedName)
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        !candidates.some(
+            c =>
+                fixLectureName(
+                    c.name
+                )
+                === fixedName
+        )
+    ){
+
+        candidates.push({
+
+            name:
+                fixedName
+
+        });
+
+
+        saveCandidates();
+
+        updateCandidates();
+
+
+        /*
+        ★重要
+
+        switchTab()は呼ばない。
+
+        横棒ランキングだけ
+        再描画する。
+        */
+        renderSimulationRanking();
+
+
+        /*
+        検索結果の
+        「追加済み」表示だけ更新
+        */
+        searchLecture();
+
+    }
+
+}
+
+
+/* =========================================
+   履修候補削除
+========================================= */
+
+function removeCandidate(name){
+
+    candidates =
+        candidates.filter(
+            c =>
+                fixLectureName(
+                    c.name
+                )
+                !==
+                fixLectureName(name)
+        );
+
+
+    saveCandidates();
+
+    updateCandidates();
+
+
+    /*
+    横棒だけ更新
+    */
+    renderSimulationRanking();
+
+
+    const searchBox =
+        document.getElementById(
+            "searchBox"
+        );
+
+
+    if(
+        searchBox.value
+        .trim() !== ""
+    ){
+
+        searchLecture();
+
+    }
+
+}
+
+
+/* =========================================
+   シミュレーションランキングだけ更新
+========================================= */
+
+function renderSimulationRanking(){
+
+    if(!hasDiagnosis){
+        return;
+    }
+
+
+    if(currentTab === "job"){
+
+        renderJobs();
+
+    }else{
+
+        renderLicenses();
+
+    }
+
+
+    /*
+    ここでは絶対に
+
+    drawRadarChart()
+    updateLatestHistoryRanking()
+    saveHomeDisplayState()
+
+    を呼ばない。
+    */
+
+}
+
+
+/* =========================================
+   履修候補一覧
+========================================= */
+
+function updateCandidates(){
+
+    const list =
+        document.getElementById(
+            "candidateList"
+        );
+
+
+    list.innerHTML = "";
+
+
+    if(candidates.length === 0){
+
+        list.innerHTML = `
+
+            <li class="small">
+
+                まだ履修候補はありません
+
+            </li>
+
+        `;
+
+        return;
+
+    }
+
+
+    candidates.forEach(
+        c => {
+
+            const li =
+                document.createElement(
+                    "li"
+                );
+
+
+            li.className =
+                "candidateItem";
+
+
+            li.innerHTML = `
+
+                <span>
+                    ${c.name}
+                </span>
+
+
+                <button
+
+                    class="deleteBtn"
+
+                    onclick="
+                        removeCandidate(
+                            '${c.name}'
+                        )
+                    "
+
+                >
+
+                    ×
+
+                </button>
+
+            `;
+
+
+            list.appendChild(li);
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   候補リセット
+========================================= */
+
+function clearCandidates(){
+
+    candidates = [];
+
+
+    saveCandidates();
+
+    updateCandidates();
+
+
+    /*
+    横棒だけ戻す
+    */
+    renderSimulationRanking();
+
+
+    const searchBox =
+        document.getElementById(
+            "searchBox"
+        );
+
+
+    if(
+        searchBox.value
+        .trim() !== ""
+    ){
+
+        searchLecture();
+
+    }else{
+
+        document
+        .getElementById(
+            "searchResult"
+        )
+        .innerHTML = "";
+
+    }
+
+}
+
+
+/* =========================================
+   候補保存
+========================================= */
+
+function saveCandidates(){
+
+    localStorage.setItem(
+        "lectureCandidates",
+        JSON.stringify(
+            candidates
+        )
+    );
+
+}
+
+
+/* =========================================
+   候補読込
+========================================= */
+
+function loadSavedCandidates(){
+
+    const saved =
+        localStorage.getItem(
+            "lectureCandidates"
+        );
+
+
+    if(!saved){
+
+        candidates = [];
+
+        return;
+
+    }
+
+
+    try{
+
+        const parsed =
+            JSON.parse(saved);
+
+
+        candidates =
+            Array.isArray(parsed)
+            ? parsed
+            : [];
+
+
+    }catch(e){
+
+        candidates = [];
+
+    }
+
+}
+
 </script>
 
+
 <script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./service-worker.js")
-            .catch(function (error) {
-                console.error("Service Worker registration failed:", error);
-            });
-    });
+
+/* =========================================
+   Service Worker
+========================================= */
+
+if(
+    "serviceWorker" in navigator
+){
+
+    window.addEventListener(
+        "load",
+        function(){
+
+            navigator
+            .serviceWorker
+            .register(
+                "./service-worker.js"
+            )
+            .catch(
+                function(error){
+
+                    console.error(
+                        "Service Worker registration failed:",
+                        error
+                    );
+
+                }
+            );
+
+        }
+    );
+
 }
+
 </script>
 
 </body>

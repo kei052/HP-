@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>診断アンケート</title>
 
 <style>
+
 body{
     margin:0;
     font-family:"Yu Gothic",sans-serif;
@@ -31,7 +36,9 @@ header{
     box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
-h2{margin-top:0;}
+h2{
+    margin-top:0;
+}
 
 label{
     display:block;
@@ -64,191 +71,1229 @@ input[type="checkbox"]{
     font-size:18px;
     cursor:pointer;
 }
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
+
 <meta name="theme-color" content="#0077ff">
-<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+<link
+    rel="apple-touch-icon"
+    href="./icons/icon-192.png"
+>
 
 </head>
 
+
 <body>
 
+
 <header>
-    <h1>今学期の診断アンケート</h1>
+
+<h1>
+今学期の診断アンケート
+</h1>
+
 </header>
+
 
 <div class="container">
 
-<div class="card">
-<h2>表示する時期</h2>
-<label><input type="checkbox" class="period" value="1年前期">1年前期</label>
-<label><input type="checkbox" class="period" value="1年後期">1年後期</label>
-<label><input type="checkbox" class="period" value="2年前期">2年前期</label>
-<label><input type="checkbox" class="period" value="2年後期">2年後期</label>
-<label><input type="checkbox" class="period" value="3年前期">3年前期</label>
-<label><input type="checkbox" class="period" value="3年後期">3年後期</label>
-<label><input type="checkbox" class="period" value="4年前期">4年前期</label>
-<label><input type="checkbox" class="period" value="4年後期">4年後期</label>
-</div>
+
+<!-- =========================
+     表示時期
+========================= -->
 
 <div class="card">
-<h2>取得済み講義</h2>
-<div id="subjectArea"></div>
-</div>
 
-<div class="card">
-<h2>興味のある職種</h2>
-<div id="jobArea"></div>
+<h2>
+表示する時期
+</h2>
+
 
 <label>
-<input type="checkbox" id="undecided" onchange="toggleUndecided()">
-特に決まっていない
+
+<input
+    type="checkbox"
+    class="period"
+    value="1年前期"
+>
+
+1年前期
+
 </label>
+
+
+<label>
+
+<input
+    type="checkbox"
+    class="period"
+    value="1年後期"
+>
+
+1年後期
+
+</label>
+
+
+<label>
+
+<input
+    type="checkbox"
+    class="period"
+    value="2年前期"
+>
+
+2年前期
+
+</label>
+
+
+<label>
+
+<input
+    type="checkbox"
+    class="period"
+    value="2年後期"
+>
+
+2年後期
+
+</label>
+
+
+<label>
+
+<input
+    type="checkbox"
+    class="period"
+    value="3年前期"
+>
+
+3年前期
+
+</label>
+
+
+<label>
+
+<input
+    type="checkbox"
+    class="period"
+    value="3年後期"
+>
+
+3年後期
+
+</label>
+
+
+<label>
+
+<input
+    type="checkbox"
+    class="period"
+    value="4年前期"
+>
+
+4年前期
+
+</label>
+
+
+<label>
+
+<input
+    type="checkbox"
+    class="period"
+    value="4年後期"
+>
+
+4年後期
+
+</label>
+
 </div>
 
-<button class="submit-btn" onclick="startDiagnosis()">診断開始</button>
-<button class="back-btn" onclick="location.href='index.html'">ホームへ戻る</button>
+
+<!-- =========================
+     取得済み講義
+========================= -->
+
+<div class="card">
+
+<h2>
+取得済み講義
+</h2>
+
+<div id="subjectArea"></div>
 
 </div>
+
+
+<!-- =========================
+     興味職種
+========================= -->
+
+<div class="card">
+
+<h2>
+興味のある職種
+</h2>
+
+<div id="jobArea"></div>
+
+
+<label>
+
+<input
+    type="checkbox"
+    id="undecided"
+    onchange="toggleUndecided()"
+>
+
+特に決まっていない
+
+</label>
+
+</div>
+
+
+<button
+    class="submit-btn"
+    onclick="startDiagnosis()"
+>
+
+診断開始
+
+</button>
+
+
+<button
+    class="back-btn"
+    onclick="goHome()"
+>
+
+ホームへ戻る
+
+</button>
+
+
+</div>
+
 
 <script>
+
+/* =========================================
+   講義一覧
+========================================= */
+
 const subjects = [
-"情報処理論","システム統計論","プログラミング応用","プログラミング応用演習",
-"アルゴリズム論","データベース演習","データ処理入門","情報化社会論",
-"インターネットと法","ネットワーク技術Ⅰ","ネットワーク技術Ⅱ",
-"ネットワークの構築と運用","システム開発技術（IoT）","ウェブデザイン",
-"ウェブコンテンツ実践","情報と職業","経営情報論","産業情報論",
-"情報セキュリティ","健康情報統計Ⅱ","健康情報統計Ⅲ","健康情報数学Ⅱ",
-"健康情報数学Ⅲ","社会調査法","AIデータサイエンスⅠ","AIデータサイエンスⅡ",
-"医療・生命情報学Ⅰ","医療・生命情報学Ⅱ","パターン認識","画像認識",
-"自然言語処理","人工知能","臨床医学および医療用語","臨床医学各論Ⅰ",
-"臨床医学各論Ⅱ","臨床医学各論Ⅲ","臨床医学各論Ⅳ","診療情報管理論Ⅰ",
-"診療情報管理論Ⅱ","医療管理各論","国際統計分類I","国際統計分類Ⅱ",
-"健康ビッグデータ","デジタルヘルスコミュニケーション",
-"デジタルヘルステクノロジー","デジタルヘルスイノベーション","医療統計学",
-"社会心理学","観光行動論","マーケティング論","地域マーケティング論",
-"市場調査論","簿記原理","会計学原理","経営分析論","経営戦略論","経営統計学"
+
+"情報処理論",
+"システム統計論",
+
+"プログラミング応用",
+"プログラミング応用演習",
+
+"アルゴリズム論",
+"データベース演習",
+"データ処理入門",
+
+"情報化社会論",
+"インターネットと法",
+
+"ネットワーク技術Ⅰ",
+"ネットワーク技術Ⅱ",
+"ネットワークの構築と運用",
+
+"システム開発技術（IoT）",
+
+"ウェブデザイン",
+"ウェブコンテンツ実践",
+
+"情報と職業",
+
+"経営情報論",
+"産業情報論",
+
+"情報セキュリティ",
+
+"健康情報統計Ⅱ",
+"健康情報統計Ⅲ",
+
+"健康情報数学Ⅱ",
+"健康情報数学Ⅲ",
+
+"社会調査法",
+
+"AIデータサイエンスⅠ",
+"AIデータサイエンスⅡ",
+
+"医療・生命情報学Ⅰ",
+"医療・生命情報学Ⅱ",
+
+"パターン認識",
+"画像認識",
+
+"自然言語処理",
+"人工知能",
+
+"臨床医学および医療用語",
+
+"臨床医学各論Ⅰ",
+"臨床医学各論Ⅱ",
+"臨床医学各論Ⅲ",
+"臨床医学各論Ⅳ",
+
+"診療情報管理論Ⅰ",
+"診療情報管理論Ⅱ",
+
+"医療管理各論",
+
+"国際統計分類I",
+"国際統計分類Ⅱ",
+
+"健康ビッグデータ",
+
+"デジタルヘルスコミュニケーション",
+"デジタルヘルステクノロジー",
+"デジタルヘルスイノベーション",
+
+"医療統計学",
+
+"社会心理学",
+
+"観光行動論",
+
+"マーケティング論",
+"地域マーケティング論",
+"市場調査論",
+
+"簿記原理",
+"会計学原理",
+
+"経営分析論",
+"経営戦略論",
+"経営統計学"
+
 ];
+
+
+/* =========================================
+   職種一覧
+========================================= */
 
 const jobs = [
-"診療情報管理士","教職","プログラマ","システムエンジニア","Webデザイン",
-"データサイエンティスト","AI開発者","ネットワーク管理者",
-"セキュリティアナリスト","ITコンサルタント","ITサポート・ヘルプデスク"
+
+"診療情報管理士",
+
+"教職",
+
+"プログラマ",
+
+"システムエンジニア",
+
+"Webデザイン",
+
+"データサイエンティスト",
+
+"AI開発者",
+
+"ネットワーク管理者",
+
+"セキュリティアナリスト",
+
+"ITコンサルタント",
+
+"ITサポート・ヘルプデスク"
+
 ];
 
+
+/* =========================================
+   起動
+========================================= */
+
 window.onload = function(){
+
     renderCheckboxes();
+
     restoreAnswers();
+
 };
 
-function renderCheckboxes(){
-    document.getElementById("subjectArea").innerHTML = subjects.map(s => `
-        <label><input type="checkbox" class="subject" value="${s}">${s}</label>
-    `).join("");
 
-    document.getElementById("jobArea").innerHTML = jobs.map(j => `
-        <label><input type="checkbox" class="job" value="${j}">${j}</label>
-    `).join("");
+/* =========================================
+   チェックボックス生成
+========================================= */
+
+function renderCheckboxes(){
+
+    document
+    .getElementById(
+        "subjectArea"
+    )
+    .innerHTML =
+
+        subjects
+        .map(
+            subject => `
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    class="subject"
+                    value="${subject}"
+                >
+
+                ${subject}
+
+            </label>
+
+            `
+        )
+        .join("");
+
+
+    document
+    .getElementById(
+        "jobArea"
+    )
+    .innerHTML =
+
+        jobs
+        .map(
+            job => `
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    class="job"
+                    value="${job}"
+                >
+
+                ${job}
+
+            </label>
+
+            `
+        )
+        .join("");
+
 }
+
+
+/* =========================================
+   「特に決まっていない」
+========================================= */
 
 function toggleUndecided(){
-    const undecided = document.getElementById("undecided");
-    const jobs = document.querySelectorAll(".job");
 
-    jobs.forEach(job => {
-        job.disabled = undecided.checked;
-        if(undecided.checked) job.checked = false;
-    });
+    const undecided =
+        document.getElementById(
+            "undecided"
+        );
+
+
+    const jobCheckboxes =
+        document.querySelectorAll(
+            ".job"
+        );
+
+
+    jobCheckboxes.forEach(
+        job => {
+
+            job.disabled =
+                undecided.checked;
+
+
+            if(undecided.checked){
+
+                job.checked =
+                    false;
+
+            }
+
+        }
+    );
+
 }
+
+
+/* =========================================
+   履歴取得
+========================================= */
+
+function getHistory(){
+
+    try{
+
+        const history =
+            JSON.parse(
+                localStorage.getItem(
+                    "history"
+                )
+            );
+
+
+        return Array.isArray(history)
+            ? history
+            : [];
+
+    }catch(e){
+
+        return [];
+
+    }
+
+}
+
+
+/* =========================================
+   学期順
+========================================= */
+
+const periodOrder = {
+
+    "1年前期":1,
+    "1年後期":2,
+
+    "2年前期":3,
+    "2年後期":4,
+
+    "3年前期":5,
+    "3年後期":6,
+
+    "4年前期":7,
+    "4年後期":8
+
+};
+
+
+/* =========================================
+   履歴の学期取得
+========================================= */
+
+function getHistoryPeriod(item){
+
+    if(!item){
+        return "";
+    }
+
+
+    if(
+        Array.isArray(
+            item.periods
+        ) &&
+        item.periods.length > 0
+    ){
+
+        return item.periods[0];
+
+    }
+
+
+    if(
+        typeof item.period ===
+        "string"
+    ){
+
+        return item.period;
+
+    }
+
+
+    if(
+        Array.isArray(
+            item.selectedPeriods
+        ) &&
+        item.selectedPeriods.length > 0
+    ){
+
+        return item
+        .selectedPeriods[0];
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================================
+   最新学期の履歴
+========================================= */
+
+function getNewestAcademicHistoryIndex(){
+
+    const history =
+        getHistory();
+
+
+    if(history.length === 0){
+        return -1;
+    }
+
+
+    let newestIndex = -1;
+
+    let newestOrder = -1;
+
+
+    history.forEach(
+        (item,index) => {
+
+            const period =
+                getHistoryPeriod(
+                    item
+                );
+
+
+            const order =
+                periodOrder[
+                    period
+                ];
+
+
+            if(
+                typeof order !==
+                "number"
+            ){
+                return;
+            }
+
+
+            if(
+                order > newestOrder ||
+                (
+                    order === newestOrder &&
+                    index > newestIndex
+                )
+            ){
+
+                newestOrder =
+                    order;
+
+                newestIndex =
+                    index;
+
+            }
+
+        }
+    );
+
+
+    /*
+    学期が入っていない
+    古いデータへの対応
+    */
+    if(newestIndex === -1){
+
+        return (
+            history.length - 1
+        );
+
+    }
+
+
+    return newestIndex;
+
+}
+
+
+/* =========================================
+   回答復元
+
+   ★今回の重要部分
+========================================= */
 
 function restoreAnswers(){
-    const editIndex = localStorage.getItem("editHistoryIndex");
-    const history = JSON.parse(localStorage.getItem("history")) || [];
 
-    let savedSubjects = JSON.parse(localStorage.getItem("selectedLectures")) || [];
-    let savedJobs = JSON.parse(localStorage.getItem("selectedJobs")) || [];
-    let savedPeriods = JSON.parse(localStorage.getItem("selectedPeriods")) || [];
-    let undecided = localStorage.getItem("undecided") === "true";
+    const history =
+        getHistory();
 
-    if(editIndex !== null && history[Number(editIndex)]){
-        const item = history[Number(editIndex)];
-        savedSubjects = item.subjects || [];
-        savedJobs = item.selectedJobs || [];
-        savedPeriods = item.periods || [];
-        undecided = item.undecided || false;
+
+    const editIndexRaw =
+        localStorage.getItem(
+            "editHistoryIndex"
+        );
+
+
+    /*
+    最初は全部空
+    */
+    let savedSubjects = [];
+
+    let savedJobs = [];
+
+    let savedPeriods = [];
+
+    let undecided = false;
+
+
+    /*
+    =====================================
+    履歴を「変更」して開いた場合
+
+    → 指定された履歴だけを読み込む
+    =====================================
+    */
+
+    if(editIndexRaw !== null){
+
+        const editIndex =
+            Number(
+                editIndexRaw
+            );
+
+
+        if(
+            Number.isInteger(
+                editIndex
+            ) &&
+            history[editIndex]
+        ){
+
+            const item =
+                history[
+                    editIndex
+                ];
+
+
+            savedSubjects =
+                item.subjects || [];
+
+
+            savedJobs =
+                item.selectedJobs || [];
+
+
+            savedPeriods =
+                item.periods || [];
+
+
+            undecided =
+                item.undecided ||
+                false;
+
+        }else{
+
+            /*
+            編集対象が存在しない場合
+            古いeditHistoryIndexを削除
+            */
+            localStorage.removeItem(
+                "editHistoryIndex"
+            );
+
+        }
+
     }
 
-    document.querySelectorAll(".subject").forEach(s => {
-        if(savedSubjects.includes(s.value)) s.checked = true;
-    });
 
-    document.querySelectorAll(".job").forEach(j => {
-        if(savedJobs.includes(j.value)) j.checked = true;
-    });
+    /*
+    =====================================
+    通常の「診断する」から開いた場合
 
-    document.querySelectorAll(".period").forEach(p => {
-        if(savedPeriods.includes(p.value)) p.checked = true;
-    });
+    履歴がある場合だけ
+    最新の正式診断を読み込む
+    =====================================
+    */
 
-    document.getElementById("undecided").checked = undecided;
+    else if(history.length > 0){
+
+        const newestIndex =
+            getNewestAcademicHistoryIndex();
+
+
+        const latest =
+            history[
+                newestIndex
+            ];
+
+
+        if(latest){
+
+            savedSubjects =
+                latest.subjects || [];
+
+
+            savedJobs =
+                latest.selectedJobs || [];
+
+
+            savedPeriods =
+                latest.periods || [];
+
+
+            undecided =
+                latest.undecided ||
+                false;
+
+        }
+
+    }
+
+
+    /*
+    =====================================
+    履歴0件の場合
+
+    savedSubjects
+    savedJobs
+    savedPeriods
+
+    は空のまま。
+
+    selectedLecturesなどの
+    古いlocalStorageは使用しない。
+    =====================================
+    */
+
+
+    document
+    .querySelectorAll(
+        ".subject"
+    )
+    .forEach(
+        subject => {
+
+            subject.checked =
+                savedSubjects.includes(
+                    subject.value
+                );
+
+        }
+    );
+
+
+    document
+    .querySelectorAll(
+        ".job"
+    )
+    .forEach(
+        job => {
+
+            job.checked =
+                savedJobs.includes(
+                    job.value
+                );
+
+        }
+    );
+
+
+    document
+    .querySelectorAll(
+        ".period"
+    )
+    .forEach(
+        period => {
+
+            period.checked =
+                savedPeriods.includes(
+                    period.value
+                );
+
+        }
+    );
+
+
+    document
+    .getElementById(
+        "undecided"
+    )
+    .checked =
+        undecided;
+
+
     toggleUndecided();
+
 }
+
+
+/* =========================================
+   診断開始
+========================================= */
 
 function startDiagnosis(){
+
     const selectedSubjects = [];
+
     const selectedJobs = [];
+
     const selectedPeriods = [];
 
-    document.querySelectorAll(".subject:checked").forEach(s => selectedSubjects.push(s.value));
-    document.querySelectorAll(".job:checked").forEach(j => selectedJobs.push(j.value));
-    document.querySelectorAll(".period:checked").forEach(p => selectedPeriods.push(p.value));
 
-    const undecided = document.getElementById("undecided").checked;
+    /*
+    取得済み講義
+    */
+    document
+    .querySelectorAll(
+        ".subject:checked"
+    )
+    .forEach(
+        subject => {
 
-    localStorage.setItem("selectedLectures", JSON.stringify(selectedSubjects));
-    localStorage.setItem("selectedJobs", JSON.stringify(selectedJobs));
-    localStorage.setItem("selectedPeriods", JSON.stringify(selectedPeriods));
-    localStorage.setItem("undecided", undecided ? "true" : "false");
+            selectedSubjects.push(
+                subject.value
+            );
 
-    const history = JSON.parse(localStorage.getItem("history")) || [];
-    const editIndex = localStorage.getItem("editHistoryIndex");
+        }
+    );
 
-    const item = {
-        date: new Date().toLocaleString(),
-        subjects: selectedSubjects,
-        selectedJobs: selectedJobs,
-        periods: selectedPeriods,
-        ranking: [],
-        rankingByTab: {},
-        undecided: undecided
-    };
 
-    if(editIndex !== null && history[Number(editIndex)]){
-        history[Number(editIndex)] = item;
-        localStorage.removeItem("editHistoryIndex");
-    }else{
-        history.push(item);
+    /*
+    興味職種
+    */
+    document
+    .querySelectorAll(
+        ".job:checked"
+    )
+    .forEach(
+        job => {
+
+            selectedJobs.push(
+                job.value
+            );
+
+        }
+    );
+
+
+    /*
+    学期
+    */
+    document
+    .querySelectorAll(
+        ".period:checked"
+    )
+    .forEach(
+        period => {
+
+            selectedPeriods.push(
+                period.value
+            );
+
+        }
+    );
+
+
+    const undecided =
+        document
+        .getElementById(
+            "undecided"
+        )
+        .checked;
+
+
+    /*
+    =====================================
+    入力確認
+    =====================================
+    */
+
+    if(selectedPeriods.length === 0){
+
+        alert(
+            "表示する時期を選択してください。"
+        );
+
+        return;
+
     }
 
-    localStorage.setItem("history", JSON.stringify(history));
 
-    alert("診断完了！");
-    location.href = "index.html";
+    /*
+    学期は1つだけにする。
+
+    履歴比較を安定させるため、
+    複数学期を同じ診断に入れない。
+    */
+    if(selectedPeriods.length > 1){
+
+        alert(
+            "表示する時期は1つだけ選択してください。"
+        );
+
+        return;
+
+    }
+
+
+    /*
+    =====================================
+    正式診断用データ
+    =====================================
+    */
+
+    localStorage.setItem(
+        "selectedLectures",
+        JSON.stringify(
+            selectedSubjects
+        )
+    );
+
+
+    localStorage.setItem(
+        "selectedJobs",
+        JSON.stringify(
+            selectedJobs
+        )
+    );
+
+
+    localStorage.setItem(
+        "selectedPeriods",
+        JSON.stringify(
+            selectedPeriods
+        )
+    );
+
+
+    localStorage.setItem(
+        "undecided",
+        undecided
+        ? "true"
+        : "false"
+    );
+
+
+    /*
+    =====================================
+    履修候補をリセット
+
+    新しい正式診断をしたら、
+    前回のシミュレーション候補は
+    引き継がない。
+    =====================================
+    */
+
+    localStorage.removeItem(
+        "lectureCandidates"
+    );
+
+
+    /*
+    =====================================
+    チャート比較状態もリセット
+
+    新しい診断後に
+    前の学期チェックが残って
+    チャートが乱れるのを防ぐ。
+    =====================================
+    */
+
+    localStorage.removeItem(
+        "homeDisplayState"
+    );
+
+
+    /*
+    =====================================
+    履歴
+    =====================================
+    */
+
+    const history =
+        getHistory();
+
+
+    const editIndexRaw =
+        localStorage.getItem(
+            "editHistoryIndex"
+        );
+
+
+    const item = {
+
+        date:
+            new Date()
+            .toLocaleString(),
+
+        subjects:
+            selectedSubjects,
+
+        selectedJobs:
+            selectedJobs,
+
+        periods:
+            selectedPeriods,
+
+        /*
+        index.html側で
+        正式ランキングを扱えるように
+        最初は空
+        */
+        ranking:[],
+
+        rankingByTab:{},
+
+        undecided:
+            undecided
+
+    };
+
+
+    /*
+    =====================================
+    履歴変更
+    =====================================
+    */
+
+    if(editIndexRaw !== null){
+
+        const editIndex =
+            Number(
+                editIndexRaw
+            );
+
+
+        if(
+            Number.isInteger(
+                editIndex
+            ) &&
+            history[editIndex]
+        ){
+
+            history[
+                editIndex
+            ] = item;
+
+        }else{
+
+            /*
+            編集対象が消えていた場合は
+            新しい診断として追加
+            */
+            history.push(
+                item
+            );
+
+        }
+
+
+        localStorage.removeItem(
+            "editHistoryIndex"
+        );
+
+    }
+
+
+    /*
+    =====================================
+    新規診断
+    =====================================
+    */
+
+    else{
+
+        history.push(
+            item
+        );
+
+    }
+
+
+    localStorage.setItem(
+        "history",
+        JSON.stringify(
+            history
+        )
+    );
+
+
+    /*
+    古い最新ランキングを削除。
+
+    新しい診断なのに
+    前のランキングが一瞬表示されるのを
+    防止する。
+    */
+    localStorage.removeItem(
+        "latestRanking"
+    );
+
+
+    alert(
+        "診断完了！"
+    );
+
+
+    location.href =
+        "index.html";
+
 }
+
+
+/* =========================================
+   ホームへ戻る
+========================================= */
+
+function goHome(){
+
+    /*
+    編集中にホームへ戻った場合、
+    次回診断画面を開いた時に
+    編集状態が残らないようにする。
+    */
+    localStorage.removeItem(
+        "editHistoryIndex"
+    );
+
+
+    location.href =
+        "index.html";
+
+}
+
 </script>
 
 
 <script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./service-worker.js")
-            .catch(function (error) {
-                console.error("Service Worker registration failed:", error);
-            });
-    });
+
+/* =========================================
+   Service Worker
+========================================= */
+
+if(
+    "serviceWorker" in navigator
+){
+
+    window.addEventListener(
+        "load",
+        function(){
+
+            navigator
+            .serviceWorker
+            .register(
+                "./service-worker.js"
+            )
+            .catch(
+                function(error){
+
+                    console.error(
+                        "Service Worker registration failed:",
+                        error
+                    );
+
+                }
+            );
+
+        }
+    );
+
 }
+
 </script>
 
 </body>
+
 </html>

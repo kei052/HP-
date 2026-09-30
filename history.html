@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>診断履歴</title>
 
 <style>
+
 body{
     margin:0;
     font-family:"Yu Gothic",sans-serif;
@@ -88,14 +92,32 @@ header{
     margin-top:10px;
 }
 
-.blue{ background:#4A90E2; color:white; }
-.red{ background:#e74c3c; color:white; }
-.green{ background:#2ecc71; color:white; }
-.orange{ background:#f39c12; color:white; }
+.blue{
+    background:#4A90E2;
+    color:white;
+}
+
+.red{
+    background:#e74c3c;
+    color:white;
+}
+
+.green{
+    background:#2ecc71;
+    color:white;
+}
+
+.orange{
+    background:#f39c12;
+    color:white;
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
+
 <meta name="theme-color" content="#0077ff">
+
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
 
 </head>
@@ -103,183 +125,789 @@ header{
 <body>
 
 <header>
-    <h1>診断履歴</h1>
+
+<h1>診断履歴</h1>
+
 </header>
+
 
 <div class="container">
 
-<button class="btn blue" onclick="location.href='index.html'">ホームへ戻る</button>
-<button class="btn green" onclick="location.href='anke-to.html'">診断を開く</button>
-<button class="btn red" onclick="clearHistory()">履歴をすべて削除</button>
+<button
+    class="btn blue"
+    onclick="location.href='index.html'"
+>
+    ホームへ戻る
+</button>
+
+
+<button
+    class="btn green"
+    onclick="location.href='anke-to.html'"
+>
+    診断を開く
+</button>
+
+
+<button
+    class="btn red"
+    onclick="clearHistory()"
+>
+    履歴をすべて削除
+</button>
+
 
 <div class="card">
-    <div class="title">最新の診断結果</div>
+
+    <div class="title">
+        最新の診断結果
+    </div>
+
     <div id="latest"></div>
+
 </div>
+
 
 <div id="historyArea"></div>
 
 </div>
 
+
 <script>
-let history = JSON.parse(localStorage.getItem("history")) || [];
-let latest = JSON.parse(localStorage.getItem("latestRanking")) || [];
+
+/* =========================
+   データ取得
+========================= */
+
+let history =
+    JSON.parse(
+        localStorage.getItem("history")
+    ) || [];
+
+
+/*
+最新結果は
+latestRankingを直接信用せず、
+履歴の最新データから取得する。
+
+これによって
+古いlatestRankingが残っていても
+表示されなくなる。
+*/
+function getLatestRanking(){
+
+    if(history.length === 0){
+        return [];
+    }
+
+    const last =
+        history[history.length - 1];
+
+    return (
+        last.rankingByTab?.job ||
+        last.ranking ||
+        []
+    );
+
+}
+
+
+let latest = getLatestRanking();
+
+
+
+/* =========================
+   最新診断結果
+========================= */
 
 function renderLatest(){
-    const area = document.getElementById("latest");
 
-    if(!latest || latest.length === 0){
-        area.innerHTML = `<div class="small">該当なし</div>`;
+    const area =
+        document.getElementById("latest");
+
+
+    /*
+    履歴そのものが無ければ
+    必ず「該当なし」
+    */
+    if(
+        history.length === 0 ||
+        !latest ||
+        latest.length === 0
+    ){
+
+        area.innerHTML = `
+            <div class="small">
+                該当なし
+            </div>
+        `;
+
         return;
+
     }
 
-    area.innerHTML = latest.slice(0,5).map((item,i)=>`
-        <div class="small">${i + 1}位：${item.name}（適合率 ${item.rate}%）</div>
-    `).join("");
+
+    area.innerHTML =
+        latest
+        .slice(0,5)
+        .map(
+            (item,i)=>`
+
+            <div class="small">
+
+                ${i + 1}位：
+                ${item.name}
+                （適合率 ${item.rate}%）
+
+            </div>
+
+            `
+        )
+        .join("");
+
 }
+
+
+
+/* =========================
+   履歴一覧
+========================= */
 
 function renderHistory(){
-    const area = document.getElementById("historyArea");
+
+    const area =
+        document.getElementById(
+            "historyArea"
+        );
+
     area.innerHTML = "";
 
+
     if(history.length === 0){
+
         area.innerHTML = `
+
             <div class="card">
-                <div class="title">まだ履歴がありません</div>
-                <div class="small">診断を実行するとここに表示されます</div>
+
+                <div class="title">
+                    まだ履歴がありません
+                </div>
+
+                <div class="small">
+                    診断を実行するとここに表示されます
+                </div>
+
             </div>
+
         `;
+
+        return;
+
+    }
+
+
+    const reversed =
+        [...history].reverse();
+
+
+    reversed.forEach(
+        (item,index)=>{
+
+        const originalIndex =
+            history.length - 1 - index;
+
+        const ranking =
+            item.rankingByTab?.job ||
+            item.ranking ||
+            [];
+
+
+        area.innerHTML += `
+
+            <div class="card">
+
+                <div class="title">
+
+                    診断
+                    ${history.length - index}
+
+                </div>
+
+
+                <div class="small">
+
+                    日時：
+                    ${item.date || "不明"}
+
+                </div>
+
+
+                <div class="small">
+
+                    表示時期：
+
+                    ${
+                        (item.periods || [])
+                        .join("、")
+                        ||
+                        "なし"
+                    }
+
+                </div>
+
+
+                <div class="small">
+
+                    選択職種：
+
+                    ${
+                        (item.selectedJobs || [])
+                        .join("、")
+                        ||
+                        "なし"
+                    }
+
+                </div>
+
+
+                <div class="small">
+
+                    選択講義数：
+
+                    ${
+                        (item.subjects || [])
+                        .length
+                    }
+
+                </div>
+
+
+                <div class="small">
+
+                    取得済み講義：
+
+                    ${
+                        (item.subjects || [])
+                        .join("、")
+                        ||
+                        "なし"
+                    }
+
+                </div>
+
+
+                <button
+
+                    id="historyBtn${originalIndex}"
+
+                    class="detailBtn"
+
+                    onclick="
+                        toggleHistoryDetail(
+                            ${originalIndex}
+                        )
+                    "
+                >
+
+                    詳細を見る
+
+                </button>
+
+
+                <div
+
+                    id="historyDetail${originalIndex}"
+
+                    class="detailBox"
+
+                >
+
+                    ${
+                        ranking.length === 0
+
+                        ?
+
+                        `
+                        <div class="small">
+
+                            ランキング詳細は
+                            まだありません。
+
+                        </div>
+                        `
+
+                        :
+
+                        ranking
+                        .map(
+                            (r,i)=>`
+
+                            <div class="small">
+
+                                ${i + 1}位：
+                                ${r.name}
+                                （適合率 ${r.rate}%）
+
+                            </div>
+
+                            `
+                        )
+                        .join("")
+                    }
+
+                </div>
+
+
+                <div class="actionArea">
+
+                    <button
+
+                        class="orange"
+
+                        onclick="
+                            editHistory(
+                                ${originalIndex}
+                            )
+                        "
+                    >
+
+                        変更
+
+                    </button>
+
+
+                    <button
+
+                        class="red"
+
+                        onclick="
+                            deleteHistory(
+                                ${originalIndex}
+                            )
+                        "
+                    >
+
+                        削除
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+
+/* =========================
+   詳細開閉
+========================= */
+
+function toggleHistoryDetail(index){
+
+    const box =
+        document.getElementById(
+            "historyDetail" + index
+        );
+
+    const btn =
+        document.getElementById(
+            "historyBtn" + index
+        );
+
+
+    if(
+        box.style.display === "block"
+    ){
+
+        box.style.display = "none";
+
+        btn.textContent =
+            "詳細を見る";
+
+    }else{
+
+        box.style.display = "block";
+
+        btn.textContent =
+            "閉じる";
+
+    }
+
+}
+
+
+
+/* =========================
+   履歴変更
+========================= */
+
+function editHistory(index){
+
+    const item =
+        history[index];
+
+
+    if(!item){
         return;
     }
 
-    const reversed = [...history].reverse();
 
-    reversed.forEach((item, index) => {
-        const originalIndex = history.length - 1 - index;
-        const ranking = item.ranking || [];
+    localStorage.setItem(
+        "editHistoryIndex",
+        String(index)
+    );
 
-        area.innerHTML += `
-            <div class="card">
-                <div class="title">診断 ${history.length - index}</div>
 
-                <div class="small">日時：${item.date}</div>
-                <div class="small">表示時期：${(item.periods || []).join("、") || "なし"}</div>
-                <div class="small">選択職種：${(item.selectedJobs || []).join("、") || "なし"}</div>
-                <div class="small">選択講義数：${(item.subjects || []).length}</div>
-                <div class="small">取得済み講義：${(item.subjects || []).join("、") || "なし"}</div>
+    /*
+    編集画面用として
+    選択内容を保存
+    */
+    localStorage.setItem(
+        "selectedLectures",
+        JSON.stringify(
+            item.subjects || []
+        )
+    );
 
-                <button id="historyBtn${originalIndex}" class="detailBtn" onclick="toggleHistoryDetail(${originalIndex})">
-                    詳細を見る
-                </button>
 
-                <div id="historyDetail${originalIndex}" class="detailBox">
-                    ${
-                        ranking.length === 0
-                        ? `<div class="small">ランキング詳細はまだありません。ホーム画面を一度開くと反映されます。</div>`
-                        : ranking.map((r,i)=>`
-                            <div class="small">${i + 1}位：${r.name}（適合率 ${r.rate}%）</div>
-                        `).join("")
-                    }
-                </div>
+    localStorage.setItem(
+        "selectedJobs",
+        JSON.stringify(
+            item.selectedJobs || []
+        )
+    );
 
-                <div class="actionArea">
-                    <button class="orange" onclick="editHistory(${originalIndex})">変更</button>
-                    <button class="red" onclick="deleteHistory(${originalIndex})">削除</button>
-                </div>
-            </div>
-        `;
-    });
+
+    localStorage.setItem(
+        "selectedPeriods",
+        JSON.stringify(
+            item.periods || []
+        )
+    );
+
+
+    localStorage.setItem(
+        "undecided",
+        item.undecided
+        ? "true"
+        : "false"
+    );
+
+
+    location.href =
+        "anke-to.html";
+
 }
 
-function toggleHistoryDetail(index){
-    const box = document.getElementById("historyDetail" + index);
-    const btn = document.getElementById("historyBtn" + index);
 
-    if(box.style.display === "block"){
-        box.style.display = "none";
-        btn.textContent = "詳細を見る";
-    }else{
-        box.style.display = "block";
-        btn.textContent = "閉じる";
-    }
-}
 
-function editHistory(index){
-    localStorage.setItem("editHistoryIndex", index);
-
-    const item = history[index];
-
-    localStorage.setItem("selectedLectures", JSON.stringify(item.subjects || []));
-    localStorage.setItem("selectedJobs", JSON.stringify(item.selectedJobs || []));
-    localStorage.setItem("selectedPeriods", JSON.stringify(item.periods || []));
-    localStorage.setItem("undecided", item.undecided ? "true" : "false");
-
-    location.href = "anke-to.html";
-}
+/* =========================
+   1件削除
+========================= */
 
 function deleteHistory(index){
-    if(!confirm("この診断履歴を削除しますか？")) return;
 
-    history.splice(index,1);
-    localStorage.setItem("history", JSON.stringify(history));
-
-    if(history.length === 0){
-        localStorage.removeItem("latestRanking");
-        localStorage.removeItem("selectedLectures");
-        localStorage.removeItem("selectedJobs");
-        localStorage.removeItem("selectedPeriods");
-        localStorage.removeItem("undecided");
-        latest = [];
-    }else{
-        const last = history[history.length - 1];
-        const newLatest = last.rankingByTab?.job || last.ranking || [];
-        localStorage.setItem("latestRanking", JSON.stringify(newLatest));
-        localStorage.setItem("selectedLectures", JSON.stringify(last.subjects || []));
-        localStorage.setItem("selectedJobs", JSON.stringify(last.selectedJobs || []));
-        localStorage.setItem("selectedPeriods", JSON.stringify(last.periods || []));
-        latest = newLatest;
+    if(
+        !confirm(
+            "この診断履歴を削除しますか？"
+        )
+    ){
+        return;
     }
 
+
+    history.splice(
+        index,
+        1
+    );
+
+
+    /*
+    0件になった場合
+    */
+    if(history.length === 0){
+
+        clearDiagnosisStorage();
+
+        history = [];
+        latest = [];
+
+    }
+
+    /*
+    まだ履歴がある場合
+    */
+    else{
+
+        localStorage.setItem(
+            "history",
+            JSON.stringify(history)
+        );
+
+
+        /*
+        一番新しい履歴を
+        最新診断として設定
+        */
+        const last =
+            history[
+                history.length - 1
+            ];
+
+
+        latest =
+            last.rankingByTab?.job ||
+            last.ranking ||
+            [];
+
+
+        localStorage.setItem(
+            "latestRanking",
+            JSON.stringify(latest)
+        );
+
+
+        localStorage.setItem(
+            "selectedLectures",
+            JSON.stringify(
+                last.subjects || []
+            )
+        );
+
+
+        localStorage.setItem(
+            "selectedJobs",
+            JSON.stringify(
+                last.selectedJobs || []
+            )
+        );
+
+
+        localStorage.setItem(
+            "selectedPeriods",
+            JSON.stringify(
+                last.periods || []
+            )
+        );
+
+
+        localStorage.setItem(
+            "undecided",
+            last.undecided
+            ? "true"
+            : "false"
+        );
+
+
+        /*
+        学期比較チェック状態をリセット。
+
+        削除した履歴を参照した
+        チャートが残るのを防止。
+        */
+        localStorage.removeItem(
+            "homeDisplayState"
+        );
+
+
+        /*
+        履修候補も一度リセット
+        */
+        localStorage.removeItem(
+            "lectureCandidates"
+        );
+
+
+        localStorage.removeItem(
+            "editHistoryIndex"
+        );
+
+    }
+
+
     renderLatest();
+
     renderHistory();
+
 }
+
+
+
+/* =========================
+   診断関連データ完全削除
+========================= */
+
+function clearDiagnosisStorage(){
+
+    /*
+    診断履歴
+    */
+    localStorage.removeItem(
+        "history"
+    );
+
+
+    /*
+    最新ランキング
+    */
+    localStorage.removeItem(
+        "latestRanking"
+    );
+
+
+    /*
+    最新診断の選択内容
+    */
+    localStorage.removeItem(
+        "selectedLectures"
+    );
+
+    localStorage.removeItem(
+        "selectedJobs"
+    );
+
+    localStorage.removeItem(
+        "selectedPeriods"
+    );
+
+    localStorage.removeItem(
+        "undecided"
+    );
+
+
+    /*
+    履修候補
+    */
+    localStorage.removeItem(
+        "lectureCandidates"
+    );
+
+
+    /*
+    履歴編集中の情報
+    */
+    localStorage.removeItem(
+        "editHistoryIndex"
+    );
+
+
+    /*
+    ★重要
+
+    ホーム画面の
+
+    ・チェックしていた学期
+    ・表示していたタブ
+
+    などもリセットする。
+
+    これが残っていると
+    全履歴削除後にも
+    古いチャート状態が
+    復元される可能性がある。
+    */
+    localStorage.removeItem(
+        "homeDisplayState"
+    );
+
+}
+
+
+
+/* =========================
+   全履歴削除
+========================= */
 
 function clearHistory(){
-    if(!confirm("本当に履歴をすべて削除しますか？")) return;
 
-    localStorage.removeItem("history");
-    localStorage.removeItem("latestRanking");
-    localStorage.removeItem("selectedLectures");
-    localStorage.removeItem("selectedJobs");
-    localStorage.removeItem("selectedPeriods");
-    localStorage.removeItem("undecided");
-    localStorage.removeItem("lectureCandidates");
-    localStorage.removeItem("editHistoryIndex");
+    if(
+        !confirm(
+            "本当に履歴をすべて削除しますか？"
+        )
+    ){
+        return;
+    }
 
+
+    /*
+    診断に関係するデータを
+    全部削除
+    */
+    clearDiagnosisStorage();
+
+
+    /*
+    JavaScript上のデータも
+    空にする
+    */
     history = [];
+
     latest = [];
 
+
+    /*
+    画面を即座に更新
+    */
     renderLatest();
+
     renderHistory();
 
-    alert("履歴を削除しました");
+
+    alert(
+        "履歴を削除しました"
+    );
+
 }
 
+
+
+/* =========================
+   初期表示
+========================= */
+
 renderLatest();
+
 renderHistory();
+
 </script>
 
 
 <script>
+
 if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./service-worker.js")
-            .catch(function (error) {
-                console.error("Service Worker registration failed:", error);
-            });
-    });
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            navigator
+            .serviceWorker
+            .register(
+                "./service-worker.js"
+            )
+            .catch(
+                function(error){
+
+                    console.error(
+                        "Service Worker registration failed:",
+                        error
+                    );
+
+                }
+            );
+
+        }
+    );
+
 }
+
 </script>
 
 </body>
+
 </html>
