@@ -116,7 +116,46 @@ header{
 /* 2026 UI refresh */
 :root{--blue:#2478C7;--navy:#17466F;--teal:#087F8C;--green:#168B75;--line:#d4e3ef;--bg:#f5f8fc}
 body{background:var(--bg);color:var(--navy)}header{background:linear-gradient(115deg,#17466F,#2478C7);padding:22px 16px}header h1{font-size:25px}.container{max-width:1120px}.card{border:1px solid var(--line);box-shadow:0 4px 18px #17466f0d;border-radius:18px}.tab.active,button,.sidePanel button{background:var(--blue)}.rankName,.percent{color:var(--blue)}.increaseFill{background:#9BEA47}.increaseText,.simulationNote{color:var(--teal);font-weight:700}.infoBox,.compareBox,.detailBox{background:#edf5fb}.topnav{max-width:1120px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;padding:14px 15px 0}.topnav a{color:var(--navy);text-decoration:none;background:white;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-weight:700}.topnav a.active{background:var(--blue);color:white}.page-intro{max-width:1120px;margin:12px auto 0;padding:0 15px;color:#526f88}.page-intro h2{font-size:22px}.floating-btn{position:fixed;right:18px;bottom:18px;z-index:10;border-radius:50px;padding:13px 18px;background:var(--blue);color:white;box-shadow:0 5px 22px #17466f40;text-decoration:none;font-weight:700}.basket-btn{position:fixed;right:18px;top:82px;z-index:10;background:var(--blue);color:white;border-radius:24px;padding:12px 16px;cursor:pointer;box-shadow:0 4px 16px #17466f30}.basket-btn span{background:#fff;color:var(--blue);border-radius:20px;padding:2px 7px;margin-left:5px}.panel-overlay{position:fixed;inset:0;background:#0b2e4a80;z-index:20;display:none;align-items:center;justify-content:center;padding:15px}.panel-overlay.open{display:flex}.panel{background:white;border-radius:18px;padding:22px;max-width:600px;width:100%;max-height:85vh;overflow:auto}.panel h2{margin-bottom:15px}.panel button{margin:6px}.period-pills{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.period-pills button{background:#e4eef8;color:var(--navy)}.period-pills button.active{background:var(--blue);color:white}.manage-item{border-bottom:1px solid var(--line);padding:12px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}.manage-item button{flex-shrink:0}.manage-item small{display:block;color:#657e92}.quick-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.quick-links a{padding:12px 15px;background:#e4eef8;color:var(--navy);border-radius:12px;text-decoration:none;font-weight:700}.searchbar{display:flex;gap:8px;flex-wrap:wrap}.searchbar input{flex:1;min-width:160px}.hidden-page{display:none!important}#qualificationPanel{margin-top:15px}.status-chip{display:inline-block;border-radius:18px;background:#def2ed;color:#126954;padding:4px 10px;font-size:13px;font-weight:700}@media(max-width:600px){.topnav a{font-size:13px;padding:9px}.basket-btn{top:auto;bottom:78px}.floating-btn{bottom:15px}.container{padding:10px}.card{padding:15px}}
-.app-brand{display:flex;align-items:center;justify-content:center;gap:12px}.app-brand img{width:52px;height:52px;object-fit:contain;border-radius:12px}.app-brand .fallback-icon{display:none;width:52px;height:52px;align-items:center;justify-content:center;border-radius:12px;background:#fff;color:#2478C7;font-weight:800;font-size:22px}</style>
+.app-brand{display:flex;align-items:center;justify-content:center;gap:12px}.app-brand img{width:52px;height:52px;object-fit:contain;border-radius:12px}.app-brand .fallback-icon{display:none;width:52px;height:52px;align-items:center;justify-content:center;border-radius:12px;background:#fff;color:#2478C7;font-weight:800;font-size:22px}
+/* Mobile usability fixes */
+*,*::before,*::after{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+.topnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;max-width:1120px;padding:12px 14px;margin:auto}
+.topnav a{min-width:0;text-align:center;display:flex;align-items:center;justify-content:center;line-height:1.45;white-space:normal;word-break:keep-all;padding:11px 5px}
+.page-intro{margin:20px auto 18px;padding:0 18px}
+.page-intro h2{margin:0 0 12px;line-height:1.5}
+.page-intro p{margin:0;line-height:1.9;max-width:70ch}
+canvas{max-width:100%!important}
+.bar{max-width:100%;min-width:0}
+.basket-btn{position:fixed;top:12px;right:12px;bottom:auto;z-index:19;max-width:150px}
+@media(max-width:650px){
+ .topnav{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:12px 10px}
+ .topnav a{font-size:12px;min-height:44px;border-radius:10px;padding:8px 3px}
+ header{padding:18px 12px 64px!important}
+ header h1{font-size:22px!important}
+ header p{line-height:1.8;padding:0 10px}
+ .basket-btn{top:12px;right:10px;bottom:auto;font-size:12px;padding:9px 12px}
+ .floating-btn{bottom:14px;right:12px;font-size:12px;padding:11px 13px}
+ .container{padding:10px!important}
+ .card{padding:15px!important}
+ .rankLine{min-width:0;flex-wrap:wrap}
+ .rankName{overflow-wrap:anywhere}
+ .page-intro{margin:18px auto 22px}
+ .page-intro p{line-height:1.95}
+}
+
+/* History mobile layout and matching header */
+header{background:linear-gradient(115deg,#17466f,#2478c7);color:#fff;text-align:center;padding:22px 15px 25px!important}
+header h1{color:#fff!important;font-size:26px!important;margin:8px 0 4px!important}
+header .history-subtitle{color:#fff;margin:0;line-height:1.8}
+.app-brand img{width:70px;height:70px;background:#fff;border-radius:15px;padding:3px}
+.container{max-width:1050px;margin:0 auto;padding:15px}
+.card,.small,.detailBox{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.small{white-space:normal;line-height:1.8}
+.actionArea{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.actionArea button{min-width:0;white-space:normal}
+@media(max-width:650px){header{padding:18px 12px 22px!important}header h1{font-size:23px!important}.container{padding:10px!important}.card{padding:15px!important}.topnav{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
 
 <link rel="manifest" href="./manifest.webmanifest">
 
@@ -128,9 +167,9 @@ body{background:var(--bg);color:var(--navy)}header{background:linear-gradient(11
 
 <body><nav class="topnav" aria-label="メインメニュー"><a href="index.html" data-nav="home">ホーム</a><a href="jobs.html" data-nav="job">講義検索</a><a href="licenses.html" data-nav="license">資格検索</a><a href="mypage.html" data-nav="mypage">マイページ</a><a href="history.html">診断履歴</a></nav>
 
-<header><div class="app-brand"><img src="./icons/icon-192.png" alt="履修ガチ勢アイコン" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><span class="fallback-icon" aria-hidden="true">履</span></div>
+<header><div class="app-brand"><img src="./icons/icon-192.png" alt="履修ガチ勢アイコン" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="fallback-icon" aria-hidden="true">履</span></div>
 
-<h1>診断履歴</h1>
+<h1>履修ガチ勢</h1><p class="history-subtitle">診断履歴</p>
 
 </header>
 
