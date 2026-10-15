@@ -1,10 +1,13 @@
-const CACHE_NAME = "lecture-support-pwa-v1";
+const CACHE_NAME = "lecture-support-pwa-v2";
 
 const APP_FILES = [
   "./",
   "./index.html",
   "./anke-to.html",
   "./history.html",
+  "./jobs.html",
+  "./licenses.html",
+  "./mypage.html",
   "./manifest.webmanifest",
   "./data.csv",
   "./data1.csv",

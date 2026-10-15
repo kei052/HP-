@@ -291,7 +291,13 @@ canvas{
 
 }
 
-</style>
+
+
+/* 2026 UI refresh */
+:root{--blue:#2478C7;--navy:#17466F;--teal:#087F8C;--green:#168B75;--line:#d4e3ef;--bg:#f5f8fc}
+body{background:var(--bg);color:var(--navy)}header{background:linear-gradient(115deg,#17466F,#2478C7);padding:22px 16px}header h1{font-size:25px}.container{max-width:1120px}.card{border:1px solid var(--line);box-shadow:0 4px 18px #17466f0d;border-radius:18px}.tab.active,button,.sidePanel button{background:var(--blue)}.rankName,.percent{color:var(--blue)}.increaseFill{background:#9BEA47}.increaseText,.simulationNote{color:var(--teal);font-weight:700}.infoBox,.compareBox,.detailBox{background:#edf5fb}.topnav{max-width:1120px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;padding:14px 15px 0}.topnav a{color:var(--navy);text-decoration:none;background:white;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-weight:700}.topnav a.active{background:var(--blue);color:white}.page-intro{max-width:1120px;margin:12px auto 0;padding:0 15px;color:#526f88}.page-intro h2{font-size:22px}.floating-btn{position:fixed;right:18px;bottom:18px;z-index:10;border-radius:50px;padding:13px 18px;background:var(--blue);color:white;box-shadow:0 5px 22px #17466f40;text-decoration:none;font-weight:700}.basket-btn{position:fixed;right:18px;top:82px;z-index:10;background:var(--blue);color:white;border-radius:24px;padding:12px 16px;cursor:pointer;box-shadow:0 4px 16px #17466f30}.basket-btn span{background:#fff;color:var(--blue);border-radius:20px;padding:2px 7px;margin-left:5px}.panel-overlay{position:fixed;inset:0;background:#0b2e4a80;z-index:20;display:none;align-items:center;justify-content:center;padding:15px}.panel-overlay.open{display:flex}.panel{background:white;border-radius:18px;padding:22px;max-width:600px;width:100%;max-height:85vh;overflow:auto}.panel h2{margin-bottom:15px}.panel button{margin:6px}.period-pills{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.period-pills button{background:#e4eef8;color:var(--navy)}.period-pills button.active{background:var(--blue);color:white}.manage-item{border-bottom:1px solid var(--line);padding:12px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}.manage-item button{flex-shrink:0}.manage-item small{display:block;color:#657e92}.quick-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.quick-links a{padding:12px 15px;background:#e4eef8;color:var(--navy);border-radius:12px;text-decoration:none;font-weight:700}.searchbar{display:flex;gap:8px;flex-wrap:wrap}.searchbar input{flex:1;min-width:160px}.hidden-page{display:none!important}#qualificationPanel{margin-top:15px}.status-chip{display:inline-block;border-radius:18px;background:#def2ed;color:#126954;padding:4px 10px;font-size:13px;font-weight:700}@media(max-width:600px){.topnav a{font-size:13px;padding:9px}.basket-btn{top:auto;bottom:78px}.floating-btn{bottom:15px}.container{padding:10px}.card{padding:15px}}
+
+.app-brand{display:flex;align-items:center;justify-content:center;gap:12px}.app-brand img{width:52px;height:52px;object-fit:contain;border-radius:12px}.app-brand .fallback-icon{display:none;width:52px;height:52px;align-items:center;justify-content:center;border-radius:12px;background:#fff;color:#2478C7;font-weight:800;font-size:22px}</style>
 
 <link rel="manifest" href="./manifest.webmanifest">
 
@@ -304,9 +310,9 @@ canvas{
 
 </head>
 
-<body>
+<body data-page="home">
 
-<header>
+<header><div class="app-brand"><img src="./icons/icon-192.png" alt="履修ガチ勢アイコン" onerror="this.style.display = \'none\';this.nextElementSibling.style.display=\'flex\'"><span class="fallback-icon" aria-hidden="true">履</span></div>
 
 <h1>講義支援アプリ</h1>
 
@@ -317,8 +323,10 @@ canvas{
 </header>
 
 
+<nav class="topnav" aria-label="メインメニュー"><a href="index.html" data-nav="home">ホーム</a><a href="jobs.html" data-nav="job">講義検索</a><a href="licenses.html" data-nav="license">資格検索</a><a href="mypage.html" data-nav="mypage">マイページ</a><a href="history.html">診断履歴</a></nav>
 <div class="container">
 
+<div class="page-intro"><h2>ホーム</h2><p>おすすめの職種・資格と、最新の診断結果を確認できます。</p></div>
 <div class="dashboard">
 
 <section class="card">
@@ -412,7 +420,7 @@ canvas{
 </div>
 
 
-<div class="compareBox">
+<div class="compareBox hidden-page">
 
 <b>表示する時期</b>
 
@@ -436,7 +444,7 @@ canvas{
 
 <h2>
 
-最新ランキング
+最新ランキング（現在の適合率）
 
 <span
     id="latestPeriodLabel"
@@ -452,7 +460,7 @@ canvas{
 </section>
 
 
-<section class="card">
+<section class="card hidden-page">
 
 <h2>
 詳細表示
@@ -470,7 +478,7 @@ canvas{
 </section>
 
 
-<section class="card">
+<section class="card hidden-page">
 
 <h2>
 講義検索
@@ -494,7 +502,7 @@ canvas{
 </section>
 
 
-<section class="card">
+<section class="card hidden-page">
 
 <h2>
 次学期履修候補
@@ -1087,6 +1095,7 @@ function getBaseSelectedLectures(){
 ========================================= */
 
 function getSimulationLectures(){
+    if(document.body.dataset.page === "home") return getBaseSelectedLectures();
 
     const base =
         getBaseSelectedLectures();
@@ -3332,7 +3341,7 @@ function drawRadarChart(data){
 
                                 return found
                                     ? found.rate
-                                    : 0;
+                                    : null;
 
                             }
                         ),
@@ -4072,5 +4081,28 @@ if(
 
 </script>
 
+
+<script>
+const PAGE_KIND=document.body.dataset.page;
+const PLAN_KEY='lecturePlanPeriodsV2';
+const QUAL_PLAN='qualificationPlansV2';
+const readObj=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))||fallback}catch(e){return fallback}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function openPanel(id){document.getElementById(id).classList.add('open');refreshPanels()}
+function closePanel(id){document.getElementById(id).classList.remove('open')}
+function refreshPanels(){
+ const badge=document.getElementById('basketCount');if(badge)badge.textContent=candidates.length;
+ const list=document.getElementById('basketContents');if(list){const map=readObj(PLAN_KEY,{});list.innerHTML=candidates.length?candidates.map(c=>`<div class="manage-item"><div><b>${esc(c.name)}</b><small>履修予定：${esc(map[c.name]||'学期未設定')}</small></div><button onclick="removeCandidate(${JSON.stringify(c.name).replace(/"/g,'&quot;')});refreshPanels()">削除</button></div>`).join(''):'履修予定の講義はありません';}
+ const done=document.getElementById('completedContents');if(done)done.innerHTML=getBaseSelectedLectures().length?getBaseSelectedLectures().map(n=>`<div class="manage-item">${esc(n)} <span class="status-chip">履修済み</span></div>`).join(''):'履修済み講義はありません。診断から登録できます。';
+}
+function setPlanPeriod(){const name=document.getElementById('plannedLecture').value;const period=document.getElementById('plannedPeriod').value;if(!name)return alert('講義を選択してください');const map=readObj(PLAN_KEY,{});map[name]=period;localStorage.setItem(PLAN_KEY,JSON.stringify(map));refreshPanels();}
+function filterRanking(){const q=(document.getElementById('rankSearch')?.value||'').toLocaleLowerCase();document.querySelectorAll('#resultArea .rankingItem').forEach(el=>el.style.display=el.textContent.toLocaleLowerCase().includes(q)?'':'none')}
+function filterLectures(){const q=(document.getElementById('searchBox')?.value||'').trim();if(q)searchLecture();else document.getElementById('searchResult').innerHTML='';}
+function addQualification(name){const data=readObj(QUAL_PLAN,{planned:[],done:[]});if(!data.planned.includes(name)&&!data.done.includes(name))data.planned.push(name);localStorage.setItem(QUAL_PLAN,JSON.stringify(data));renderQualifications()}
+function completeQualification(name){const data=readObj(QUAL_PLAN,{planned:[],done:[]});data.planned=data.planned.filter(x=>x!==name);if(!data.done.includes(name))data.done.push(name);localStorage.setItem(QUAL_PLAN,JSON.stringify(data));renderQualifications()}
+function removeQualification(name){const data=readObj(QUAL_PLAN,{planned:[],done:[]});data.planned=data.planned.filter(x=>x!==name);data.done=data.done.filter(x=>x!==name);localStorage.setItem(QUAL_PLAN,JSON.stringify(data));renderQualifications()}
+function renderQualifications(){const el=document.getElementById('qualificationPanel');if(!el)return;const data=readObj(QUAL_PLAN,{planned:[],done:[]});const all=[...new Set(licenseRows.map(x=>x.license).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ja'));const q=(document.getElementById('qualificationSearch')?.value||'').toLocaleLowerCase();el.innerHTML=`<h3>資格を検索・管理</h3><p class="small">取得予定と取得済みは別々に保存されます。</p>${all.filter(n=>n.toLocaleLowerCase().includes(q)).map(n=>{const done=data.done.includes(n),plan=data.planned.includes(n);return `<div class="manage-item"><div><b>${esc(n)}</b> ${done?'<span class="status-chip">取得済み</span>':plan?'<span class="status-chip">取得予定</span>':''}</div><div>${done?`<button onclick='removeQualification(${JSON.stringify(n)})'>取り消す</button>`:plan?`<button onclick='completeQualification(${JSON.stringify(n)})'>取得済みにする</button><button onclick='removeQualification(${JSON.stringify(n)})'>予定から外す</button>`:`<button onclick='addQualification(${JSON.stringify(n)})'>取得予定に追加</button><button onclick='completeQualification(${JSON.stringify(n)})'>取得済み</button>`}</div></div>`}).join('')||'<p>該当する資格はありません</p>'}`}
+window.addEventListener('load',()=>{document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===PAGE_KIND));if(PAGE_KIND==='job'){switchTab('job',false);const sel=document.getElementById('plannedLecture');if(sel)sel.innerHTML='<option value="">講義を選択</option>'+allQuestionLectures.map(n=>`<option>${esc(n)}</option>`).join('');refreshPanels();}if(PAGE_KIND==='license'){switchTab('license',false);renderQualifications();}if(PAGE_KIND==='home'){switchTab('job',false);}}, {once:true});
+</script>
 </body>
 </html>
