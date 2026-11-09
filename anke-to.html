@@ -1,14 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="ja">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>診断アンケート</title>
-
 <style>
 
 body{
@@ -104,217 +100,104 @@ canvas{max-width:100%!important}
  .page-intro p{line-height:1.95}
 }
 </style>
-
-<link rel="manifest" href="./manifest.webmanifest">
-
-<meta name="theme-color" content="#0077ff">
-
-<link
-    rel="apple-touch-icon"
-    href="./icons/icon-192.png"
->
-
-</head>
-
-
-<body><nav class="topnav" aria-label="メインメニュー"><a href="index.html" data-nav="home">ホーム</a><a href="jobs.html" data-nav="job">講義検索</a><a href="licenses.html" data-nav="license">資格検索</a><a href="mypage.html" data-nav="mypage">マイページ</a><a href="history.html">診断履歴</a></nav>
-
-
-<header><div class="app-brand"><img src="./icons/icon-192.png" alt="履修ガチ勢アイコン" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><span class="fallback-icon" aria-hidden="true">履</span></div>
-
+<link href="./manifest.webmanifest" rel="manifest"/>
+<meta content="#0077ff" name="theme-color"/>
+<link href="./icons/icon-192.png" rel="apple-touch-icon"/>
+<link href="rishu-enhance.css" rel="stylesheet"/><script defer="" src="rishu-account.js"></script><script defer="" src="rishu-catalog.js"></script><script defer="" src="rishu-enhance.js"></script></head>
+<body><nav aria-label="メインメニュー" class="topnav"><a data-nav="home" href="index.html">ホーム</a><a data-nav="job" href="jobs.html">講義検索</a><a data-nav="license" href="licenses.html">資格検索</a><a data-nav="mypage" href="mypage.html">マイページ</a><a href="history.html">診断履歴</a></nav>
+<header><div class="app-brand"><img alt="履修ガチ勢アイコン" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" src="./icons/icon-192.png"/><span aria-hidden="true" class="fallback-icon">履</span></div>
 <h1>
-今学期の診断アンケート
+診断・履修済み講義の登録
 </h1>
-
 </header>
-
-
 <div class="container">
-
-
 <!-- =========================
      表示時期
 ========================= -->
-
 <div class="card">
-
 <h2>
-表示する時期
+診断年次・学期
 </h2>
-
-
 <label>
-
-<input
-    type="checkbox"
-    class="period"
-    value="1年前期"
->
+<input class="period" name="diagnosisPeriod" type="radio" value="1年前期"/>
 
 1年前期
 
 </label>
-
-
 <label>
-
-<input
-    type="checkbox"
-    class="period"
-    value="1年後期"
->
+<input class="period" name="diagnosisPeriod" type="radio" value="1年後期"/>
 
 1年後期
 
 </label>
-
-
 <label>
-
-<input
-    type="checkbox"
-    class="period"
-    value="2年前期"
->
+<input class="period" name="diagnosisPeriod" type="radio" value="2年前期"/>
 
 2年前期
 
 </label>
-
-
 <label>
-
-<input
-    type="checkbox"
-    class="period"
-    value="2年後期"
->
+<input class="period" name="diagnosisPeriod" type="radio" value="2年後期"/>
 
 2年後期
 
 </label>
-
-
 <label>
-
-<input
-    type="checkbox"
-    class="period"
-    value="3年前期"
->
+<input class="period" name="diagnosisPeriod" type="radio" value="3年前期"/>
 
 3年前期
 
 </label>
-
-
 <label>
-
-<input
-    type="checkbox"
-    class="period"
-    value="3年後期"
->
+<input class="period" name="diagnosisPeriod" type="radio" value="3年後期"/>
 
 3年後期
 
 </label>
-
-
 <label>
-
-<input
-    type="checkbox"
-    class="period"
-    value="4年前期"
->
+<input class="period" name="diagnosisPeriod" type="radio" value="4年前期"/>
 
 4年前期
 
 </label>
-
-
 <label>
-
-<input
-    type="checkbox"
-    class="period"
-    value="4年後期"
->
+<input class="period" name="diagnosisPeriod" type="radio" value="4年後期"/>
 
 4年後期
 
 </label>
-
 </div>
-
-
 <!-- =========================
      取得済み講義
 ========================= -->
-
 <div class="card">
-
 <h2>
 取得済み講義
 </h2>
-
 <div id="subjectArea"></div>
-
 </div>
-
-
 <!-- =========================
      興味職種
 ========================= -->
-
 <div class="card">
-
 <h2>
 興味のある職種
 </h2>
-
 <div id="jobArea"></div>
-
-
 <label>
-
-<input
-    type="checkbox"
-    id="undecided"
-    onchange="toggleUndecided()"
->
+<input id="undecided" onchange="toggleUndecided()" type="checkbox"/>
 
 特に決まっていない
 
 </label>
-
 </div>
-
-
-<button
-    class="submit-btn"
-    onclick="startDiagnosis()"
->
+<button class="submit-btn" onclick="startDiagnosis()">
 
 診断開始
 
 </button>
 
-
-<button
-    class="back-btn"
-    onclick="goHome()"
->
-
-ホームへ戻る
-
-</button>
-
-
 </div>
-
-
 <script>
 
 /* =========================================
@@ -1286,8 +1169,6 @@ function goHome(){
 }
 
 </script>
-
-
 <script>
 
 /* =========================================
@@ -1324,7 +1205,5 @@ if(
 }
 
 </script>
-
 </body>
-
 </html>

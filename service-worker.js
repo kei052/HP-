@@ -1,4 +1,4 @@
-const CACHE_NAME = "lecture-support-pwa-v2";
+const CACHE_NAME = "lecture-support-pwa-v4";
 
 const APP_FILES = [
   "./",
@@ -11,6 +11,13 @@ const APP_FILES = [
   "./manifest.webmanifest",
   "./data.csv",
   "./data1.csv",
+  "./subjects.csv",
+  "./qualifications.csv",
+  "./rishu-account.js",
+  "./rishu-catalog.js",
+  "./rishu-enhance.js",
+  "./rishu-enhance.css",
+  "./rishu-mypage.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
 ];

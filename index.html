@@ -1,18 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="ja">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>講義支援アプリ</title>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>window.RISHU_CSV_BACKUP={"data.csv": ",診療情報管理士,教職,プログラマ,システムエンジニア,Webデザイン,データサイエンティスト,AI開発者,ネットワーク管理者,セキュリティアナリスト,ITコンサルタント,ITサポート・ヘルプデスク,未定\n情報処理論,4,1,7,8,9,2,4,5,4,4,4,8\nプログラミング応用,1,1,4,4,7,1,2,3,2,2,3,5\nデータ処理入門,2,0,3,3,2,1,1,2,1,2,1,5\n情報化社会論,2,1,6,6,8,2,4,5,3,3,3,8\nネットワーク技術Ⅰ,1,0,4,4,3,1,3,2,1,1,1,6\nネットワークの構築と運用,1,0,4,5,4,1,3,3,2,1,2,3\nウェブデザイン,1,0,5,4,6,1,2,3,3,3,3,5\nアルゴリズム論,0,1,6,6,8,2,4,5,3,2,2,5\nシステム設計論,0,0,1,1,1,0,1,0,0,0,0,1\nプログラミング応用演習,0,0,1,0,2,0,0,1,0,0,0,3\nデータベース演習,0,0,2,3,4,1,1,1,2,2,1,3\nインターネットと法,0,0,1,1,1,1,1,1,1,1,1,2\nウェブコンテンツ実践,0,0,4,3,5,1,2,3,2,1,1,4\n情報と職業,0,0,3,3,6,0,1,1,1,1,1,6\n情報セキュリティ,0,0,1,1,1,1,1,1,1,1,1,3\nシステム開発技術(IoT),0,0,0,0,1,0,0,0,0,0,0,0\n産業情報論,0,0,0,0,1,0,0,0,0,0,0,4\nネットワーク技術Ⅱ,0,0,0,0,0,0,0,0,0,0,0,1\n経営情報論,0,0,0,0,0,0,0,0,0,0,0,1\n", "data1.csv": "職業,資格,関連度の高い講義\n診療情報管理士,診療情報管理士,診療情報管理論Ⅰ\n診療情報管理士,診療情報管理士,臨床医学総論および医療用語\n診療情報管理士,診療情報管理士,臨床医学各論Ⅰ\n診療情報管理士,診療情報管理士,医療管理各論\n診療情報管理士,診療情報管理士,医療統計学\n診療情報管理士,診療情報管理士,臨床医学各論Ⅱ\n診療情報管理士,診療情報管理士,臨床医学各論Ⅲ\n診療情報管理士,診療情報管理士,臨床医学各論Ⅳ\n診療情報管理士,診療情報管理士,診療情報管理論Ⅱ\n診療情報管理士,診療情報管理士,国際統計分類Ⅰ\n診療情報管理士,診療情報管理士,国際統計分類Ⅱ\nプログラマー,基本情報技術者試験（FE）,情報処理論\nプログラマー,基本情報技術者試験（FE）,プログラミング応用\nプログラマー,基本情報技術者試験（FE）,情報セキュリティ\nプログラマー,基本情報技術者試験（FE）,情報と職業\nプログラマー,基本情報技術者試験（FE）,ネットワーク技術Ⅰ\nプログラマー,基本情報技術者試験（FE）,ネットワーク技術Ⅱ\nプログラマー,基本情報技術者試験（FE）,情報化社会論\nプログラマー,基本情報技術者試験（FE）,アルゴリズム論\nプログラマー,基本情報技術者試験（FE）,AI・データサイエンスⅠ\nプログラマー,基本情報技術者試験（FE）,AI・データサイエンスⅡ\nシステムエンジニア,応用情報技術者試験（AP）,情報処理論\nシステムエンジニア,応用情報技術者試験（AP）,プログラミング応用\nシステムエンジニア,応用情報技術者試験（AP）,情報セキュリティ\nシステムエンジニア,応用情報技術者試験（AP）,情報と職業\nシステムエンジニア,応用情報技術者試験（AP）,ネットワーク技術Ⅰ\nシステムエンジニア,応用情報技術者試験（AP）,ネットワーク技術Ⅱ\nシステムエンジニア,応用情報技術者試験（AP）,情報化社会論\nシステムエンジニア,応用情報技術者試験（AP）,アルゴリズム論\nシステムエンジニア,応用情報技術者試験（AP）,AI・データサイエンスⅠ\nシステムエンジニア,応用情報技術者試験（AP）,AI・データサイエンスⅡ\nWebデザイン,ウェブデザイン技能検定,情報セキュリティ\nWebデザイン,ウェブデザイン技能検定,ネットワーク技術Ⅰ\nWebデザイン,ウェブデザイン技能検定,ネットワーク技術Ⅱ\nWebデザイン,ウェブデザイン技能検定,情報処理論\nWebデザイン,ウェブデザイン技能検定,ウェブデザイン\nWebデザイン,ウェブデザイン技能検定,ウェブコンテンツ実践\nデータサイエンティスト,統計検定2級・準1級,健康情報統計Ⅱ\nデータサイエンティスト,統計検定2級・準1級,健康情報統計Ⅲ\nデータサイエンティスト,統計検定2級・準1級,経営統計学\nAI開発者,G検定,インターネットと法\nAI開発者,G検定,情報化社会論\nAI開発者,G検定,AI・データサイエンスⅠ\nAI開発者,G検定,AI・データサイエンスⅡ\nAI開発者,G検定,パターン認識\nAI開発者,G検定,画像認識\nAI開発者,G検定,自然言語処理\nAI開発者,G検定,人工知能\nネットワーク管理者,CCNA,ネットワーク技術Ⅰ\nネットワーク管理者,CCNA,ネットワーク技術Ⅱ\nネットワーク管理者,CCNA,ネットワークの構築と運用\nネットワーク管理者,CCNA,情報セキュリティ\nセキュリティアナリスト,情報処理安全確保支援士（SC）,情報処理論\nセキュリティアナリスト,情報処理安全確保支援士（SC）,プログラミング応用\nセキュリティアナリスト,情報処理安全確保支援士（SC）,情報セキュリティ\nセキュリティアナリスト,情報処理安全確保支援士（SC）,情報と職業\nセキュリティアナリスト,情報処理安全確保支援士（SC）,ネットワーク技術Ⅰ\nセキュリティアナリスト,情報処理安全確保支援士（SC）,ネットワーク技術Ⅱ\nセキュリティアナリスト,情報処理安全確保支援士（SC）,情報化社会論\nセキュリティアナリスト,情報処理安全確保支援士（SC）,アルゴリズム論\nセキュリティアナリスト,情報処理安全確保支援士（SC）,AI・データサイエンスⅠ\nセキュリティアナリスト,情報処理安全確保支援士（SC）,AI・データサイエンスⅡ\nセキュリティアナリスト,情報処理安全確保支援士（SC）,インターネットと法\nITコンサルタント,ITストラテジスト試験（ST）,情報処理論\nITコンサルタント,ITストラテジスト試験（ST）,プログラミング応用\nITコンサルタント,ITストラテジスト試験（ST）,情報セキュリティ\nITコンサルタント,ITストラテジスト試験（ST）,情報と職業\nITコンサルタント,ITストラテジスト試験（ST）,ネットワーク技術Ⅰ\nITコンサルタント,ITストラテジスト試験（ST）,ネットワーク技術Ⅱ\nITコンサルタント,ITストラテジスト試験（ST）,情報化社会論\nITコンサルタント,ITストラテジスト試験（ST）,アルゴリズム論\nITコンサルタント,ITストラテジスト試験（ST）,AI・データサイエンスⅠ\nITコンサルタント,ITストラテジスト試験（ST）,AI・データサイエンスⅡ\nITコンサルタント,ITストラテジスト試験（ST）,インターネットと法\nITコンサルタント,ITストラテジスト試験（ST）,経営情報論\nITコンサルタント,ITストラテジスト試験（ST）,簿記原理\nITコンサルタント,ITストラテジスト試験（ST）,経営戦略論\nITサポート、ヘルプデスク,CompTIA A+,ネットワーク技術Ⅰ\nITサポート、ヘルプデスク,CompTIA A+,ネットワーク技術Ⅱ\nITサポート、ヘルプデスク,CompTIA A+,ネットワークの構築と運用\nITサポート、ヘルプデスク,CompTIA A+,情報セキュリティー\nITサポート、ヘルプデスク,CompTIA A+,インターネットと法\nITサポート、ヘルプデスク,CompTIA A+,産業情報論\nITサポート、ヘルプデスク,CompTIA A+,情報処理論\n教員（情報系）,ICT支援員認定試験,情報処理論\n教員（情報系）,ICT支援員認定試験,システム設計論\n教員（情報系）,ICT支援員認定試験,プログラミング応用\n教員（情報系）,ICT支援員認定試験,アルゴリズム論\n教員（情報系）,ICT支援員認定試験,ネットワークの構築と運用\n教員（情報系）,ICT支援員認定試験,情報と職業\n教員（情報系）,ICT支援員認定試験,プログラミング応用演習\n教員（情報系）,ICT支援員認定試験,データベース演習\n教員（情報系）,ICT支援員認定試験,ネットワーク技術Ⅰ\n教員（情報系）,ICT支援員認定試験,ネットワーク技術Ⅱ\n教員（情報系）,ICT支援員認定試験,ウェブデザイン\n教員（情報系）,ICT支援員認定試験,経営情報論\n"};
 window.rishuLoadCSV=async function(name){const s=window.RISHU_CSV_BACKUP[name];if(!s)throw Error("同梱データがありません: "+name);return s;};
 </script>
-
 <style>
 
 *{
@@ -328,91 +324,41 @@ canvas{max-width:100%!important}
  .page-intro p{line-height:1.95}
 }
 </style>
-
-<link rel="manifest" href="./manifest.webmanifest">
-
-<meta name="theme-color" content="#0077ff">
-
-<link
-    rel="apple-touch-icon"
-    href="./icons/icon-192.png"
->
-
-</head>
-
+<link href="./manifest.webmanifest" rel="manifest"/>
+<meta content="#0077ff" name="theme-color"/>
+<link href="./icons/icon-192.png" rel="apple-touch-icon"/>
+<link href="rishu-enhance.css" rel="stylesheet"/><script defer="" src="rishu-account.js"></script><script defer="" src="rishu-catalog.js"></script><script defer="" src="rishu-enhance.js"></script></head>
 <body data-page="home">
-
-<header><div class="app-brand"><img src="./icons/icon-192.png" alt="履修ガチ勢アイコン" onerror="this.style.display = \'none\';this.nextElementSibling.style.display=\'flex\'"><span class="fallback-icon" aria-hidden="true">履</span></div>
-
+<header><div class="app-brand"><img alt="履修ガチ勢アイコン" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" src="./icons/icon-192.png"/><span aria-hidden="true" class="fallback-icon">履</span></div>
 <h1>講義支援アプリ</h1>
-
 <p>
 あなたの履修状況からおすすめ職種・資格を診断します
 </p>
-
 </header>
-
-
-<nav class="topnav" aria-label="メインメニュー"><a href="index.html" data-nav="home">ホーム</a><a href="jobs.html" data-nav="job">講義検索</a><a href="licenses.html" data-nav="license">資格検索</a><a href="mypage.html" data-nav="mypage">マイページ</a><a href="history.html">診断履歴</a></nav>
+<nav aria-label="メインメニュー" class="topnav"><a data-nav="home" href="index.html">ホーム</a><a data-nav="job" href="jobs.html">講義検索</a><a data-nav="license" href="licenses.html">資格検索</a><a data-nav="mypage" href="mypage.html">マイページ</a><a href="history.html">診断履歴</a></nav>
 <div class="container">
-
-<div class="page-intro"><h2>ホーム</h2><p>おすすめの職種・資格と、最新の診断結果を確認できます。</p></div>
+<div class="page-intro"><h2>ホーム</h2></div>
 <div class="dashboard">
-
 <section class="card">
-
 <h2 id="resultTitle">
 おすすめ職種
 </h2>
-
-
 <div class="tabs">
-
-<button
-    id="jobTab"
-    class="tab active"
-    onclick="switchTab('job')"
->
+<button class="tab active" id="jobTab" onclick="switchTab('job')">
 職種
 </button>
-
-
-<button
-    id="licenseTab"
-    class="tab"
-    onclick="switchTab('license')"
->
+<button class="tab" id="licenseTab" onclick="switchTab('license')">
 資格
 </button>
-
 </div>
-
-
 <canvas id="radarChart"></canvas>
-
-<div id="noChartMessage">
-診断結果がありません。<br>
-「診断する」から診断を行ってください。
-</div>
-
+<div id="noChartMessage">診断ページで履修済み講義を登録すると、診断結果が表示されます。</div>
 </section>
-
-
-<section class="card sidePanel">
-
-<button onclick="goToPage('anke-to.html')">
-診断する
-</button>
-
-<button onclick="goToPage('history.html')">
-履歴
-</button>
+<section class="card sidePanel rishu-compat-hidden">
 
 
 <div class="infoBox">
-
 <div>
-
 <b>取得講義数</b>：
 
 <span id="lectureCount">
@@ -422,10 +368,7 @@ canvas{max-width:100%!important}
 講義
 
 </div>
-
-
 <div>
-
 <b>興味職種数</b>：
 
 <span id="jobCount">
@@ -435,115 +378,65 @@ canvas{max-width:100%!important}
 件
 
 </div>
-
-
 <div>
-
 <b>表示時期</b>：
 
 <span id="periodText">
 該当なし
 </span>
-
 </div>
-
 </div>
-
-
 <div class="compareBox hidden-page">
-
 <b>表示する時期</b>
-
 <div id="periodCompareArea"></div>
-
 <div class="small">
 
 チェックした時期の診断結果を
 レーダーチャートに重ねて表示します
 
 </div>
-
 </div>
-
 </section>
-
 </div>
-
-
 <section class="card">
-
 <h2>
 
 最新ランキング（現在の適合率）
 
-<span
-    id="latestPeriodLabel"
-    class="small"
-></span>
-
+<span class="small" id="latestPeriodLabel"></span>
 </h2>
-
 <div id="resultArea">
 読み込み中...
 </div>
-
 </section>
-
-
 <section class="card hidden-page">
-
 <h2>
 詳細表示
 </h2>
-
-<div
-    id="selectedDetail"
-    class="detailBox"
->
+<div class="detailBox" id="selectedDetail">
 
 ランキング名を押すと詳細が表示されます。
 
 </div>
-
 </section>
-
-
 <section class="card hidden-page">
-
 <h2>
 講義検索
 </h2>
-
-<input
-    type="text"
-    id="searchBox"
-    placeholder="講義名を入力"
->
-
+<input id="searchBox" placeholder="講義名を入力" type="text"/>
 <button onclick="searchLecture()">
 検索
 </button>
-
-<div
-    id="searchResult"
-    class="small"
-></div>
-
+<div class="small" id="searchResult"></div>
 </section>
-
-
 <section class="card hidden-page">
-
 <h2>
 次学期履修候補
 </h2>
-
 <ul id="candidateList"></ul>
-
 <button onclick="clearCandidates()">
 リセット
 </button>
-
 <div class="small">
 
 履修候補を追加すると、
@@ -551,21 +444,13 @@ canvas{max-width:100%!important}
 適合率の増加分が表示されます。
 
 </div>
-
 </section>
-
 </div>
-
-
 <footer>
-
 <small>
 Lecture Support App © 2026
 </small>
-
 </footer>
-
-
 <script>
 
 /* =========================================
@@ -766,10 +651,7 @@ async function(){
         */
         if(!hasDiagnosis){
 
-            clearStaleDiagnosisData();
-
-            candidates = [];
-
+            // Do not erase course planning data when no formal diagnosis exists.
             renderPeriodCompare([]);
 
             updateCandidates();
@@ -1676,8 +1558,8 @@ function clearHomeDiagnosisDisplay(){
 
             診断結果がありません。<br>
 
-            「診断する」から
-            診断を行ってください。
+            診断ページで
+            診断を登録してください。
 
         </div>
 
@@ -4064,8 +3946,6 @@ function loadSavedCandidates(){
 }
 
 </script>
-
-
 <script>
 
 /* =========================================
@@ -4102,8 +3982,6 @@ if(
 }
 
 </script>
-
-
 <script>
 const PAGE_KIND=document.body.dataset.page;
 const PLAN_KEY='lecturePlanPeriodsV2';

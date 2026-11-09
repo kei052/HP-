@@ -1,0 +1,63 @@
+/* Existing palette is preserved; layout-only enhancements. */
+:root{--rishu-side:196px}
+body.rishu-enhanced{padding-left:var(--rishu-side)}
+body.rishu-enhanced.rishu-collapsed{--rishu-side:62px}
+.rishu-sidebar{position:fixed;z-index:90;left:0;top:0;bottom:0;width:var(--rishu-side);background:#fff;border-right:1px solid #dbe5ef;display:flex;flex-direction:column;padding:12px 8px;gap:7px;box-shadow:1px 0 8px #163b6012;overflow:auto}
+.rishu-sidebar a,.rishu-sidebar button{display:flex;align-items:center;gap:10px;text-decoration:none;color:#163b60;background:transparent;border:0;border-radius:9px;padding:11px 9px;font-size:14px;cursor:pointer;text-align:left;white-space:nowrap}
+.rishu-sidebar a.active{background:#eaf3fc;color:#2478c7;font-weight:700}.rishu-sidebar .glyph{width:26px;text-align:center;font-size:20px;flex-shrink:0}.rishu-collapsed .rishu-sidebar .nav-label{display:none}
+.rishu-bottom{display:none}.rishu-enhanced nav.topnav{display:none!important}
+.rishu-timetable{max-width:1100px;margin:16px auto;padding:16px;background:white;border-radius:15px;box-shadow:0 2px 8px #0001;color:#163b60}
+.rishu-timetable h2{margin:0 0 12px;font-size:21px}.rishu-timetable .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.rishu-timetable select{padding:8px;border:1px solid #dbe5ef;border-radius:8px;background:#fff;color:#163b60}
+.rishu-grid{display:grid;grid-template-columns:42px repeat(5,minmax(0,1fr));gap:3px}.rishu-grid .head{background:#eaf3fc;text-align:center;font-weight:700;padding:7px 2px;font-size:13px}.rishu-grid button{min-height:65px;border:1px solid #dbe5ef;border-radius:6px;background:#fff;color:#163b60;padding:3px;font-size:11px;overflow-wrap:anywhere;cursor:pointer}.rishu-grid button:hover{border-color:#2478c7}.rishu-total{text-align:right;font-weight:700;margin-top:10px}
+.rishu-overlay{position:fixed;z-index:200;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:15px}.rishu-dialog{background:#fff;color:#163b60;border-radius:15px;width:min(560px,100%);max-height:85vh;overflow:auto;padding:20px;box-shadow:0 8px 30px #0003}.rishu-dialog .dialog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.rishu-dialog input{width:100%;padding:11px;border:1px solid #dbe5ef;border-radius:8px;margin-bottom:10px}.rishu-dialog .choice{width:100%;display:flex;gap:9px;text-align:left;align-items:center;border:1px solid #dbe5ef;background:white;padding:11px;border-radius:8px;margin:5px 0;color:#163b60;cursor:pointer}.rishu-dialog .choice small{display:block;color:#667d94}.rishu-dialog .star{font-size:22px;color:#b7800e}.rishu-dialog .rishu-close{background:transparent;border:0;font-size:24px;cursor:pointer;color:#163b60}
+.rishu-avatar{width:76px;height:76px;object-fit:cover;border-radius:50%;border:2px solid #dbe5ef;background:#f5f8fc}.rishu-avatar-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.rishu-avatar-row input{max-width:100%}
+.rishu-profile-message{font-size:13px;color:#617585}.rishu-optional-note{font-size:12px;color:#617585}
+@media(max-width:720px){body.rishu-enhanced{padding-left:0;padding-bottom:72px}.rishu-sidebar{display:none}.rishu-bottom{position:fixed;display:flex;bottom:0;left:0;right:0;z-index:95;background:#fff;border-top:1px solid #dbe5ef;justify-content:space-around;padding:6px 2px max(7px,env(safe-area-inset-bottom));box-shadow:0 -2px 8px #0001}.rishu-bottom a{color:#163b60;text-decoration:none;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;min-width:0;flex:1}.rishu-bottom a.active{color:#2478c7;font-weight:bold}.rishu-bottom .glyph{font-size:21px}.rishu-timetable{margin:12px 8px;padding:10px}.rishu-grid{grid-template-columns:26px repeat(5,minmax(0,1fr));gap:2px}.rishu-grid button{min-height:53px;font-size:9px}.rishu-grid .head{font-size:11px;padding:5px 0}}
+.rishu-account-panel{max-width:1100px;margin:14px auto;padding:15px;background:#fff;border:1px solid #dbe5ef;border-radius:12px;color:#163b60}.rishu-account-panel p{margin:7px 0}.rishu-account-form{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.rishu-account-form input{padding:9px;border:1px solid #dbe5ef;border-radius:7px;min-width:190px}.rishu-account-actions{display:flex;gap:8px;flex-wrap:wrap}.rishu-account-actions button{padding:8px 12px;background:#eaf3fc;color:#163b60;border:1px solid #dbe5ef;border-radius:7px;cursor:pointer}.rishu-sync-status{display:inline-block;font-size:12px;color:#617585}
+/* Complete integration: use the application's existing navy/blue palette. */
+.rishu-compat-hidden{display:none!important}
+.rishu-enhanced .rishu-sidebar{z-index:110}
+.rishu-enhanced .rishu-bottom{z-index:120}
+.rishu-timetable{position:relative}
+.rishu-timetable .rishu-note{margin:0 0 13px}
+.rishu-note{font-size:13px;color:#627c93;line-height:1.65}
+.rishu-grid button.filled{background:#edf5fb;font-weight:650}
+.rishu-dialog .rishu-choice-list{max-height:50vh;overflow:auto}
+.rishu-dialog .choice span:not(.star){min-width:0}
+.rishu-plans{max-width:1120px;margin:18px auto}
+.rishu-plan-entry{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:14px 0;border-bottom:1px solid #dbe5ef}
+.rishu-plan-main{flex:1;min-width:180px}
+.rishu-plan-main strong,.rishu-plan-main small{display:block}
+.rishu-plan-main small{font-size:12px;color:#627c93;margin-top:5px;line-height:1.5}
+.rishu-plan-actions,.rishu-actions{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
+.rishu-plan-actions select,.rishu-actions select{padding:9px 10px;border:1px solid #dbe5ef;border-radius:8px;background:white;color:#163b60;min-width:90px;max-width:220px}
+.rishu-plan-actions button,.rishu-actions button,.rishu-outline,.rishu-danger{border-radius:8px;padding:8px 12px;cursor:pointer}
+.rishu-outline{background:#edf5fb!important;color:#17466f!important;border:1px solid #bcd5e7}
+.rishu-danger{background:#fff1ef!important;color:#9c3830!important;border:1px solid #e6c7c4}
+.rishu-added{background:#e3edf5!important;color:#53718d!important;cursor:default!important}
+.rishu-subheading{margin:24px 0 12px;font-size:18px}
+.rishu-diagnosis-view{margin-bottom:18px}
+.rishu-diagnosis-view .rishu-actions{margin:12px 0}
+.rishu-diagnosis-view p{line-height:1.65}
+.rishu-rank-note{margin:4px 0}
+.rishu-q-search{margin:12px 0 24px}
+.rishu-q-search .manage-item{align-items:flex-start}
+.rishu-q-search .manage-item>div{flex:1}
+.rishu-account-panel{margin-top:24px}
+.rishu-google-auth{margin-top:12px}
+.rishu-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.rishu-stat{border:1px solid #dbe5ef;background:#f5f9fd;padding:13px;border-radius:12px;min-width:0}
+.rishu-stat small{display:block;font-size:12px;color:#53718d}
+.rishu-stat strong{display:block;font-size:26px;color:#17466f;margin-top:5px}
+.rishu-credit-track{display:flex;overflow:hidden;background:#e9eff4;border-radius:99px;height:13px;margin-top:7px}
+.rishu-credit-earned{height:100%;background:#2776c4;flex-shrink:0}
+.rishu-credit-planned{height:100%;background:repeating-linear-gradient(135deg,#1c2832 0,#1c2832 3px,#fafafa 3px,#fafafa 7px);flex-shrink:0}
+.rishu-credit-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#395872}
+.rishu-credit-category{margin:15px 0;border:1px solid #dbe5ef;border-radius:12px;background:white;overflow:hidden}
+.rishu-credit-category>summary{padding:14px 17px;background:#edf5fb;color:#17466f;font-weight:bold;cursor:pointer}
+.rishu-credit-sub{margin:0 15px;padding:15px 2px;border-bottom:1px solid #e0e8ef}
+.rishu-credit-sub:last-child{border:0}
+.rishu-credit-sub strong{color:#17466f}
+.rishu-credit-condition{font-size:11px;margin-left:10px;color:#627c93}
+.rishu-credit-sub p{margin:7px 0}
+@media(max-width:720px){.rishu-enhanced .rishu-bottom{overflow-x:auto}.rishu-bottom a{min-width:54px}.rishu-dialog{max-height:90dvh}.rishu-overview{grid-template-columns:repeat(2,minmax(0,1fr))}.rishu-plan-actions{width:100%}.rishu-plan-actions select{flex:1}.rishu-stat strong{font-size:22px}}

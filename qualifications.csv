@@ -1,0 +1,12 @@
+﻿qualification_id,qualification_name,description,official_url
+Q001,CCNA,シスコシステムズ社が認定する、ネットワークの基礎知識および技術を証明する国際標準資格。,https://www.cisco.com/c/ja_jp/training-events/training-certifications/certifications/associate/ccna.html
+Q002,CompTIA A+,ITハードウェア、ソフトウェア、ネットワーク、セキュリティの基礎知識を網羅する国際認定資格。,https://www.comptia.jp/certif/core/comptia_a/
+Q003,G検定,一般社団法人日本ディープラーニング協会（JDLA）が主催する、ディープラーニングに関する基礎知識と事業活用能力を評価する検定。,https://www.jdla.org/certificate/general/
+Q004,ICT支援員認定試験,教育現場においてICT活用を円満・滑らかに推進するための知識・技能を評価する認定資格。,https://www.japet.or.jp/shienen/
+Q005,ITストラテジスト試験（ST）,IPAが実施する国家試験。ITを活用した事業戦略の策定やIT投資の最適化を主導する高度IT人材を対象とする資格。,https://www.ipa.go.jp/shiken/kubun/st.html
+Q006,ウェブデザイン技能検定,Webデザインの技術・知識を認定する国家資格（技能検定）。,https://www.webdesign.gr.jp/
+Q007,応用情報技術者試験（AP）,IPAが実施する国家試験。ワンランク上のITエンジニアとして応用的な知識・技能を評価する資格。,https://www.ipa.go.jp/shiken/kubun/ap.html
+Q008,基本情報技術者試験（FE）,IPAが実施する国家試験。ITエンジニアとしての基礎的な知識・技能を網羅的に評価する登竜門資格。,https://www.ipa.go.jp/shiken/kubun/fe.html
+Q009,情報処理安全確保支援士（SC）,IPAが実施するサイバーセキュリティ分野の国家資格（登録セキスペ）。企業・組織のセキュリティ対策を推進する。,https://www.ipa.go.jp/shiken/kubun/sc.html
+Q010,診療情報管理士,病院などの医療機関で診療記録等のデータを適切な管理・分析・活用を行う専門職の認定資格。,https://www.jhim.jp/
+Q011,統計検定2級・準1級,一般財団法人統計質保証推進協会が実施する、統計学の知識やデータ分析力を客観的に評価する検定。,https://www.toukei-kentei.jp/
