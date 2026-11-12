@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width,initial-scale=1" name="viewport"/>
+    <meta content="講義選択アプリのホームを分かりやすく紹介するガイドサイト。" name="description"/>
+    <title>
+      ホーム | 履修ガチ勢 ガイド
+    </title>
+    <style data-role="original-style-fallback">
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --blue: #427eb6;
+  --dark: #283b4d;
+  --muted: #617585;
+  --line: #dce9f2;
+  --pale: #eef7fc;
+  --white: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans JP',system-ui,sans-serif;
+  color: var(--dark);
+  background: #fcfefe;
+  line-height: 1.8;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  background: #ffffffed;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  z-index: 10;
+}
+
+.header-inner {
+  max-width: 1220px;
+  margin: auto;
+  padding: 13px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.brand small {
+  font-size: 10px;
+  color: var(--blue);
+  margin-left: 5px;
+}
+
+.brand-mark {
+  color: #72b8df;
+}
+
+.site-nav {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 3px;
+  color: #506879;
+}
+
+.site-nav a:hover,.site-nav a.active {
+  color: #2874ac;
+}
+
+.menu-toggle {
+  display: none;
+  border: 0;
+  background: var(--pale);
+  border-radius: 9px;
+  padding: 5px 12px;
+}
+
+.hero,.page-hero {
+  background: linear-gradient(120deg,#e7f5ff,#f6fbff 57%,#f4f3ff);
+}
+
+.hero {
+  padding: 95px max(6vw,24px);
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.hero-copy {
+  max-width: 650px;
+  margin-left: auto;
+}
+
+.hero h1 {
+  font-size: clamp(32px,4.5vw,58px);
+  line-height: 1.4;
+  margin: 15px 0;
+}
+
+.hero p,.page-hero p {
+  color: var(--muted);
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: var(--blue);
+}
+
+.button {
+  display: inline-block;
+  background: #4c96c9;
+  color: white;
+  border-radius: 30px;
+  padding: 12px 25px;
+  font-weight: 700;
+  margin-top: 18px;
+  box-shadow: 0 8px 20px #75b4dc55;
+}
+
+.hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.mock-card {
+  width: min(340px,100%);
+  padding: 28px;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 15px 50px #88b8d455;
+  text-align: center;
+  transform: rotate(2deg);
+}
+
+.mock-label {
+  font-size: 12px;
+  color: #7d96a7;
+}
+
+.mock-title {
+  font-weight: 800;
+  margin: 12px;
+}
+
+.mock-chart {
+  margin: 18px auto;
+  width: 165px;
+  height: 165px;
+  border-radius: 50%;
+  background: conic-gradient(#6cb5e0 70%,#e5f1f8 0);
+  display: grid;
+  place-items: center;
+}
+
+.mock-chart span {
+  display: grid;
+  place-items: center;
+  background: white;
+  width: 126px;
+  height: 126px;
+  border-radius: 50%;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.mock-bars {
+  display: flex;
+  gap: 8px;
+}
+
+.mock-bars i {
+  height: 10px;
+  flex: 1;
+  background: #e6eff8;
+  border-radius: 10px;
+}
+
+.mock-bars i:first-child {
+  background: #8ac1e4;
+}
+
+.mock-card small {
+  font-size: 10px;
+  color: #8395a2;
+}
+
+.section {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 85px 24px;
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 660px;
+  margin: 0 auto 34px;
+}
+
+.section h2,.step-copy h2 {
+  font-size: clamp(23px,2.8vw,32px);
+  margin: 8px 0;
+}
+
+.section-heading p {
+  color: var(--muted);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+
+.feature-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 5px 22px #8cb5cc12;
+  transition: .2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px #8cb5cc33;
+}
+
+.feature-icon {
+  font-size: 29px;
+}
+
+.feature-card h3 {
+  margin: 8px 0;
+}
+
+.feature-card p {
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 48px;
+}
+
+.more {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.page-hero {
+  text-align: center;
+  padding: 76px 20px;
+}
+
+.page-hero h1 {
+  font-size: clamp(30px,4vw,46px);
+  margin: 12px;
+}
+
+.guide-layout {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 45px;
+  padding: 45px 24px;
+}
+
+.toc {
+  position: sticky;
+  top: 95px;
+  align-self: start;
+  background: #f2f8fc;
+  border: 1px solid var(--line);
+  padding: 18px;
+  border-radius: 15px;
+  display: grid;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.toc strong {
+  font-size: 14px;
+}
+
+.toc a:hover {
+  color: var(--blue);
+}
+
+.step-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  align-items: center;
+  padding: 48px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.step-section:nth-child(even) .step-media {
+  order: 2;
+}
+
+.step-copy p {
+  color: var(--muted);
+}
+
+.hint {
+  font-size: 11px !important;
+}
+
+.media-frame {
+  aspect-ratio: 16/10;
+  background: #edf5fa;
+  border: 2px dashed #bcd8e9;
+  border-radius: 19px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 20px;
+  color: #7d9aaf;
+}
+
+.media-placeholder span {
+  font-size: 35px;
+}
+
+.media-placeholder small {
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+.media-frame img,.media-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.media-frame img {
+  cursor: zoom-in;
+}
+
+.video-section {
+  padding: 65px 0;
+}
+
+.guide-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 20px 0 70px;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+footer {
+  background: #eaf4fa;
+  padding: 40px 24px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: auto;
+}
+
+footer p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+footer small {
+  font-size: 11px;
+  color: #7890a1;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: #0b1c2eea;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+}
+
+.lightbox img {
+  max-width: 95vw;
+  max-height: 85vh;
+  object-fit: contain;
+}
+
+.lightbox-close {
+  position: absolute;
+  right: 22px;
+  top: 10px;
+  background: transparent;
+  border: 0;
+  color: white;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+@media (max-width:900px) {
+  .menu-toggle {
+    display: block;
+  }
+  .site-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 10px 15px #0001;
+  }
+  .site-nav.open {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 55px 24px;
+  }
+  .hero-copy {
+    margin: 0;
+  }
+  .feature-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+  .guide-layout {
+    grid-template-columns: 1fr;
+  }
+  .toc {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .toc strong {
+    width: 100%;
+  }
+}
+
+@media (max-width:600px) {
+  .brand {
+    font-size: 14px;
+  }
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .step-section {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 30px 0;
+  }
+  .step-section:nth-child(even) .step-media {
+    order: 0;
+  }
+  .page-hero {
+    padding: 50px 20px;
+  }
+  .section {
+    padding: 60px 20px;
+  }
+  .guide-layout {
+    padding: 20px;
+  }
+  .hero h1 {
+    font-size: 34px;
+  }
+}
+
+/* アプリへの導線とQRコード */
+.app-hero-link {
+  display: inline-flex;
+  margin-left: 10px;
+  background: #fff !important;
+  color: #2775c5 !important;
+  border: 1px solid #a7c8e7;
+}
+
+.nav-app-link {
+  color: #2677c7 !important;
+  font-weight: 700 !important;
+}
+
+.install-section {
+  padding-top: 35px;
+  padding-bottom: 45px;
+}
+
+.install-panel {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(0,1.6fr) minmax(230px,1fr);
+  align-items: center;
+  gap: 35px;
+  padding: 38px;
+  background: linear-gradient(120deg,#f0f8ff,#f9f6ff);
+  border: 1px solid #d7e9f5;
+  border-radius: 24px;
+}
+
+.install-copy h2 {
+  font-size: clamp(25px,3vw,34px);
+  margin: 10px 0;
+}
+
+.install-copy p {
+  line-height: 1.9;
+  color: #4d6578;
+}
+
+.install-copy .button {
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.install-copy .install-note {
+  font-size: 12px;
+  margin-top: 18px;
+}
+
+.install-qr {
+  text-align: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 18px;
+  min-width: 0;
+}
+
+.install-qr img {
+  width: min(200px,100%);
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+.install-qr p {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.install-qr small {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+  color: #5e7890;
+}
+
+.guide-app-link {
+  color: #2677c7;
+}
+
+.guide-bottom {
+  flex-wrap: wrap;
+}
+
+@media (max-width:700px) {
+  .install-panel {
+    grid-template-columns: 1fr;
+    padding: 22px;
+  }
+  .app-hero-link {
+    margin: 12px 0 0;
+  }
+  .install-section {
+    padding: 30px 18px;
+  }
+}
+    </style>
+    <link href="css/style.css?v=original-design-20261112" rel="stylesheet"/>
+    <style>
+      /* 案内内容のみ更新：元の配色・レイアウトを維持 */
+.guide-image-note {
+  font-size: 11px;
+  color: #617585;
+  margin-top: 8px;
+}
+
+.guide-form-preview {
+  width: 100%;
+  padding: 24px 20px;
+  border-radius: 15px;
+  background: #f5f8fc;
+  color: #283b4d;
+  border: 1px solid #dce9f2;
+  box-shadow: 0 6px 18px #8cb5cc15;
+}
+
+.guide-form-preview h3 {
+  font-size: 18px;
+  margin: 0 0 14px;
+}
+
+.guide-form-preview .preview-panel {
+  background: white;
+  border: 1px solid #dce9f2;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 12px 0;
+}
+
+.guide-form-preview .preview-panel strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+.guide-form-preview .preview-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: #506879;
+}
+
+.guide-form-preview .preview-options span {
+  background: #eef7fc;
+  border-radius: 7px;
+  padding: 5px 8px;
+}
+
+.guide-form-preview .preview-action {
+  background: #427eb6;
+  color: #fff;
+  border-radius: 9px;
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+.guide-form-preview small {
+  display: block;
+  color: #617585;
+  font-size: 11px;
+  margin-top: 10px;
+}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">
+            ✦
+          </span>
+          履修ガチ勢
+          <small>
+            GUIDE
+          </small>
+        </a>
+        <button aria-expanded="false" aria-label="メニューを開く" class="menu-toggle" type="button">
+          ☰
+        </button>
+        <nav aria-label="メインメニュー" class="site-nav">
+          <a data-page="index" href="index.html">
+            ホーム
+          </a>
+          <a data-page="courses" href="courses.html">
+            講義検索
+          </a>
+          <a data-page="qualifications" href="qualifications.html">
+            資格検索
+          </a>
+          <a data-page="timetable" href="timetable.html">
+            ホーム画面・時間割
+          </a>
+          <a data-page="diagnosis" href="diagnosis.html">
+            診断・履歴
+          </a>
+          <a data-page="mypage" href="mypage.html">
+            マイページ
+          </a>
+          <a data-page="ai" href="ai.html">
+            AI相談
+          </a>
+          <a data-page="reviews" href="reviews.html">
+            口コミ・掲示板
+          </a>
+          <a data-page="faq" href="faq.html">
+            よくある質問
+          </a>
+          <a class="nav-app-link" href="https://kei052.github.io/HP-/" rel="noopener noreferrer" target="_blank">
+            アプリを開く ↗
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">
+            COURSE GUIDE
+          </span>
+          <h1>
+            あなたに合った講義を、もっと見つけやすく。
+          </h1>
+          <p>
+            講義検索・資格検索・ホームの時間割・診断と履歴など、アプリの使い方を機能ごとに紹介します。
+          </p>
+          <a class="button" href="#features">
+            機能を見てみる ↓
+          </a>
+          <a class="button app-hero-link" href="https://kei052.github.io/HP-/" rel="noopener noreferrer" target="_blank">
+            アプリを開く・インストールする ↗
+          </a>
+        </div>
+        <div class="hero-visual">
+          <div class="mock-card">
+            <div class="mock-label">
+              履修ガチ勢
+            </div>
+            <div class="mock-title">
+              職種・資格の適合率をチェック
+            </div>
+            <div class="mock-chart" style="background:conic-gradient(#6cb5e0 33%,#e5f1f8 0)">
+              <span>
+                33%
+              </span>
+            </div>
+            <div class="mock-bars">
+              <i>
+              </i>
+              <i>
+              </i>
+              <i>
+              </i>
+            </div>
+            <small>
+              ※ ガイドの紹介用イメージ
+            </small>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="about">
+        <div class="section-heading">
+          <span class="eyebrow">
+            ABOUT
+          </span>
+          <h2>
+            履修ガチ勢とは？
+          </h2>
+          <p>
+            講義・資格を探し、時間割を組み、職種・資格の適合率や取得単位を確認するためのアプリです。各機能の操作方法を紹介します。
+          </p>
+        </div>
+        <div class="media-frame">
+          <video aria-label="講義選択アプリ紹介動画" controls="" playsinline="" preload="metadata">
+            <source src="videos/intro.mp4" type="video/mp4"/>
+            お使いのブラウザは動画に対応していません。
+          </video>
+        </div>
+      </section>
+      <section class="section install-section" id="install">
+        <div class="install-panel">
+          <div class="install-copy">
+            <span class="eyebrow">
+              TRY THE APP
+            </span>
+            <h2>
+              履修ガチ勢を使ってみよう
+            </h2>
+            <p>
+              QRコードまたはボタンから公開中のアプリを開けます。スマートフォンではブラウザの機能でホーム画面に追加できる場合があります。
+            </p>
+            <a class="button" href="https://kei052.github.io/HP-/" rel="noopener noreferrer" target="_blank">
+              アプリを開く・インストールする ↗
+            </a>
+            <p class="install-note">
+              ※ボタンはアプリの公開ページを開きます。端末によってインストール方法が異なります。
+            </p>
+          </div>
+          <div class="install-qr">
+            <img alt="履修ガチ勢の公開ページにアクセスするQRコード" data-fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXIAAAFyAQAAAADAX2ykAAACY0lEQVR4nO2bQYrjMBBFX40MWcrQB+ijyDcbcjP7KH2AAXsZkKlZlGU7oXt6mk7cEZQ2IdJbFHx+qSSVRfnKGH59CQfnnXfeeeedd/4jXpbRwNDOIt3UwCAiMJW17sB4nL8X39hP6gGmF2BqUMgIcQQIGQA5Jh7nH8NPq0OjKkwi2jPbnBn72Hicvw/fvDcpREXS20lhOjYe5x/NTw2kEfTcgnQ/Ho/z3+GLf6MCE+uuOzfAbJvu/grk2eJ3/r/4QUREWiC9NcB0UtIYFJitfD42HufvxKO3Ywyqfczvr/bPFr/znwxVVSVpRnuCkorIpKK061svX8QbwY5GSTMQMyRVtUqrtwXXtz5+p6+5dlvoY16k3TjXtzK+5GfLxZt/i3V36ru+FfKLvgD7XDxeSduXdO361sYXfeNaQRFUe8CcnNTrq5r51b/BXFtOvWFRetuT3b/18paGz69qFxokvQjEizC0s0DMmKefNH7nPxwl82YTeau0ysF4XXX/VsgX3dgORMWrpjR+/q2Zt/cFSWMLy4PgSUlja8tC/NNIGufyDvFs8Tv/ybi5v7q6mtwKaz8fVcqv9xss518dw7odr6Wzzbm+9fG3L0R7pUt9tcy5vhXyy/67/AtZh1ct/Tk9wPSSIeZGj4nH+fvyO5uWrZddpjb/gufnyvnSP6nnNlhVZe0cg0i57jg0Hucfw8vvEWtyV9WLWGE9yEml+5F4nL8vX642QDqCShdV/8U/Oh7nv8ff9k9CvIhCUBlKTib1s3h9VSW/f/+F8nS0b+e4asLy+qoyXvz7buedd955550/nP8Ldlky1B6VbH8AAAAASUVORK5CYII=" height="200" onerror="this.onerror=null;this.src=this.dataset.fallback;" src="images/shared/app-qr.png" width="200"/>
+            <p>
+              スマホで読み取ってアクセス
+            </p>
+            <small>
+              https://kei052.github.io/HP-/
+            </small>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="features">
+        <div class="section-heading">
+          <span class="eyebrow">
+            FEATURES
+          </span>
+          <h2>
+            機能を知る
+          </h2>
+          <p>
+            気になる機能を選んで、詳しい操作ガイドへ。
+          </p>
+        </div>
+        <div class="feature-grid">
+          <a class="feature-card" href="courses.html">
+            <span class="feature-icon">
+              📚
+            </span>
+            <h3>
+              講義検索
+            </h3>
+            <p>
+              年次・教育区分から講義を探し、職種ランキングや履修予定を確認します。
+            </p>
+            <span class="more">
+              使い方を見る →
+            </span>
+          </a>
+          <a class="feature-card" href="qualifications.html">
+            <span class="feature-icon">
+              🏅
+            </span>
+            <h3>
+              資格検索
+            </h3>
+            <p>
+              資格の適合率を確認し、取得予定・取得済みを管理します。
+            </p>
+            <span class="more">
+              使い方を見る →
+            </span>
+          </a>
+          <a class="feature-card" href="timetable.html">
+            <span class="feature-icon">
+              📅
+            </span>
+            <h3>
+              ホーム画面・時間割
+            </h3>
+            <p>
+              アプリのホームにあるおすすめ職種・ランキング・履修予定・時間割の使い方を紹介します。
+            </p>
+            <span class="more">
+              使い方を見る →
+            </span>
+          </a>
+          <a class="feature-card" href="diagnosis.html">
+            <span class="feature-icon">
+              📊
+            </span>
+            <h3>
+              適合率診断・診断履歴
+            </h3>
+            <p>
+              講義の選択と診断から、履歴の確認・編集・削除までまとめて紹介します。
+            </p>
+            <span class="more">
+              使い方を見る →
+            </span>
+          </a>
+          <a class="feature-card" href="mypage.html">
+            <span class="feature-icon">
+              👤
+            </span>
+            <h3>
+              マイページ
+            </h3>
+            <p>
+              プロフィール設定と、科目区分ごとの取得単位を確認します。
+            </p>
+            <span class="more">
+              使い方を見る →
+            </span>
+          </a>
+          <a class="feature-card" href="ai.html">
+            <span class="feature-icon">
+              💬
+            </span>
+            <h3>
+              AI相談
+            </h3>
+            <p>
+              AI相談の考え方と、公式情報を確認するポイントを紹介します。
+            </p>
+            <span class="more">
+              使い方を見る →
+            </span>
+          </a>
+          <a class="feature-card" href="reviews.html">
+            <span class="feature-icon">
+              🗣️
+            </span>
+            <h3>
+              口コミ・掲示板
+            </h3>
+            <p>
+              体験談を参考にするときの注意点を紹介します。
+            </p>
+            <span class="more">
+              使い方を見る →
+            </span>
+          </a>
+          <a class="feature-card" href="faq.html">
+            <span class="feature-icon">
+              ❔
+            </span>
+            <h3>
+              よくある質問
+            </h3>
+            <p>
+              講義検索・時間割などの使い方をまとめています。
+            </p>
+            <span class="more">
+              使い方を見る →
+            </span>
+          </a>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="footer-inner">
+        <strong>
+          履修ガチ勢 GUIDE
+        </strong>
+        <p>
+          このサイトは履修ガチ勢の紹介・操作ガイドです。大学の公式サイトではありません。
+        </p>
+        <small>
+          © 2026 Course Guide
+        </small>
+        <p>
+          <a href="https://kei052.github.io/HP-/" rel="noopener noreferrer" target="_blank">
+            公開中のアプリを開く ↗
+          </a>
+        </p>
+      </div>
+    </footer>
+    <div aria-label="画像の拡大表示" aria-modal="true" class="lightbox" hidden="" role="dialog">
+      <button aria-label="閉じる" class="lightbox-close" type="button">
+        ×
+      </button>
+      <img alt="拡大画像"/>
+    </div>
+    <script defer="" src="js/script.js?v=20261112">
+    </script>
+    <script>
+      (function () {
+  function fallback() {
+    if (window.__guideInitialized) return;
+
+    const s = document.createElement('script');
+    s.textContent = `/* ai.zipガイド版: 画像拡大・スマホメニュー */
+function initGuide() {
+  if (window.__guideInitialized) return;
+  window.__guideInitialized = true;
+
+  const toggle = document.querySelector('.menu-toggle');
+  const nav = document.querySelector('.site-nav');
+
+  toggle?.addEventListener('click', () => {
+    const opened = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(opened));
+    toggle.setAttribute('aria-label', opened ? 'メニューを閉じる' : 'メニューを開く');
+  });
+
+  const current = location.pathname.split('/').pop().replace('.html', '') || 'index';
+  document.querySelectorAll('.site-nav a').forEach(a => {
+    if (a.dataset.page === current) a.classList.add('active');
+  });
+
+  const lightbox = document.querySelector('.lightbox');
+  const enlarged = lightbox?.querySelector('img');
+
+  function closeBox() {
+    if (!lightbox) return;
+    lightbox.hidden = true;
+    enlarged?.removeAttribute('src');
+    document.body.style.overflow = '';
+  }
+
+  lightbox?.querySelector('button')?.addEventListener('click', closeBox);
+  lightbox?.addEventListener('click', e => {
+    if (e.target === lightbox) closeBox();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && lightbox && !lightbox.hidden) closeBox();
+  });
+
+  document.querySelectorAll('.media-frame img').forEach(img => {
+    img.addEventListener('click', () => {
+      if (!lightbox || !enlarged) return;
+      enlarged.src = img.currentSrc || img.src;
+      lightbox.hidden = false;
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  // 元の画像パスが存在する場合は、画像を読み込みます。
+  document.querySelectorAll('.media-frame[data-media="image"][data-src]').forEach(frame => {
+    if (frame.querySelector('img')) return;
+    const img = new Image();
+    img.alt = '操作画面のスクリーンショット';
+    img.onload = () => {
+      frame.replaceChildren(img);
+      img.addEventListener('click', () => {
+        if (!lightbox || !enlarged) return;
+        enlarged.src = img.src;
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+      });
+    };
+    img.src = frame.dataset.src;
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGuide);
+} else {
+  initGuide();
+}`;
+    document.body.append(s);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(fallback, 0));
+  } else {
+    setTimeout(fallback, 0);
+  }
+})();
+    </script>
+  </body>
+</html>

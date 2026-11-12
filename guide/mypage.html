@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width,initial-scale=1" name="viewport"/>
+    <meta content="プロフィールの設定、科目区分ごとの単位進捗、学期別の色分けを紹介します。" name="description"/>
+    <title>
+      マイページ | 履修ガチ勢 ガイド
+    </title>
+    <style data-role="original-style-fallback">
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --blue: #427eb6;
+  --dark: #283b4d;
+  --muted: #617585;
+  --line: #dce9f2;
+  --pale: #eef7fc;
+  --white: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans JP',system-ui,sans-serif;
+  color: var(--dark);
+  background: #fcfefe;
+  line-height: 1.8;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  background: #ffffffed;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  z-index: 10;
+}
+
+.header-inner {
+  max-width: 1220px;
+  margin: auto;
+  padding: 13px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.brand small {
+  font-size: 10px;
+  color: var(--blue);
+  margin-left: 5px;
+}
+
+.brand-mark {
+  color: #72b8df;
+}
+
+.site-nav {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 3px;
+  color: #506879;
+}
+
+.site-nav a:hover,.site-nav a.active {
+  color: #2874ac;
+}
+
+.menu-toggle {
+  display: none;
+  border: 0;
+  background: var(--pale);
+  border-radius: 9px;
+  padding: 5px 12px;
+}
+
+.hero,.page-hero {
+  background: linear-gradient(120deg,#e7f5ff,#f6fbff 57%,#f4f3ff);
+}
+
+.hero {
+  padding: 95px max(6vw,24px);
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.hero-copy {
+  max-width: 650px;
+  margin-left: auto;
+}
+
+.hero h1 {
+  font-size: clamp(32px,4.5vw,58px);
+  line-height: 1.4;
+  margin: 15px 0;
+}
+
+.hero p,.page-hero p {
+  color: var(--muted);
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: var(--blue);
+}
+
+.button {
+  display: inline-block;
+  background: #4c96c9;
+  color: white;
+  border-radius: 30px;
+  padding: 12px 25px;
+  font-weight: 700;
+  margin-top: 18px;
+  box-shadow: 0 8px 20px #75b4dc55;
+}
+
+.hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.mock-card {
+  width: min(340px,100%);
+  padding: 28px;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 15px 50px #88b8d455;
+  text-align: center;
+  transform: rotate(2deg);
+}
+
+.mock-label {
+  font-size: 12px;
+  color: #7d96a7;
+}
+
+.mock-title {
+  font-weight: 800;
+  margin: 12px;
+}
+
+.mock-chart {
+  margin: 18px auto;
+  width: 165px;
+  height: 165px;
+  border-radius: 50%;
+  background: conic-gradient(#6cb5e0 70%,#e5f1f8 0);
+  display: grid;
+  place-items: center;
+}
+
+.mock-chart span {
+  display: grid;
+  place-items: center;
+  background: white;
+  width: 126px;
+  height: 126px;
+  border-radius: 50%;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.mock-bars {
+  display: flex;
+  gap: 8px;
+}
+
+.mock-bars i {
+  height: 10px;
+  flex: 1;
+  background: #e6eff8;
+  border-radius: 10px;
+}
+
+.mock-bars i:first-child {
+  background: #8ac1e4;
+}
+
+.mock-card small {
+  font-size: 10px;
+  color: #8395a2;
+}
+
+.section {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 85px 24px;
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 660px;
+  margin: 0 auto 34px;
+}
+
+.section h2,.step-copy h2 {
+  font-size: clamp(23px,2.8vw,32px);
+  margin: 8px 0;
+}
+
+.section-heading p {
+  color: var(--muted);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+
+.feature-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 5px 22px #8cb5cc12;
+  transition: .2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px #8cb5cc33;
+}
+
+.feature-icon {
+  font-size: 29px;
+}
+
+.feature-card h3 {
+  margin: 8px 0;
+}
+
+.feature-card p {
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 48px;
+}
+
+.more {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.page-hero {
+  text-align: center;
+  padding: 76px 20px;
+}
+
+.page-hero h1 {
+  font-size: clamp(30px,4vw,46px);
+  margin: 12px;
+}
+
+.guide-layout {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 45px;
+  padding: 45px 24px;
+}
+
+.toc {
+  position: sticky;
+  top: 95px;
+  align-self: start;
+  background: #f2f8fc;
+  border: 1px solid var(--line);
+  padding: 18px;
+  border-radius: 15px;
+  display: grid;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.toc strong {
+  font-size: 14px;
+}
+
+.toc a:hover {
+  color: var(--blue);
+}
+
+.step-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  align-items: center;
+  padding: 48px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.step-section:nth-child(even) .step-media {
+  order: 2;
+}
+
+.step-copy p {
+  color: var(--muted);
+}
+
+.hint {
+  font-size: 11px !important;
+}
+
+.media-frame {
+  aspect-ratio: 16/10;
+  background: #edf5fa;
+  border: 2px dashed #bcd8e9;
+  border-radius: 19px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 20px;
+  color: #7d9aaf;
+}
+
+.media-placeholder span {
+  font-size: 35px;
+}
+
+.media-placeholder small {
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+.media-frame img,.media-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.media-frame img {
+  cursor: zoom-in;
+}
+
+.video-section {
+  padding: 65px 0;
+}
+
+.guide-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 20px 0 70px;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+footer {
+  background: #eaf4fa;
+  padding: 40px 24px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: auto;
+}
+
+footer p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+footer small {
+  font-size: 11px;
+  color: #7890a1;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: #0b1c2eea;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+}
+
+.lightbox img {
+  max-width: 95vw;
+  max-height: 85vh;
+  object-fit: contain;
+}
+
+.lightbox-close {
+  position: absolute;
+  right: 22px;
+  top: 10px;
+  background: transparent;
+  border: 0;
+  color: white;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+@media (max-width:900px) {
+  .menu-toggle {
+    display: block;
+  }
+  .site-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 10px 15px #0001;
+  }
+  .site-nav.open {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 55px 24px;
+  }
+  .hero-copy {
+    margin: 0;
+  }
+  .feature-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+  .guide-layout {
+    grid-template-columns: 1fr;
+  }
+  .toc {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .toc strong {
+    width: 100%;
+  }
+}
+
+@media (max-width:600px) {
+  .brand {
+    font-size: 14px;
+  }
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .step-section {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 30px 0;
+  }
+  .step-section:nth-child(even) .step-media {
+    order: 0;
+  }
+  .page-hero {
+    padding: 50px 20px;
+  }
+  .section {
+    padding: 60px 20px;
+  }
+  .guide-layout {
+    padding: 20px;
+  }
+  .hero h1 {
+    font-size: 34px;
+  }
+}
+
+/* アプリへの導線とQRコード */
+.app-hero-link {
+  display: inline-flex;
+  margin-left: 10px;
+  background: #fff !important;
+  color: #2775c5 !important;
+  border: 1px solid #a7c8e7;
+}
+
+.nav-app-link {
+  color: #2677c7 !important;
+  font-weight: 700 !important;
+}
+
+.install-section {
+  padding-top: 35px;
+  padding-bottom: 45px;
+}
+
+.install-panel {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(0,1.6fr) minmax(230px,1fr);
+  align-items: center;
+  gap: 35px;
+  padding: 38px;
+  background: linear-gradient(120deg,#f0f8ff,#f9f6ff);
+  border: 1px solid #d7e9f5;
+  border-radius: 24px;
+}
+
+.install-copy h2 {
+  font-size: clamp(25px,3vw,34px);
+  margin: 10px 0;
+}
+
+.install-copy p {
+  line-height: 1.9;
+  color: #4d6578;
+}
+
+.install-copy .button {
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.install-copy .install-note {
+  font-size: 12px;
+  margin-top: 18px;
+}
+
+.install-qr {
+  text-align: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 18px;
+  min-width: 0;
+}
+
+.install-qr img {
+  width: min(200px,100%);
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+.install-qr p {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.install-qr small {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+  color: #5e7890;
+}
+
+.guide-app-link {
+  color: #2677c7;
+}
+
+.guide-bottom {
+  flex-wrap: wrap;
+}
+
+@media (max-width:700px) {
+  .install-panel {
+    grid-template-columns: 1fr;
+    padding: 22px;
+  }
+  .app-hero-link {
+    margin: 12px 0 0;
+  }
+  .install-section {
+    padding: 30px 18px;
+  }
+}
+    </style>
+    <link href="css/style.css?v=original-design-20261112" rel="stylesheet"/>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">
+            ✦
+          </span>
+          履修ガチ勢
+          <small>
+            GUIDE
+          </small>
+        </a>
+        <button aria-expanded="false" aria-label="メニューを開く" class="menu-toggle" type="button">
+          ☰
+        </button>
+        <nav aria-label="メインメニュー" class="site-nav">
+          <a data-page="index" href="index.html">
+            ホーム
+          </a>
+          <a data-page="courses" href="courses.html">
+            講義検索
+          </a>
+          <a data-page="qualifications" href="qualifications.html">
+            資格検索
+          </a>
+          <a data-page="timetable" href="timetable.html">
+            ホーム画面・時間割
+          </a>
+          <a data-page="diagnosis" href="diagnosis.html">
+            診断・履歴
+          </a>
+          <a data-page="mypage" href="mypage.html">
+            マイページ
+          </a>
+          <a data-page="ai" href="ai.html">
+            AI相談
+          </a>
+          <a data-page="reviews" href="reviews.html">
+            口コミ・掲示板
+          </a>
+          <a data-page="faq" href="faq.html">
+            よくある質問
+          </a>
+          <a class="nav-app-link" href="https://kei052.github.io/HP-/" rel="noopener noreferrer" target="_blank">
+            アプリを開く ↗
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <span class="eyebrow">
+          FEATURE GUIDE
+        </span>
+        <h1>
+          マイページ
+        </h1>
+        <p>
+          プロフィール、取得単位、アカウント同期の現在の表示を紹介します。
+        </p>
+      </section>
+      <div class="guide-layout">
+        <aside class="toc">
+          <strong>
+            このページの目次
+          </strong>
+          <a href="#step1">
+            STEP 01 プロフィールを設定する
+          </a>
+          <a href="#step2">
+            STEP 02 卒業要件の進み具合を見る
+          </a>
+          <a href="#step3">
+            STEP 03 科目区分ごとの単位を見る
+          </a>
+          <a href="#step4">
+            STEP 04 アカウントと同期の状態を見る
+          </a>
+        </aside>
+        <div class="guide-main">
+          <section class="step-section" id="step1">
+            <div class="step-media media-frame">
+              <img alt="mypage：プロフィールを設定する（説明画像）" decoding="async" src="images/mypage/step1.png"/>
+            </div>
+            <div class="step-copy">
+              <span class="eyebrow">
+                STEP 01
+              </span>
+              <h2>
+                プロフィールを設定する
+              </h2>
+              <p>
+                マイページで表示名とプロフィール画像を設定できます。名前は入力後に「名前を保存」で確定します。
+              </p>
+              <p>
+                <a class="guide-app-link" href="https://kei052.github.io/HP-/mypage.html" rel="noopener noreferrer" target="_blank">
+                  公開中のアプリで確認する ↗
+                </a>
+              </p>
+            </div>
+          </section>
+          <section class="step-section" id="step2">
+            <div class="step-media media-frame">
+              <img alt="mypage：卒業要件の進み具合を見る（説明画像）" decoding="async" src="images/mypage/step2.png"/>
+            </div>
+            <div class="step-copy">
+              <span class="eyebrow">
+                STEP 02
+              </span>
+              <h2>
+                卒業要件の進み具合を見る
+              </h2>
+              <p>
+                「卒業要件と取得単位」では、卒業必要単位・取得済み・履修予定・不足を確認できます。履修予定は取得済みに含まれません。
+              </p>
+              <p>
+                <a class="guide-app-link" href="https://kei052.github.io/HP-/mypage.html" rel="noopener noreferrer" target="_blank">
+                  公開中のアプリで確認する ↗
+                </a>
+              </p>
+            </div>
+          </section>
+          <section class="step-section" id="step3">
+            <div class="step-media media-frame">
+              <img alt="mypage：科目区分ごとの単位を見る（説明画像）" decoding="async" src="images/mypage/step3.png"/>
+            </div>
+            <div class="step-copy">
+              <span class="eyebrow">
+                STEP 03
+              </span>
+              <h2>
+                科目区分ごとの単位を見る
+              </h2>
+              <p>
+                教養教育や専門教育の区分を開くと、必要単位と取得単位を比較できます。青は取得済み、黒の斜線は履修予定を表しています。
+              </p>
+              <p>
+                <a class="guide-app-link" href="https://kei052.github.io/HP-/mypage.html" rel="noopener noreferrer" target="_blank">
+                  公開中のアプリで確認する ↗
+                </a>
+              </p>
+            </div>
+          </section>
+          <section class="step-section" id="step4">
+            <div class="step-media media-frame">
+              <img alt="mypage：アカウントと同期の状態を見る（説明画像）" decoding="async" src="images/mypage/step4.png"/>
+            </div>
+            <div class="step-copy">
+              <span class="eyebrow">
+                STEP 04
+              </span>
+              <h2>
+                アカウントと同期の状態を見る
+              </h2>
+              <p>
+                メールでログイン・新規登録の欄がありますが、提供された画面では「端末内保存（同期サーバー未接続）」と表示されています。現時点で端末間同期が利用できるとは案内しません。
+              </p>
+              <p class="guide-caption">
+                ※ 2026年11月12日の画面では同期サーバー未接続です。
+              </p>
+              <p>
+                <a class="guide-app-link" href="https://kei052.github.io/HP-/mypage.html" rel="noopener noreferrer" target="_blank">
+                  公開中のアプリで確認する ↗
+                </a>
+              </p>
+            </div>
+          </section>
+          <div class="guide-bottom">
+            <a href="index.html">
+              ← トップへ戻る
+            </a>
+            <a class="guide-app-link" href="https://kei052.github.io/HP-/" rel="noopener noreferrer" target="_blank">
+              アプリを使ってみる ↗
+            </a>
+            <a href="ai.html">
+              次のページ →
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div class="footer-inner">
+        <strong>
+          履修ガチ勢 GUIDE
+        </strong>
+        <p>
+          このサイトは履修ガチ勢の紹介・操作ガイドです。大学の公式サイトではありません。
+        </p>
+        <small>
+          © 2026 Course Guide
+        </small>
+        <p>
+          <a href="https://kei052.github.io/HP-/" rel="noopener noreferrer" target="_blank">
+            公開中のアプリを開く ↗
+          </a>
+        </p>
+      </div>
+    </footer>
+    <div aria-label="画像の拡大表示" aria-modal="true" class="lightbox" hidden="" role="dialog">
+      <button aria-label="閉じる" class="lightbox-close" type="button">
+        ×
+      </button>
+      <img alt="拡大画像"/>
+    </div>
+    <script src="js/script.js?v=20261112">
+    </script>
+  </body>
+</html>
