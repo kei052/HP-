@@ -5,6 +5,9 @@ import base64, hashlib, hmac, json, os, secrets, sqlite3, time, urllib.parse, ur
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from http.cookies import SimpleCookie
+from urllib.parse import urlsplit
+from main import catalog_get, catalog_post, InputError
+from api.catalog import load_catalog, DataError
 
 ROOT=Path(__file__).resolve().parent.parent
 DB=Path(os.getenv('RISHU_DB',str(Path(__file__).resolve().parent/'users.sqlite3')))
@@ -54,6 +57,14 @@ class Handler(SimpleHTTPRequestHandler):
   token=secrets.token_urlsafe(40);db.execute('INSERT INTO sessions VALUES(?,?,?)',(hashlib.sha256(token.encode()).hexdigest(),uid,int(time.time())+30*86400));db.commit()
   self.send_json(200,{'ok':True},'rishu_session='+token+'; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000'+('; Secure' if self.headers.get('X-Forwarded-Proto')=='https' else ''))
  def do_GET(self):
+  path=urlsplit(self.path).path
+  if path in ('/api/catalog', '/catalog', '/courses', '/jobs', '/qualifications') or any(path.startswith(prefix) for prefix in ('/courses/', '/jobs/', '/qualifications/')):
+   try: status,result=catalog_get(path,load_catalog())
+   except DataError: return self.send_json(500,{'error':'講義・職業・資格のデータを読み込めません'})
+   return self.send_json(status,result)
+  # Do not expose account databases, source code, or private backend files.
+  if path.startswith('/backend/') or path.startswith('/.git/') or path.endswith(('.sqlite3','.sqlite3-wal','.sqlite3-shm','.py','.pyc')):
+   return self.send_json(403,{'error':'Forbidden'})
   if self.path.startswith('/api/'):
    with connect() as db:
     uid=self.current(db)
@@ -65,6 +76,14 @@ class Handler(SimpleHTTPRequestHandler):
    return self.send_json(404,{'error':'not found'})
   return super().do_GET()
  def do_POST(self):
+  path=urlsplit(self.path).path
+  if path in ('/diagnosis','/simulation'):
+   data=self.payload()
+   if data is None:return self.send_json(400,{'error':'不正なデータです'})
+   try: status,result=catalog_post(path,data,load_catalog())
+   except InputError as e:return self.send_json(400,{'error':str(e)})
+   except DataError:return self.send_json(500,{'error':'講義・職業・資格のデータを読み込めません'})
+   return self.send_json(status,result)
   if not self.path.startswith('/api/'):return self.send_json(404,{'error':'not found'})
   data=self.payload()
   if data is None:return self.send_json(400,{'error':'不正なデータです'})

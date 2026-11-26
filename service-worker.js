@@ -1,4 +1,4 @@
-const CACHE_NAME = "lecture-support-pwa-v4";
+const CACHE_NAME = "lecture-support-pwa-v5-backend-catalog";
 
 const APP_FILES = [
   "./",
@@ -9,11 +9,9 @@ const APP_FILES = [
   "./licenses.html",
   "./mypage.html",
   "./manifest.webmanifest",
-  "./data.csv",
-  "./data1.csv",
-  "./subjects.csv",
-  "./qualifications.csv",
   "./rishu-account.js",
+  "./api-demo.html",
+  "./js/api-demo.js",
   "./rishu-catalog.js",
   "./rishu-enhance.js",
   "./rishu-enhance.css",
@@ -40,6 +38,9 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
+  const path = new URL(event.request.url).pathname;
+  // Never cache user accounts or live backend catalog/API responses.
+  if (path.startsWith("/api/") || path.startsWith("/backend/") || ["/courses","/jobs","/qualifications"].includes(path)) return;
 
   event.respondWith(
     fetch(event.request)
